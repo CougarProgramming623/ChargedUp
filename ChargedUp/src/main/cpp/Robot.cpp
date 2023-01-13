@@ -5,6 +5,15 @@
 #include "Robot.h"
 
 #include <frc2/command/CommandScheduler.h>
+#include <frc/RobotController.h>
+
+
+Robot* Robot::s_Instance = nullptr;
+
+Robot::Robot() {
+
+  s_Instance = this;
+}
 
 void Robot::RobotInit() {}
 
