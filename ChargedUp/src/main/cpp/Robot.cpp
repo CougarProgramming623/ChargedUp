@@ -19,9 +19,11 @@ Robot::Robot() {
 Robot* Robot::s_Instance = nullptr;
 
 void Robot::RobotInit() {
+
   GetNavX().ZeroYaw();
   s_Instance = this;
   m_DriveTrain.DriveInit();
+  
 }
 
 /**

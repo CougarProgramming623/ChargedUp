@@ -31,10 +31,15 @@ class Robot : public frc::TimedRobot {
   inline double getYaw() {return m_NavX.GetYaw();}
   inline double getPitch() {return m_NavX.GetPitch();}
 
-  //inline DriveTrain& GetDriveTrain() { return m_DriveTrain; }
-  static Robot* GetRobot() { return s_Instance; }
+  inline DriveTrain& GetDriveTrain() { return m_DriveTrain; }
+  static Robot* GetRobot() { return s_Instance; } 
+
+  double *previousError = 0;
+  double *previousValue = 0; 
 
  private:
+
+  static Robot* s_Instance;
 
   AHRS m_NavX{frc::SPI::Port::kMXP};
 

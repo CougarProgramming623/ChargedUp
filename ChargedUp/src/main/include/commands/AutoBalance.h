@@ -17,8 +17,7 @@ public:
   void Execute() override;
 
  private:
-  double m_angle;
-  double m_error;
-
+  double m_currentAngle;
+  double m_prevError;
 
 };

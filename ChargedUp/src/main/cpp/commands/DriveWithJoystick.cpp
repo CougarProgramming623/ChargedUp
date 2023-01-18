@@ -22,7 +22,7 @@ double DriveWithJoystick::Deadfix(double in, double deadband) {
 
 
 void DriveWithJoystick::Execute() {
-    Robot* r = Robot::s_Instance;
+    Robot* r = Robot::GetRobot();
     DebugOutF(std::to_string(fmod(360 + 90 - r->GetNavX().GetAngle(), 360)));
     
     r->GetDriveTrain().BaseDrive(
