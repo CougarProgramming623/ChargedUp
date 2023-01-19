@@ -19,6 +19,10 @@ void SwerveModule::BreakMode(bool on){
     m_DriveController.BreakMode(on);
 }
 
+void SwerveModule::DeadzoneDrive(){
+
+}
+
 void SwerveModule::Set(double driveVoltage, double steerAngle){
     steerAngle  = fmod(steerAngle, 2.0 * M_PI);
     if(steerAngle < 0.0){
