@@ -25,8 +25,8 @@ class Robot : public frc::TimedRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
-  void SimulationInit() override;
-  void SimulationPeriodic() override;
+  //void SimulationInit() override;
+  //void SimulationPeriodic() override;
 
   inline AHRS& GetNavX() { return m_NavX; }
   inline void zeroGyroscope() {m_NavX.ZeroYaw();}
