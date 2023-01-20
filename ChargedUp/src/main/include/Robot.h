@@ -8,6 +8,8 @@
 
 #include "RobotContainer.h"
 #include "subsystems/DriveTrain.h"
+#include <AHRS.h>
+#include <frc/Joystick.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -31,8 +33,10 @@ class Robot : public frc::TimedRobot {
   inline double getYaw() {return m_NavX.GetYaw();}
   inline double getPitch() {return m_NavX.GetPitch();}
 
-  inline DriveTrain& GetDriveTrain() { return m_DriveTrain; }
+
   static Robot* GetRobot() { return s_Instance; } 
+  inline DriveTrain& GetDriveTrain() { return m_DriveTrain; }
+  inline frc::Joystick& GetJoyStick() { return m_Joystick; }
 
   double *previousError = 0;
   double *previousValue = 0; 

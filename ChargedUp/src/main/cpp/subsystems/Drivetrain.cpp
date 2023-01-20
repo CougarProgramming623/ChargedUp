@@ -32,7 +32,7 @@ void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
   m_ChassisSpeeds = chassisSpeeds;
 }
 void DriveTrain::DriveInit(){
-  m_Rotation = frc::Rotation2d(units::radian_t(Robot::s_Instance->GetNavX().GetAngle()));
+  m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
 }
 

@@ -16,8 +16,6 @@ Robot::Robot() {
   s_Instance = this;
 }
 
-Robot* Robot::s_Instance = nullptr;
-
 void Robot::RobotInit() {
 
   GetNavX().ZeroYaw();

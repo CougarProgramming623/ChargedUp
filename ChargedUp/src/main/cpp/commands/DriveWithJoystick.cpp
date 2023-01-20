@@ -3,7 +3,7 @@
 #include "frc/kinematics/ChassisSpeeds.h"
 
 DriveWithJoystick::DriveWithJoystick() {
-    AddRequirements(&Robot::s_Instance->GetDriveTrain());
+    AddRequirements(&Robot::GetRobot()->GetDriveTrain());
 }
 
 //DriveWithJoystick::~DriveWithJoystick(){}
