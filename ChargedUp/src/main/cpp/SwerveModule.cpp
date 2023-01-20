@@ -1,6 +1,8 @@
 #include "SwerveModule.h"
 #include "Util.h"
 #include "Constants.h"
+#include "frc/kinematics/SwerveModulePosition.h"
+#include "frc/geometry/Rotation2d.h"
 
 SwerveModule::SwerveModule(int driveID, int steerID, int encoderPort, double angleOffset):
     m_DriveController(driveID), 
@@ -17,6 +19,10 @@ double SwerveModule::GetSteerAngle(){
 
 void SwerveModule::BreakMode(bool on){
     m_DriveController.BreakMode(on);
+}
+
+frc::SwerveModulePosition SwerveModule::GetPosition(){
+    return {units::meter_t(m_DriveController.motor.GetSelectedSensorPosition() * DRIVE_ENCODER_POSITION_CONSTANT), frc::Rotation2d(units::radian_t(GetSteerAngle()))};
 }
 
 void SwerveModule::Set(double driveVoltage, double steerAngle){

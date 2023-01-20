@@ -30,8 +30,6 @@
 #include <frc2/command/SubsystemBase.h>
 #include "commands/DriveWithJoystick.h"
 
-
-
 using ctre::phoenix::motorcontrol::can::TalonFX;
 
 class DriveTrain : public frc2::SubsystemBase {
@@ -40,6 +38,7 @@ class DriveTrain : public frc2::SubsystemBase {
   void BaseDrive(frc::ChassisSpeeds chassisSpeeds);
   void DriveInit();
   void BreakMode(bool on);
+
 
   void Periodic() override;
     
@@ -55,7 +54,8 @@ class DriveTrain : public frc2::SubsystemBase {
   frc::Translation2d m_BackLeftLocation;
   frc::Translation2d m_BackRightLocation;
   frc::SwerveDriveKinematics<4> m_Kinematics;
-  //frc::SwerveDriveOdometry<4> m_Odometry;    //IDK where this was in the code
+  frc::SwerveDriveOdometry<4> m_Odometry;
+  
   frc::Rotation2d m_Rotation;             
   frc::ChassisSpeeds m_ChassisSpeeds;
 
