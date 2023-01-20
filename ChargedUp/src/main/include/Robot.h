@@ -10,6 +10,8 @@
 #include <frc2/command/CommandPtr.h>
 
 #include "RobotContainer.h"
+#include "frc/smartdashboard/Smartdashboard.h"
+
 
 class Robot : public frc::TimedRobot {
  public:
