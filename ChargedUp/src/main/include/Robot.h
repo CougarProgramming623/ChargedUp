@@ -38,8 +38,13 @@ class Robot : public frc::TimedRobot {
   inline DriveTrain& GetDriveTrain() { return m_DriveTrain; }
   inline frc::Joystick& GetJoyStick() { return m_Joystick; }
 
-  double *previousError = 0;
-  double *previousValue = 0; 
+  double *previousErrorX = 0;
+  double *previousErrorY = 0;
+  double *previousErrorT = 0;
+  
+  double *previousValueX = 0;
+  double *previousValueY = 0;
+  double *previousValueT = 0;
 
  private:
 
