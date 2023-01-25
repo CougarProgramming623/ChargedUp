@@ -6,6 +6,10 @@
 
 #include <frc2/command/CommandScheduler.h>
 
+Robot* Robot::s_Instance = nullptr;
+
+Robot::Robot() {s_Instance = this;}
+
 void Robot::RobotInit() {}
 
 /**
@@ -18,6 +22,8 @@ void Robot::RobotInit() {}
  */
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+
+  
 }
 
 /**
