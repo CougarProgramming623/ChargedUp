@@ -29,7 +29,7 @@
 #include "SwerveModule.h"
 #include <frc2/command/SubsystemBase.h>
 #include "commands/DriveWithJoystick.h"
-
+#include "commands/AutoBalance.h"
 
 
 using ctre::phoenix::motorcontrol::can::TalonFX;

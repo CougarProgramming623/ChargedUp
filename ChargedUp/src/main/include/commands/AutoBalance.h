@@ -5,7 +5,6 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc2/command/SubsystemBase.h>
-#include "Robot.h"
 
 class AutoBalance
     :public frc2::CommandHelper<frc2::CommandBase, AutoBalance> {
@@ -20,6 +19,5 @@ public:
   double m_currentAngleX;
   double m_currentAngleY;
   double m_currentAngleT;
-  double m_prevError;
 
 };
