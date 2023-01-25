@@ -12,6 +12,7 @@
 #include "RobotContainer.h"
 #include "subsystems/DriveTrain.h"
 #include "frc/smartdashboard/Smartdashboard.h"
+#include "COB.h"
 
 
 class Robot : public frc::TimedRobot {
@@ -39,7 +40,10 @@ class Robot : public frc::TimedRobot {
 
   inline frc::Joystick& GetJoyStick() { return m_Joystick; }
 
+  inline COB& GetCOB() { return m_COB; }
+
   static Robot* s_Instance;
+
 
 
  private:
@@ -55,4 +59,6 @@ class Robot : public frc::TimedRobot {
   RobotContainer m_container;
 
   DriveTrain m_DriveTrain;
+
+  COB m_COB;
 };

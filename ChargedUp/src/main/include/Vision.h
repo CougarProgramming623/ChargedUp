@@ -3,7 +3,7 @@
 class Vision {
 
     public:
-          void PrintValues();
+          static void PrintValues();
 
     private:
  

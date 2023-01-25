@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Robot.h"
+#include "Vision.h"
 
 
 
@@ -70,6 +71,7 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+  Vision::PrintValues();
 }
 
 /**
