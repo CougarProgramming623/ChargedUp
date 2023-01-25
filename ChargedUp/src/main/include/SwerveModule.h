@@ -17,9 +17,7 @@ class SwerveModule {
 
         void Set(double driveVoltage, double steerAngle);
         void BreakMode(bool on);
-
-        frc::SwerveModulePosition m_Position;
-
+        
         DriveController m_DriveController;
         SteerController m_SteerController;
 };

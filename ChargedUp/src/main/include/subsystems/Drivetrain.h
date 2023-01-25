@@ -29,6 +29,9 @@
 #include "SwerveModule.h"
 #include <frc2/command/SubsystemBase.h>
 #include "commands/DriveWithJoystick.h"
+#include <frc/controller/PIDController.h>
+#include <frc/controller/ProfiledPIDController.h>
+#include <frc/controller/HolonomicDriveController.h>
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
 
@@ -63,6 +66,11 @@ class DriveTrain : public frc2::SubsystemBase {
   SwerveModule m_FrontRightModule;
   SwerveModule m_BackLeftModule;
   SwerveModule m_BackRightModule;
+
+  frc2::PIDController m_xController;
+  frc2::PIDController m_yController;
+  frc::ProfiledPIDController <units::radians> m_ThetaController;
+  frc::HolonomicDriveController m_DriveController;
 
   const double kMAX_VOLTAGE = 12.0; //FIX
 

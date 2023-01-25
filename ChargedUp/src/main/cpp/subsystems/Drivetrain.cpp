@@ -3,6 +3,7 @@
 
 #include <frc/trajectory/Trajectory.h>
 #include <frc/kinematics/SwerveModuleState.h>
+#include <frc/trajectory/TrapezoidProfile.h>
 
 DriveTrain::DriveTrain()
     : m_FrontLeftLocation(units::meter_t (DRIVETRAIN_TRACKWIDTH_METERS / 2.0), units::meter_t (-DRIVETRAIN_WHEELBASE_METERS / 2.0)),
@@ -17,7 +18,11 @@ DriveTrain::DriveTrain()
       m_FrontRightModule(FRONT_RIGHT_MODULE_DRIVE_MOTOR, FRONT_RIGHT_MODULE_STEER_MOTOR, FRONT_RIGHT_MODULE_ENCODER_PORT, -287),
       m_BackLeftModule(BACK_LEFT_MODULE_DRIVE_MOTOR, BACK_LEFT_MODULE_STEER_MOTOR, BACK_LEFT_MODULE_ENCODER_PORT, -140.6),
       m_BackRightModule(BACK_RIGHT_MODULE_DRIVE_MOTOR, BACK_RIGHT_MODULE_STEER_MOTOR, BACK_RIGHT_MODULE_ENCODER_PORT, -2),
-      m_ChassisSpeeds{0_mps, 0_mps, 0_rad_per_s}
+      m_ChassisSpeeds{0_mps, 0_mps, 0_rad_per_s}, 
+      m_xController(0.3, 0.3, 0.3),
+      m_yController(0.3, 0.3, 0.3),
+      m_ThetaController(0.3, 0.3, 0.3, frc::TrapezoidProfile<units::radian>::Constraints{6.28_rad_per_s, 3.14_rad_per_s / 1_s}),
+      m_DriveController(m_xController, m_yController, m_ThetaController)
 {}
 
 void DriveTrain::Periodic(){
