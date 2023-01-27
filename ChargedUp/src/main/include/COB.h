@@ -3,7 +3,7 @@
 #include "networktables/NetworkTable.h"
 #include "networktables/NetworkTableInstance.h"
 #include "networktables/NetworkTableEntry.h"
-#include "networktables/NetworkTableValue.h" //idk
+//#include "networktables/NetworkTableValue.h" //idk
 
 #define LIMELIGHT_HEIGHT 0  // 78.74 //cm
 #define TARGET_HEIGHT    0    // cm
