@@ -6,6 +6,9 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
+#include <frc/kinematics/SwerveModuleState.h>
+
+using namespace pathplanner;
 
 Robot* Robot::s_Instance = nullptr;
 
@@ -41,7 +44,12 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
-  m_autonomousCommand = m_container.GetAutonomousCommand();
+  GetDriveTrain().TrajectoryFollow(
+    PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).asWPILibTrajectory(),
+    GetDriveTrain().m_Odometry.GetPose,
+    GetDriveTrain().TrajectoryDrive,
+    PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).getInitialHolonomicPose()
+  );
 
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Schedule();

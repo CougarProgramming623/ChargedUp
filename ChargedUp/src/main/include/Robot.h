@@ -8,7 +8,7 @@
 #include <AHRS.h>
 #include <frc/Joystick.h>
 
-
+#include <pathplanner/lib/PathPlanner.h>
 #include "RobotContainer.h"
 #include "subsystems/DriveTrain.h"
 
@@ -27,9 +27,6 @@ class Robot : public frc::TimedRobot {
 
   inline AHRS& GetNavX() { return m_NavX; }
   inline void zeroGyroscope() {m_NavX.ZeroYaw();}
-  inline double getYaw() {
-    //return 360 m_NavX.GetYaw() - 90;
-  }
 
   static Robot* GetRobot() { return s_Instance; }
 

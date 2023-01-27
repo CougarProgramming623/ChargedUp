@@ -32,6 +32,7 @@
 #include <frc/controller/PIDController.h>
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/controller/HolonomicDriveController.h>
+#include <frc/geometry/Pose2d.h>
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
 
@@ -41,7 +42,9 @@ class DriveTrain : public frc2::SubsystemBase {
   void BaseDrive(frc::ChassisSpeeds chassisSpeeds);
   void DriveInit();
   void BreakMode(bool on);
-
+  void TrajectoryFollow(frc::Trajectory trajectory, std::function<frc::Pose2d()> GetPose, 
+    std::function<void(std::array<frc::SwerveModuleState, 4> states)> TrajectoryDrive, std::function<frc::Rotation2d()> Rotation);
+  void TrajectoryDrive(std::array<frc::SwerveModuleState, 4> states);
 
   void Periodic() override;
     
@@ -67,6 +70,8 @@ class DriveTrain : public frc2::SubsystemBase {
   SwerveModule m_BackLeftModule;
   SwerveModule m_BackRightModule;
 
+  std::array<frc::SwerveModuleState, 4> m_ModuleStates;
+  
   frc2::PIDController m_xController;
   frc2::PIDController m_yController;
   frc::ProfiledPIDController <units::radians> m_ThetaController;
