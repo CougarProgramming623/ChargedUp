@@ -4,18 +4,21 @@
 
 #pragma once
 
-/**
- * The Constants header provides a convenient place for teams to hold robot-wide
- * numerical or boolean constants.  This should not be used for any other
- * purpose.
- *
- * It is generally a good idea to place constants into subsystem- or
- * command-specific namespaces within this header, which can then be used where
- * they are needed.
- */
+constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without this line
 
-namespace OperatorConstants {
+#define ARM
 
-constexpr int kDriverControllerPort = 0;
+#ifdef ARM
 
-}  // namespace OperatorConstants
+#define EXTRACTION_MOTOR -1
+#define PIVOT_MOTOR -1
+#define LEFT_BRAKE -1
+#define RIGHT_BRAKE -1
+
+#define PIVOT_GEAR_RATIO 320/1
+#define PIVOT_TICKS_PER_ARM_DEGREE 1820.444
+
+#define EXTRACTION_GEAR_RATIO -1 //NOT CORRECT- UPDATE VARIABLES
+#define EXTRACTION_BAR_CIRCUMFERENCE -1 //NOT CORRECT- NEEDS TO BE UPDATED || MUST BE IN INCHES
+
+#endif
