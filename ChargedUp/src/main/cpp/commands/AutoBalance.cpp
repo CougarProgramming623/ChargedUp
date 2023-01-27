@@ -6,12 +6,12 @@ AutoBalance:: AutoBalance() {
 }
 
 void AutoBalance::Initialize() {
-  
+
 }
 
 void AutoBalance::Execute() {
 
-    double kPy = 0;
+    double kPy = 0.001;
     double kIy = 0;
 
     double kPx = 0;
@@ -21,31 +21,31 @@ void AutoBalance::Execute() {
     double kIt = 0;
 
     double m_currentAngleY = Robot::GetRobot()->GetNavX().GetPitch();
-    //double m_currentAngleX = Robot::GetRobot()->GetNavX().GetYaw();
-    //double m_currentAngleT = Robot::GetRobot()->GetNavX().GetRoll();
+    double m_currentAngleX = Robot::GetRobot()->GetNavX().GetYaw();
+    double m_currentAngleT = Robot::GetRobot()->GetNavX().GetRoll();
 
-    //double errorX = 0 /*setpoint constant*/ - m_currentAngleX;
+    double errorX = 0 /*setpoint constant*/ - m_currentAngleX;
     double errorY = 0 /*setpoint constant*/ - m_currentAngleY;
-    //double errorT = 0 /*setpoint constant*/ - m_currentAngleT;
+    double errorT = 0 /*setpoint constant*/ - m_currentAngleT;
 
-    //double outputX = *(Robot::GetRobot()->previousValueX) + (kPx * errorX) + (kIx * (*(Robot::GetRobot()->previousErrorX)));
-    double outputY = *(Robot::GetRobot()->previousValueY) + (kPy * errorY) + (kIy * (*(Robot::GetRobot()->previousErrorY)));
-    //double outputT = *(Robot::GetRobot()->previousValueT) + (kPt * errorT) + (kIt * (*(Robot::GetRobot()->previousErrorT)));
+    double outputX = Robot::GetRobot()->previousValueX + (kPx * errorX) + (kIx * (Robot::GetRobot()->previousErrorX));
+    double outputY = Robot::GetRobot()->previousValueY + (kPy * errorY) + (kIy * (Robot::GetRobot()->previousErrorY));
+    double outputT = Robot::GetRobot()->previousValueT + (kPt * errorT) + (kIt * (Robot::GetRobot()->previousErrorT));
 
     
-    //*(Robot::GetRobot()->previousErrorX) += errorX;
-    //*(Robot::GetRobot()->previousValueX) = outputX;
-    *(Robot::GetRobot()->previousErrorY) += errorY;
-    *(Robot::GetRobot()->previousValueY) = outputY;
-    //*(Robot::GetRobot()->previousErrorT) += errorT;
-    //*(Robot::GetRobot()->previousValueT) = outputT;
+    Robot::GetRobot()->previousErrorX += errorX;
+    Robot::GetRobot()->previousValueX = outputX;
+    Robot::GetRobot()->previousErrorY += errorY;
+    Robot::GetRobot()->previousValueY = outputY;
+    Robot::GetRobot()->previousErrorT += errorT;
+    Robot::GetRobot()->previousValueT = outputT;
 
     //double output = Y[k-1] + kP * U[k] + kI * U[k-1]  
     //  current value = previous value + kP * currentError + kI * previousError
 
-    //outputX = (std::abs(outputX) > 1) ? 1 : outputX;
+    outputX = (std::abs(outputX) > 1) ? 1 : outputX;
     outputY = (std::abs(outputY) > 1) ? 1 : outputY;
-    //outputT = (std::abs(outputT) > 1) ? 1 : outputT;
+    outputT = (std::abs(outputT) > 1) ? 1 : outputT;
 
     Robot *r = Robot::GetRobot();
     
@@ -58,5 +58,4 @@ void AutoBalance::Execute() {
         )
     );
 
-    DebugOutF("Pitch Angle" + std::to_string(Robot::GetRobot()->GetNavX().GetPitch()));
 }
