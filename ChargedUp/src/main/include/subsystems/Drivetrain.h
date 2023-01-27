@@ -42,18 +42,10 @@ class DriveTrain : public frc2::SubsystemBase {
   void BaseDrive(frc::ChassisSpeeds chassisSpeeds);
   void DriveInit();
   void BreakMode(bool on);
-  void TrajectoryFollow(frc::Trajectory trajectory, std::function<frc::Pose2d()> GetPose, 
-    std::function<void(std::array<frc::SwerveModuleState, 4> states)> TrajectoryDrive, std::function<frc::Rotation2d()> Rotation);
+  void TrajectoryFollow(frc::Trajectory trajectory);
   void TrajectoryDrive(std::array<frc::SwerveModuleState, 4> states);
 
   void Periodic() override;
-    
-  // void UseVelocityPID();
-  // void UseMagicPID();
-  // void UsePostionPID();
-  // void SetPID(double E, double P, double I, double D, double F);
-
-  // void DriveToPosition(double x);
 
   frc::Translation2d m_FrontLeftLocation;
   frc::Translation2d m_FrontRightLocation;

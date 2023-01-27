@@ -75,22 +75,35 @@ void DriveTrain::TrajectoryDrive(std::array<frc::SwerveModuleState, 4> states){
   m_ModuleStates = states;
 } 
 
-void DriveTrain::TrajectoryFollow(frc::Trajectory trajectory, 
-  std::function<frc::Pose2d()> GetPose, 
-  std::function<void(std::array<frc::SwerveModuleState, 4> states)> TrajectoryDrive,
-  std::function<frc::Rotation2d()> Rotation){
-  //   frc2::CommandScheduler::GetInstance().Schedule(new frc2::SwerveControllerCommand{
-  //     trajectory, 
-  //     GetPose, 
-  //     m_Kinematics,
-  //     m_xController,
-  //     m_yController,
-  //     m_ThetaController,
-  //     Rotation,
-  //     TrajectoryDrive,
-  //     this
-  // });
-}
+// void DriveTrain::TrajectoryFollow(frc::Trajectory trajectory, std::function<frc::Rotation2d()> Rotation){
+//     frc2::CommandScheduler::GetInstance().Schedule(new frc2::SwerveControllerCommand<4>{
+//       trajectory, 
+//       m_Odometry.GetPose(),
+//       m_Kinematics,
+//       m_xController,
+//       m_yController,
+//       m_ThetaController,
+//       Rotation,
+//       TrajectoryDrive(m_ModuleStates),
+//       *this
+//   });
+// }
+
+void DriveTrain::TrajectoryFollow(frc::Trajectory trajectory){
+  frc2::CommandScheduler::GetInstance().Schedule(new frc2::SwerveControllerCommand<4>{
+    trajectory, 
+    [this]() { return m_Odometry.GetPose(); }, 
+    m_Kinematics, 
+    m_xController, 
+    m_yController, 
+    m_ThetaController, 
+    [this](auto moduleStates) { TrajectoryDrive(moduleStates); }, 
+    {&Robot::s_Instance->GetDriveTrain()}
+    });
+  };
+
+
+
 
 void DriveTrain::BreakMode(bool on){
   m_FrontLeftModule.BreakMode(true);

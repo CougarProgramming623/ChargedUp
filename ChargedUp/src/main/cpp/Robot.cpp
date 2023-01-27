@@ -16,6 +16,7 @@ void Robot::RobotInit() {
   GetNavX().ZeroYaw();
   s_Instance = this;
   m_DriveTrain.DriveInit();
+  m_AutoTimer = frc::Timer();
 }
 
 /**
@@ -44,19 +45,20 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
-  GetDriveTrain().TrajectoryFollow(
-    PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).asWPILibTrajectory(),
-    GetDriveTrain().m_Odometry.GetPose,
-    GetDriveTrain().TrajectoryDrive,
-    PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).getInitialHolonomicPose()
-  );
+  m_AutoTimer.Start();
+ 
 
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Schedule();
   }
 }
 
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic() {
+   GetDriveTrain().TrajectoryFollow(
+    PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).asWPILibTrajectory()//,
+    // PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).sample(m_AutoTimer.Get() + 0.1_s).holonomicRotation
+  );
+}
 
 void Robot::TeleopInit() {
   // This makes sure that the autonomous stops running when
