@@ -6,6 +6,7 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc2/command/SwerveControllerCommand.h>
 
+//Constructor
 DriveTrain::DriveTrain()
     : m_FrontLeftLocation(units::meter_t (DRIVETRAIN_TRACKWIDTH_METERS / 2.0), units::meter_t (-DRIVETRAIN_WHEELBASE_METERS / 2.0)),
       m_FrontRightLocation(units::meter_t (DRIVETRAIN_TRACKWIDTH_METERS / 2.0), units::meter_t (DRIVETRAIN_WHEELBASE_METERS / 2.0)),
@@ -26,6 +27,10 @@ DriveTrain::DriveTrain()
       m_DriveController(m_xController, m_yController, m_ThetaController)
 {}
 
+/*
+Is called periodically
+Passes module states to motors and updates odometry
+*/
 void DriveTrain::Periodic(){
 
   if((m_ModuleStates[0].speed / kMAX_VELOCITY_METERS_PER_SECOND * kMAX_VOLTAGE) == 0 && ((double) m_ModuleStates[0].angle.Radians() == 0)){
@@ -58,7 +63,13 @@ void DriveTrain::Periodic(){
 
   m_Odometry.Update(m_Rotation, wpi::array<frc::SwerveModulePosition, 4>
         (m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition()));
+    
+  DebugOutF("X: " + std::to_string(m_Odometry.GetPose().X().value()));
+  DebugOutF("Y: " + std::to_string(m_Odometry.GetPose().Y().value()));
+  DebugOutF("Deg: " + std::to_string(m_Odometry.GetPose().Rotation().Degrees().value()) + "/n");
+
 }
+
 
 void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
   m_ChassisSpeeds = chassisSpeeds;
@@ -99,8 +110,8 @@ void DriveTrain::TrajectoryFollow(frc::Trajectory trajectory){
     m_ThetaController, 
     [this](auto moduleStates) { TrajectoryDrive(moduleStates); }, 
     {&Robot::s_Instance->GetDriveTrain()}
-    });
-  };
+  });
+};
 
 
 

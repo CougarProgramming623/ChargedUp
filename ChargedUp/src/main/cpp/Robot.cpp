@@ -46,7 +46,10 @@ void Robot::DisabledPeriodic() {}
  */
 void Robot::AutonomousInit() {
   m_AutoTimer.Start();
- 
+  GetDriveTrain().TrajectoryFollow(
+    PathPlanner::loadPath("Test2", PathConstraints(4.5_mps, 4_mps_sq)).asWPILibTrajectory()//,
+    // PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).sample(m_AutoTimer.Get() + 0.1_s).holonomicRotation
+  );
 
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Schedule();
@@ -54,10 +57,7 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-   GetDriveTrain().TrajectoryFollow(
-    PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).asWPILibTrajectory()//,
-    // PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).sample(m_AutoTimer.Get() + 0.1_s).holonomicRotation
-  );
+   
 }
 
 void Robot::TeleopInit() {
