@@ -1,4 +1,7 @@
 #pragma once
+#include <frc/apriltag/AprilTagFieldLayout.h>
+
+
 
 class Vision {
 
@@ -6,6 +9,6 @@ class Vision {
           static void PrintValues();
 
     private:
- 
+        frc::AprilTagFieldLayout::AprilTagFieldLayout m_FieldLayout;
 
 };
