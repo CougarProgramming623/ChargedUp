@@ -10,7 +10,9 @@ Robot* Robot::s_Instance = nullptr;
 
 Robot::Robot() {s_Instance = this;}
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() {
+  m_Arm.Init();
+}
 
 /**
  * This function is called every 20 ms, no matter the mode. Use
@@ -21,9 +23,7 @@ void Robot::RobotInit() {}
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
-  frc2::CommandScheduler::GetInstance().Run();
-
-  
+  frc2::CommandScheduler::GetInstance().Run();                                                                                
 }
 
 /**
@@ -45,6 +45,7 @@ void Robot::AutonomousInit() {
   if (m_autonomousCommand) {
     m_autonomousCommand->Schedule();
   }
+  m_Arm.PivotToPosition(90);
 }
 
 void Robot::AutonomousPeriodic() {}

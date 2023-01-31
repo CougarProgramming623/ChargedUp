@@ -10,6 +10,7 @@
 #include <frc2/command/CommandPtr.h>
 
 #include "RobotContainer.h"
+#include "subsystems/Arm.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -34,4 +35,6 @@ class Robot : public frc::TimedRobot {
   std::optional<frc2::CommandPtr> m_autonomousCommand;
 
   RobotContainer m_container;
+
+  Arm m_Arm;
 };

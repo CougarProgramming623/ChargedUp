@@ -7,6 +7,12 @@
 #include <frc2/command/InstantCommand.h>
 
 #include "Constants.h"
+#include "Util.h"
+
+#include <frc/Joystick.h>
+#include <frc2/command/button/Button.h>
+#include <frc2/command/PrintCommand.h>
+#include <frc2/command/SequentialCommandGroup.h>
 
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
@@ -16,13 +22,13 @@ class Arm {
 	public:
 
 	Arm();
-	void ArmInit();
+	void Init();
 
 	inline double PivotDegToTicks(double degree) {return degree * PIVOT_TICKS_PER_ARM_DEGREE;} //converts degrees to ticks of Pivot motor
 	inline double PivotTicksToDeg(double ticks) {return ticks / PIVOT_TICKS_PER_ARM_DEGREE;} //converts ticks to degrees of arm rotation
 	
 	void PivotToPosition(double angle); 
-	void ToggleBrakes(); 
+	// void ToggleBrakes(); 
 
 	void Telescope(double length); 
 	void Squeeze (bool shouldSqueeze);
@@ -30,6 +36,8 @@ class Arm {
 	//automation methods below
 	void AutoDrop(bool isCone, int level);
 	void LoadingReady();
+
+	void TurnFifteen();
 
 	private:
 
@@ -39,8 +47,10 @@ class Arm {
 
 	TalonFX m_Pivot;
 	TalonFX m_Extraction;
-	frc::Servo m_LeftBrake;
-	frc::Servo m_RightBrake;
+	//frc::Servo m_LeftBrake;
+	//frc::Servo m_RightBrake;
 	
+	frc::Joystick m_ButtonBoard = frc::Joystick(0);
+	frc2::Button m_Button;
 
 };
