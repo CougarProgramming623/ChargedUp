@@ -7,6 +7,8 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
 #include <frc/kinematics/SwerveModuleState.h>
+#include <frc/geometry/Pose2d.h>
+#include "Util.h"
 
 using namespace pathplanner;
 
@@ -46,8 +48,9 @@ void Robot::DisabledPeriodic() {}
  */
 void Robot::AutonomousInit() {
   m_AutoTimer.Start();
+  GetDriveTrain().m_Odometry.ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().m_ModulePositions, frc::Pose2d(frc::Translation2d(2_m, 3_m), frc::Rotation2d(units::radian_t(0))));
   GetDriveTrain().TrajectoryFollow(
-    PathPlanner::loadPath("Test2", PathConstraints(4.5_mps, 4_mps_sq)).asWPILibTrajectory()//,
+    PathPlanner::loadPath("Test2", PathConstraints(.5_mps, .5_mps_sq)).asWPILibTrajectory()//,
     // PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).sample(m_AutoTimer.Get() + 0.1_s).holonomicRotation
   );
 
@@ -67,8 +70,11 @@ void Robot::TeleopInit() {
   // this line or comment it out.
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Cancel();
-    m_autonomousCommand = nullptr;
+    m_autonomousCommand 
+    = nullptr;
   }
+  //GetDriveTrain().m_Odometry.ResetPosition(0, 0, 0);
+  GetDriveTrain().m_Odometry.ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().m_ModulePositions, frc::Pose2d());
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(-90);
 }
@@ -78,6 +84,9 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+  // DebugOutF("X: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().X().value()));
+  // DebugOutF("Y: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Y().value()));
+  // DebugOutF("Deg: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Rotation().Degrees().value()) + "/n");
 }
 
 /**

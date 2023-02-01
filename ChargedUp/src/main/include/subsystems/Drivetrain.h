@@ -33,6 +33,7 @@
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/controller/HolonomicDriveController.h>
 #include <frc/geometry/Pose2d.h>
+#include <frc/kinematics/SwerveModulePosition.h>
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
 
@@ -63,6 +64,7 @@ class DriveTrain : public frc2::SubsystemBase {
   SwerveModule m_BackRightModule;
 
   std::array<frc::SwerveModuleState, 4> m_ModuleStates;
+  const std::array<frc::SwerveModulePosition, 4> m_ModulePositions = {m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition()};
   
   frc2::PIDController m_xController;
   frc2::PIDController m_yController;

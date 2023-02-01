@@ -21,9 +21,9 @@ DriveTrain::DriveTrain()
       m_BackLeftModule(BACK_LEFT_MODULE_DRIVE_MOTOR, BACK_LEFT_MODULE_STEER_MOTOR, BACK_LEFT_MODULE_ENCODER_PORT, -140.6),
       m_BackRightModule(BACK_RIGHT_MODULE_DRIVE_MOTOR, BACK_RIGHT_MODULE_STEER_MOTOR, BACK_RIGHT_MODULE_ENCODER_PORT, -2),
       m_ChassisSpeeds{0_mps, 0_mps, 0_rad_per_s}, 
-      m_xController(0.3, 0.3, 0.3),
-      m_yController(0.3, 0.3, 0.3),
-      m_ThetaController(0.3, 0.3, 0.3, frc::TrapezoidProfile<units::radian>::Constraints{6.28_rad_per_s, 3.14_rad_per_s / 1_s}),
+      m_xController(0.6, 0.1, 0.25),
+      m_yController(0.6, 0.1, 0.25),
+      m_ThetaController(0.7, 0.1, 0.3, frc::TrapezoidProfile<units::radian>::Constraints{6.28_rad_per_s, 3.14_rad_per_s / 1_s}),
       m_DriveController(m_xController, m_yController, m_ThetaController)
 {}
 
@@ -61,12 +61,14 @@ void DriveTrain::Periodic(){
     m_BackRightModule.Set(m_ModuleStates[3].speed / kMAX_VELOCITY_METERS_PER_SECOND * kMAX_VOLTAGE, (double) m_ModuleStates[3].angle.Radians());
   }
 
+  m_Rotation = frc::Rotation2d(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360))));
+
   m_Odometry.Update(m_Rotation, wpi::array<frc::SwerveModulePosition, 4>
         (m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition()));
     
-  DebugOutF("X: " + std::to_string(m_Odometry.GetPose().X().value()));
-  DebugOutF("Y: " + std::to_string(m_Odometry.GetPose().Y().value()));
-  DebugOutF("Deg: " + std::to_string(m_Odometry.GetPose().Rotation().Degrees().value()) + "/n");
+  // DebugOutF("X: " + std::to_string(m_Odometry.GetPose().X().value()));
+  // DebugOutF("Y: " + std::to_string(m_Odometry.GetPose().Y().value()));
+  // DebugOutF("Deg: " + std::to_string(m_Odometry.GetPose().Rotation().Degrees().value()) + "/n");
 
 }
 
