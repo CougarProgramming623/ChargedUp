@@ -5,6 +5,7 @@
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc2/command/SwerveControllerCommand.h>
+#include <frc/Timer.h>
 
 //Constructor
 DriveTrain::DriveTrain()
@@ -21,10 +22,10 @@ DriveTrain::DriveTrain()
       m_BackLeftModule(BACK_LEFT_MODULE_DRIVE_MOTOR, BACK_LEFT_MODULE_STEER_MOTOR, BACK_LEFT_MODULE_ENCODER_PORT, -140.6),
       m_BackRightModule(BACK_RIGHT_MODULE_DRIVE_MOTOR, BACK_RIGHT_MODULE_STEER_MOTOR, BACK_RIGHT_MODULE_ENCODER_PORT, -2),
       m_ChassisSpeeds{0_mps, 0_mps, 0_rad_per_s}, 
-      m_xController(0.6, 0.1, 0.25),
-      m_yController(0.6, 0.1, 0.25),
+      m_xController(32.943, 1.4631, 0.05),
+      m_yController(32.943, 1.4631, 0.05),
       m_ThetaController(0.7, 0.1, 0.3, frc::TrapezoidProfile<units::radian>::Constraints{6.28_rad_per_s, 3.14_rad_per_s / 1_s}),
-      m_DriveController(m_xController, m_yController, m_ThetaController)
+      m_HolonomicController(m_xController, m_yController, m_ThetaController)
 {}
 
 /*
@@ -110,13 +111,11 @@ void DriveTrain::TrajectoryFollow(frc::Trajectory trajectory){
     m_xController, 
     m_yController, 
     m_ThetaController, 
+    //[&](){ return trajectory.States()},
     [this](auto moduleStates) { TrajectoryDrive(moduleStates); }, 
     {&Robot::s_Instance->GetDriveTrain()}
   });
 };
-
-
-
 
 void DriveTrain::BreakMode(bool on){
   m_FrontLeftModule.BreakMode(true);

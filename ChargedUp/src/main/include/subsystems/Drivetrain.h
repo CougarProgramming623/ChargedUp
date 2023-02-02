@@ -34,6 +34,7 @@
 #include <frc/controller/HolonomicDriveController.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/kinematics/SwerveModulePosition.h>
+#include <pathplanner/lib/PathPlanner.h>
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
 
@@ -45,6 +46,7 @@ class DriveTrain : public frc2::SubsystemBase {
   void BreakMode(bool on);
   void TrajectoryFollow(frc::Trajectory trajectory);
   void TrajectoryDrive(std::array<frc::SwerveModuleState, 4> states);
+  void PathPlannerFollow(pathplanner::PathPlannerTrajectory trajectory);
 
   void Periodic() override;
 
@@ -69,7 +71,7 @@ class DriveTrain : public frc2::SubsystemBase {
   frc2::PIDController m_xController;
   frc2::PIDController m_yController;
   frc::ProfiledPIDController <units::radians> m_ThetaController;
-  frc::HolonomicDriveController m_DriveController;
+  frc::HolonomicDriveController m_HolonomicController;
 
   const double kMAX_VOLTAGE = 12.0; //FIX
 

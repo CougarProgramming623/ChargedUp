@@ -18,7 +18,6 @@ void Robot::RobotInit() {
   GetNavX().ZeroYaw();
   s_Instance = this;
   m_DriveTrain.DriveInit();
-  m_AutoTimer = frc::Timer();
 }
 
 /**
@@ -48,9 +47,11 @@ void Robot::DisabledPeriodic() {}
  */
 void Robot::AutonomousInit() {
   m_AutoTimer.Start();
-  GetDriveTrain().m_Odometry.ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().m_ModulePositions, frc::Pose2d(frc::Translation2d(2_m, 3_m), frc::Rotation2d(units::radian_t(0))));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(.5_mps, .5_mps_sq));
+  //GetDriveTrain().m_Odometry.ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().m_ModulePositions, frc::Pose2d(frc::Translation2d(2_m, 3_m), frc::Rotation2d(units::radian_t(0))));
+  GetDriveTrain().m_Odometry.ResetPosition(traj.getInitialHolonomicPose().Rotation(), GetDriveTrain().m_ModulePositions, traj.asWPILibTrajectory().InitialPose());
   GetDriveTrain().TrajectoryFollow(
-    PathPlanner::loadPath("Test2", PathConstraints(.5_mps, .5_mps_sq)).asWPILibTrajectory()//,
+    traj.asWPILibTrajectory()//,
     // PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).sample(m_AutoTimer.Get() + 0.1_s).holonomicRotation
   );
 

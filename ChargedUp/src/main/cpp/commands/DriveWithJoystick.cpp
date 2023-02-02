@@ -20,9 +20,7 @@ double DriveWithJoystick::Deadfix(double in, double deadband) {
 }
 
 void DriveWithJoystick::Execute() {
-    Robot* r = Robot::s_Instance;
-    //DebugOutF(std::to_string(fmod(360 + 90 - r->GetNavX().GetAngle(), 360)));
-    
+    Robot* r = Robot::s_Instance;    
     r->GetDriveTrain().BaseDrive(
         frc::ChassisSpeeds::FromFieldRelativeSpeeds(
             units::meters_per_second_t(Deadfix(r->GetJoyStick().GetRawAxis(1), 0.15) * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND),
