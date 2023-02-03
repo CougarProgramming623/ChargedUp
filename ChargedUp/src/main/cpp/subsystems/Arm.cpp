@@ -26,9 +26,42 @@ void Arm::PivotToPosition(double angle) {
 	double ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
 
 	DebugOutF(std::to_string(ticksToMove));
-	m_Pivot.Set(ControlMode::Position, ticksToMove);
+	m_Pivot.Set(ControlMode::PercentOutput, 1); 
+	frc2::WaitCommand(units::second_t(10));
 	DebugOutF("Done pivoting!");
 } 
+
+frc2::FunctionalCommand* Arm::PivotToPositionNew(double angle) {
+	return new frc2::FunctionalCommand(
+          [&] {  // onInit
+			
+          },[&] {  // onExecute
+		  	double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition()); //current angle of the arm
+			double degToMove = angle - currentAngle; //how many degrees the arm needs to move in the correct direction
+			double ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
+			
+			DebugOutF("targetangle:");
+			DebugOutF(std::to_string(angle));
+
+			DebugOutF("currentangle:");
+			DebugOutF(std::to_string(currentAngle));
+
+			DebugOutF("degToMove:");
+			DebugOutF(std::to_string(degToMove));
+			
+			DebugOutF("current ticks:");
+			DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
+
+			DebugOutF("Ticks to move");
+			DebugOutF(std::to_string(ticksToMove));
+
+            m_Pivot.Set(ControlMode::Position, 10000); //ticksToMove
+          }, [&](bool e) {  // onEnd
+			m_Pivot.Set(ControlMode::PercentOutput, 0);
+          }, [&] {  // isFinished
+			return false;
+          });
+}
 
 //Toggles the status of the brakes; currently assuming 0 is off, 1 is on
 // void Arm::ToggleBrakes() {

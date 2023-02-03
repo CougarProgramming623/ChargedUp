@@ -45,7 +45,6 @@ void Robot::AutonomousInit() {
   if (m_autonomousCommand) {
     m_autonomousCommand->Schedule();
   }
-  m_Arm.PivotToPosition(90);
 }
 
 void Robot::AutonomousPeriodic() {}
@@ -58,12 +57,18 @@ void Robot::TeleopInit() {
   if (m_autonomousCommand) {
     m_autonomousCommand->Cancel();
   }
+  
+
 }
 
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+   DebugOutF("moving...");
+   m_Arm.PivotToPositionNew(180)->Schedule();
+   DebugOutF("done moving...");
+}
 
 /**
  * This function is called periodically during test mode.

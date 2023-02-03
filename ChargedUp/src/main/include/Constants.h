@@ -10,8 +10,8 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 
 #ifdef ARM
 
-#define EXTRACTION_MOTOR 32 //32 is temporary for testing
-#define PIVOT_MOTOR 1
+#define EXTRACTION_MOTOR 1 
+#define PIVOT_MOTOR 32 //32 is temporary for testing
 #define LEFT_BRAKE 1
 #define RIGHT_BRAKE 1
 
