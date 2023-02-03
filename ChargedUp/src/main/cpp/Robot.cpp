@@ -66,7 +66,8 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
    DebugOutF("moving...");
-   m_Arm.PivotToPositionNew(180)->Schedule();
+   m_Arm.PivotToPosition(180);
+  //  m_Arm.PivotToPositionNew(180)->Schedule();
    DebugOutF("done moving...");
 }
 

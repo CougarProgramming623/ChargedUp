@@ -1,6 +1,7 @@
 #include "subsystems/Arm.h"
 
 using ctre::phoenix::motorcontrol::ControlMode;
+using ctre::phoenix::motorcontrol::can::TalonFX;
 
 Arm::Arm() :
 	m_Pivot(PIVOT_MOTOR),
@@ -12,12 +13,24 @@ Arm::Arm() :
 	{}
 
 void Arm::Init() {
+	DebugOutF("Ticks before reset:");
+	DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
 	m_Pivot.SetSelectedSensorPosition(0); //sets the initial position to 0 ticks- arm starting position will be where all angles are relative to
+	DebugOutF("Ticks after reset:"); 
+	DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
 	// m_LeftBrake.Set(0);
 	// m_RightBrake.Set(0);
-	// TurnFifteen(); //TESTING
+	SetPID(&m_Pivot, 1, 1, 1, 1, 1); //EPIDF values are for testing
 }
 
+//sets the EPIDF values for motor provided
+void Arm::SetPID(TalonFX* motor, double E, double P, double I, double D, double F) {
+	motor->ConfigAllowableClosedloopError(0.0, E, 0.0);
+	motor->Config_kP(0.0, P, 0.0);
+	motor->Config_kI(0.0, I, 0.0);
+	motor->Config_kD(0.0, D, 0.0);
+	motor->Config_kF(0.0, F, 0.0);
+}
 
 //Moves the arm to a set position
 void Arm::PivotToPosition(double angle) {
@@ -26,8 +39,7 @@ void Arm::PivotToPosition(double angle) {
 	double ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
 
 	DebugOutF(std::to_string(ticksToMove));
-	m_Pivot.Set(ControlMode::PercentOutput, 1); 
-	frc2::WaitCommand(units::second_t(10));
+	m_Pivot.Set(ControlMode::Position, ticksToMove); 
 	DebugOutF("Done pivoting!");
 } 
 
@@ -40,21 +52,17 @@ frc2::FunctionalCommand* Arm::PivotToPositionNew(double angle) {
 			double degToMove = angle - currentAngle; //how many degrees the arm needs to move in the correct direction
 			double ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
 			
-			DebugOutF("targetangle:");
-			DebugOutF(std::to_string(angle));
-
-			DebugOutF("currentangle:");
-			DebugOutF(std::to_string(currentAngle));
-
-			DebugOutF("degToMove:");
-			DebugOutF(std::to_string(degToMove));
+			// DebugOutF("targetangle:");
+			// DebugOutF(std::to_string(angle));
+			// DebugOutF("currentangle:");
+			// DebugOutF(std::to_string(currentAngle));
+			// DebugOutF("degToMove:");
+			// DebugOutF(std::to_string(degToMove));
+			// DebugOutF("current ticks:");
+			// DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
+			// DebugOutF("Ticks to move");
+			// DebugOutF(std::to_string(ticksToMove));
 			
-			DebugOutF("current ticks:");
-			DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
-
-			DebugOutF("Ticks to move");
-			DebugOutF(std::to_string(ticksToMove));
-
             m_Pivot.Set(ControlMode::Position, 10000); //ticksToMove
           }, [&](bool e) {  // onEnd
 			m_Pivot.Set(ControlMode::PercentOutput, 0);

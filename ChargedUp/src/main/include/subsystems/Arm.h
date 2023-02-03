@@ -4,18 +4,19 @@
 #include <frc/Joystick.h>
 #include <frc/Servo.h>
 #include <ctre/phoenix/motorcontrol/can/BaseMotorController.h>
+#include <frc/Joystick.h>
+#include <frc2/command/button/Button.h>
+
+#include <frc2/command/PrintCommand.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/FunctionalCommand.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/WaitCommand.h>
-
 
 #include "Constants.h"
 #include "Util.h"
 
-#include <frc/Joystick.h>
-#include <frc2/command/button/Button.h>
-#include <frc2/command/PrintCommand.h>
-#include <frc2/command/SequentialCommandGroup.h>
-#include <frc2/command/FunctionalCommand.h>
+
 
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
@@ -29,6 +30,7 @@ class Arm {
 
 	inline double PivotDegToTicks(double degree) {return degree * PIVOT_TICKS_PER_ARM_DEGREE;} //converts degrees to ticks of Pivot motor
 	inline double PivotTicksToDeg(double ticks) {return ticks / PIVOT_TICKS_PER_ARM_DEGREE;} //converts ticks to degrees of arm rotation
+	void SetPID(TalonFX* motor, double E, double P, double I, double D, double F);
 	
 	void PivotToPosition(double angle); 
 	frc2::FunctionalCommand* PivotToPositionNew(double angle); 
