@@ -9,6 +9,7 @@
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/geometry/Pose2d.h>
 #include "Util.h"
+#include "commands/TrajectoryCommand.h"
 
 using namespace pathplanner;
 
@@ -47,13 +48,22 @@ void Robot::DisabledPeriodic() {}
  */
 void Robot::AutonomousInit() {
   m_AutoTimer.Start();
-  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(.5_mps, .5_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(1_mps, 2_mps_sq));
   //GetDriveTrain().m_Odometry.ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().m_ModulePositions, frc::Pose2d(frc::Translation2d(2_m, 3_m), frc::Rotation2d(units::radian_t(0))));
+
   GetDriveTrain().m_Odometry.ResetPosition(traj.getInitialHolonomicPose().Rotation(), GetDriveTrain().m_ModulePositions, traj.asWPILibTrajectory().InitialPose());
-  GetDriveTrain().TrajectoryFollow(
-    traj.asWPILibTrajectory()//,
-    // PathPlanner::loadPath("Test1", PathConstraints(4_mps, 3_mps_sq)).sample(m_AutoTimer.Get() + 0.1_s).holonomicRotation
-  );
+
+  DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
+  DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
+  DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
+
+  frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
+
+  // GetDriveTrain().TrajectoryFollow(
+  //   traj.asWPILibTrajectory()
+  // );
+
+  frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
 
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Schedule();
@@ -61,7 +71,9 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-   
+  DebugOutF("X: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().X().value()));
+  DebugOutF("Y: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Y().value()));
+  DebugOutF("Deg: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Rotation().Degrees().value()));
 }
 
 void Robot::TeleopInit() {
