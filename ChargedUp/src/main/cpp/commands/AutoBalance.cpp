@@ -11,8 +11,9 @@ void AutoBalance::Initialize() {
 
 void AutoBalance::Execute() {
 
-    double kPy = 0.01;
+    double kPy = 0.015;
     double kIy = 0;
+    double kDy = 0.001;
 
     double kPx = 0.01;
     double kIx = 0;
@@ -30,7 +31,7 @@ void AutoBalance::Execute() {
 
     //double outputX = Robot::GetRobot()->previousValueX + (kPx * errorX) + (kIx * (Robot::GetRobot()->previousErrorX));
     //double outputY = Robot::GetRobot()->previousValueY + (kPy * errorY) + (kIy * (Robot::GetRobot()->previousErrorY));
-    double outputY = (kPy * errorY);
+    double outputY = (kPy * errorY) + (kDy * (errorY - Robot::GetRobot()->previousErrorY) / (0.02));
     double outputX = (kPx * errorX);
     double outputT = (kPt * errorT);
     //double outputT = Robot::GetRobot()->previousValueT + (kPt * errorT) + (kIt * (Robot::GetRobot()->previousErrorT));
