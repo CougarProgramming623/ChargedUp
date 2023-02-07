@@ -13,14 +13,11 @@ Arm::Arm() :
 	{}
 
 void Arm::Init() {
-	DebugOutF("Ticks before reset:");
-	DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
-	m_Pivot.SetSelectedSensorPosition(0); //sets the initial position to 0 ticks- arm starting position will be where all angles are relative to
-	DebugOutF("Ticks after reset:"); 
-	DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
 	// m_LeftBrake.Set(0);
 	// m_RightBrake.Set(0);
-	SetPID(&m_Pivot, 1, 1, 1, 1, 1); //EPIDF values are for testing
+	// SetPID(&m_Pivot, 0, .1, .1, .1, 0); //EPIDF values are for testing
+	startingTicks = m_Pivot.GetSelectedSensorPosition();
+	currentTicks = m_Pivot.GetSelectedSensorPosition();
 }
 
 //sets the EPIDF values for motor provided
@@ -32,42 +29,21 @@ void Arm::SetPID(TalonFX* motor, double E, double P, double I, double D, double 
 	motor->Config_kF(0.0, F, 0.0);
 }
 
-//Moves the arm to a set position
-void Arm::PivotToPosition(double angle) {
-	double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition()); //current angle of the arm
-	double degToMove = angle - currentAngle; //how many degrees the arm needs to move in the correct direction
-	double ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
-
-	DebugOutF(std::to_string(ticksToMove));
-	m_Pivot.Set(ControlMode::Position, ticksToMove); 
-	DebugOutF("Done pivoting!");
-} 
-
-frc2::FunctionalCommand* Arm::PivotToPositionNew(double angle) {
+frc2::FunctionalCommand* Arm::PivotToPosition(double angle) {
 	return new frc2::FunctionalCommand(
           [&] {  // onInit
-			
+			DebugOutF("Running Functional Command");
           },[&] {  // onExecute
-		  	double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition()); //current angle of the arm
+		  	double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition() - startingTicks); //current angle of the arm
 			double degToMove = angle - currentAngle; //how many degrees the arm needs to move in the correct direction
-			double ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
-			
-			// DebugOutF("targetangle:");
-			// DebugOutF(std::to_string(angle));
-			// DebugOutF("currentangle:");
-			// DebugOutF(std::to_string(currentAngle));
-			// DebugOutF("degToMove:");
-			// DebugOutF(std::to_string(degToMove));
-			// DebugOutF("current ticks:");
-			// DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
-			// DebugOutF("Ticks to move");
-			// DebugOutF(std::to_string(ticksToMove));
-			
-            m_Pivot.Set(ControlMode::Position, 10000); //ticksToMove
+			ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
+
+			m_Pivot.Set(ControlMode::Position, ticksToMove + startingTicks); 
           }, [&](bool e) {  // onEnd
 			m_Pivot.Set(ControlMode::PercentOutput, 0);
+			startingTicks = m_Pivot.GetSelectedSensorPosition();//increments currentTicks counter
           }, [&] {  // isFinished
-			return false;
+			return false; //(m_Pivot.GetSelectedSensorPosition() - (ticksToMove + currentTicks) < 100); //deadband of 100 ticks 
           });
 }
 

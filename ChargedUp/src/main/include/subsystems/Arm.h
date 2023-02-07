@@ -32,8 +32,7 @@ class Arm {
 	inline double PivotTicksToDeg(double ticks) {return ticks / PIVOT_TICKS_PER_ARM_DEGREE;} //converts ticks to degrees of arm rotation
 	void SetPID(TalonFX* motor, double E, double P, double I, double D, double F);
 	
-	void PivotToPosition(double angle); 
-	frc2::FunctionalCommand* PivotToPositionNew(double angle); 
+	frc2::FunctionalCommand* PivotToPosition(double angle); 
 	// void ToggleBrakes(); 
 
 	void Telescope(double length); 
@@ -49,7 +48,8 @@ class Arm {
 
 	bool m_brakesActive = false;
 	double currentLength = -1; //NOT CORRECT- NEEDS TO BE UPDATED ||should initialize as the minimum length of the arm
-	
+	double startingTicks; //current ticks of encoder after movement
+	double ticksToMove;
 
 	TalonFX m_Pivot;
 	TalonFX m_Extraction;

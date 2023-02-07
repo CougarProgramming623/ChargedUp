@@ -58,6 +58,7 @@ void Robot::TeleopInit() {
     m_autonomousCommand->Cancel();
   }
   
+  m_Arm.PivotToPosition(180)->Schedule();
 
 }
 
@@ -65,10 +66,7 @@ void Robot::TeleopInit() {
  * This function is called periodically during operator control.
  */
 void Robot::TeleopPeriodic() {
-   DebugOutF("moving...");
-   m_Arm.PivotToPosition(180);
-  //  m_Arm.PivotToPositionNew(180)->Schedule();
-   DebugOutF("done moving...");
+   
 }
 
 /**
