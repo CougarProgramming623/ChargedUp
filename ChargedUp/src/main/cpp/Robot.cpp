@@ -47,8 +47,12 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
+  frc2::CommandScheduler::GetInstance().CancelAll();
+  GetNavX().ZeroYaw();
+  GetNavX().SetAngleAdjustment(-90);
+
   m_AutoTimer.Start();
-  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(1_mps, 2_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("Triangle", PathConstraints(2_mps, 2_mps_sq));
   //GetDriveTrain().m_Odometry.ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().m_ModulePositions, frc::Pose2d(frc::Translation2d(2_m, 3_m), frc::Rotation2d(units::radian_t(0))));
 
   GetDriveTrain().m_Odometry.ResetPosition(traj.getInitialHolonomicPose().Rotation(), GetDriveTrain().m_ModulePositions, traj.asWPILibTrajectory().InitialPose());

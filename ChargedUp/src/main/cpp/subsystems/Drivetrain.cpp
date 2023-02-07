@@ -24,7 +24,7 @@ DriveTrain::DriveTrain()
       m_ChassisSpeeds{0_mps, 0_mps, 0_rad_per_s}, 
       m_xController(32.943, 1.4631, 0.05),
       m_yController(32.943, 1.4631, 0.05),
-      m_ThetaController(0.7, 0.1, 0.3, frc::TrapezoidProfile<units::radian>::Constraints{6.28_rad_per_s, 3.14_rad_per_s / 1_s}),
+      m_ThetaController(1.5, 0.5, 0.3, frc::TrapezoidProfile<units::radian>::Constraints{6.28_rad_per_s, 3.14_rad_per_s / 1_s}),
       m_HolonomicController(m_xController, m_yController, m_ThetaController)
 {}
 
