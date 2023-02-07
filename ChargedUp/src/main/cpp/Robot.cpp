@@ -28,8 +28,8 @@ void Robot::RobotInit() {
  */
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
-  PushDistance();
-  DebugOutF( GetRobot()->GetCOB().GetTable().GetEntry(COB_KEY_DISTANCE).GetDouble(totalDistanceInCM);)
+  Vision::PushDistance();
+  DebugOutF( std::to_string(GetCOB().GetTable().GetEntry(COB_KEY_DISTANCE).GetDouble(0)));
 }
 
 /**

@@ -56,10 +56,10 @@
     #define BACK_RIGHT_MODULE_ENCODER_PORT 0
 
 
-    #define LIMELIGHT_HEIGHT 60.16625  // 78.74 //cm
+    #define LIMELIGHT_HEIGHT 38.9  // 78.74 //cm
     #define TARGET_HEIGHT_TALL  69.16    // Loading Zone /cm
     #define TARGET_HEIGHT_SHORT 46.16   // Grid //cm
-    #define LIMELIGHT_ANGLE  15.30     // degrees
+    #define LIMELIGHT_ANGLE  0     // degrees
     
     #define COB_KEY_DISTANCE "/COB/distance"
 #endif
