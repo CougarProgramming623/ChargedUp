@@ -52,7 +52,7 @@ void Robot::AutonomousInit() {
   GetNavX().SetAngleAdjustment(-90);
 
   m_AutoTimer.Start();
-  PathPlannerTrajectory traj = PathPlanner::loadPath("Triangle", PathConstraints(2_mps, 2_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(2_mps, 2_mps_sq));
   //GetDriveTrain().m_Odometry.ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().m_ModulePositions, frc::Pose2d(frc::Translation2d(2_m, 3_m), frc::Rotation2d(units::radian_t(0))));
 
   GetDriveTrain().m_Odometry.ResetPosition(traj.getInitialHolonomicPose().Rotation(), GetDriveTrain().m_ModulePositions, traj.asWPILibTrajectory().InitialPose());
@@ -61,7 +61,7 @@ void Robot::AutonomousInit() {
   DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
 
-  frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
+  //frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
 
   // GetDriveTrain().TrajectoryFollow(
   //   traj.asWPILibTrajectory()
@@ -81,6 +81,13 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+  GetNavX().ZeroYaw();
+  GetNavX().SetAngleAdjustment(-90);
+  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(2_mps, 2_mps_sq));
+  GetDriveTrain().m_Odometry.ResetPosition(traj.getInitialHolonomicPose().Rotation(), GetDriveTrain().m_ModulePositions, traj.asWPILibTrajectory().InitialPose());
+  DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
+  DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
+  DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
@@ -91,7 +98,7 @@ void Robot::TeleopInit() {
     = nullptr;
   }
   //GetDriveTrain().m_Odometry.ResetPosition(0, 0, 0);
-  GetDriveTrain().m_Odometry.ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().m_ModulePositions, frc::Pose2d());
+  //GetDriveTrain().m_Odometry.ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().m_ModulePositions, frc::Pose2d());
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(-90);
 }
@@ -101,9 +108,10 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
-  // DebugOutF("X: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().X().value()));
-  // DebugOutF("Y: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Y().value()));
-  // DebugOutF("Deg: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Rotation().Degrees().value()) + "/n");
+  //DebugOutF(std::to_string(Deg2Rad(360-(fmod(((GetDriveTrain().m_BackRightModule.m_SteerController.encoder.GetVoltage() * ENCODER_VOLTAGE_TO_DEGREE) + (360+2)), 360))) / STEER_ENCODER_POSITION_CONSTANT));
+  DebugOutF("X: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().X().value()));
+  DebugOutF("Y: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Y().value()));
+  DebugOutF("Deg: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Rotation().Degrees().value()) + "/n");
 }
 
 /**
