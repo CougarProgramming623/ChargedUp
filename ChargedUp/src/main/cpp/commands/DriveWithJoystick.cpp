@@ -8,10 +8,9 @@ DriveWithJoystick::DriveWithJoystick() {
 
 //DriveWithJoystick::~DriveWithJoystick(){}
 
-void DriveWithJoystick::Initialize(){
+void DriveWithJoystick::Initialize(){}
 
-}
-
+//If input is below deadband, set to zero
 double DriveWithJoystick::Deadfix(double in, double deadband) {
     if(abs(in) < deadband) {
         return 0;
@@ -19,6 +18,7 @@ double DriveWithJoystick::Deadfix(double in, double deadband) {
     return in;
 }
 
+//Take joystick input, convert to ChassisSpeeds object, and pass to BaseDrive() function
 void DriveWithJoystick::Execute() {
     Robot* r = Robot::s_Instance;    
     r->GetDriveTrain().BaseDrive(

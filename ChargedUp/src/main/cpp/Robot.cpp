@@ -51,21 +51,15 @@ void Robot::AutonomousInit() {
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(-90);
 
-  m_AutoTimer.Start();
+  //Load trajectory
   PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(2_mps, 2_mps_sq));
-  //GetDriveTrain().m_Odometry.ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().m_ModulePositions, frc::Pose2d(frc::Translation2d(2_m, 3_m), frc::Rotation2d(units::radian_t(0))));
 
-  GetDriveTrain().m_Odometry.ResetPosition(traj.getInitialHolonomicPose().Rotation(), GetDriveTrain().m_ModulePositions, traj.asWPILibTrajectory().InitialPose());
+  //Match starting pose to trajectory pose, pose becomes field relative
+  GetDriveTrain().GetOdometry().ResetPosition(traj.getInitialHolonomicPose().Rotation(), GetDriveTrain().GetModulePositions(), traj.asWPILibTrajectory().InitialPose());
 
   DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
   DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
-
-  //frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
-
-  // GetDriveTrain().TrajectoryFollow(
-  //   traj.asWPILibTrajectory()
-  // );
 
   frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
 
@@ -75,19 +69,19 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-  DebugOutF("X: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().X().value()));
-  DebugOutF("Y: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Y().value()));
-  DebugOutF("Deg: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Rotation().Degrees().value()));
+  DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().X().value()));
+  DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Y().value()));
+  DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Rotation().Degrees().value()));
 }
 
 void Robot::TeleopInit() {
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(-90);
+
   PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(2_mps, 2_mps_sq));
-  GetDriveTrain().m_Odometry.ResetPosition(traj.getInitialHolonomicPose().Rotation(), GetDriveTrain().m_ModulePositions, traj.asWPILibTrajectory().InitialPose());
-  DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
-  DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
-  DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
+  GetDriveTrain().GetOdometry().ResetPosition(traj.getInitialHolonomicPose().Rotation(), GetDriveTrain().GetModulePositions(), traj.asWPILibTrajectory().InitialPose());
+
+  
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
@@ -97,21 +91,26 @@ void Robot::TeleopInit() {
     m_autonomousCommand 
     = nullptr;
   }
-  //GetDriveTrain().m_Odometry.ResetPosition(0, 0, 0);
-  //GetDriveTrain().m_Odometry.ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().m_ModulePositions, frc::Pose2d());
-  GetNavX().ZeroYaw();
-  GetNavX().SetAngleAdjustment(-90);
+
+  //Standard teleop pose init
+  //GetDriveTrain().GetOdometry().ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().GetModulePositions(), frc::Pose2d());
+
+  DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
+  DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
+  DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
 }
 
 /**
  * This function is called periodically during operator control.
  */
 void Robot::TeleopPeriodic() {
+  
   frc2::CommandScheduler::GetInstance().Run();
-  //DebugOutF(std::to_string(Deg2Rad(360-(fmod(((GetDriveTrain().m_BackRightModule.m_SteerController.encoder.GetVoltage() * ENCODER_VOLTAGE_TO_DEGREE) + (360+2)), 360))) / STEER_ENCODER_POSITION_CONSTANT));
-  DebugOutF("X: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().X().value()));
-  DebugOutF("Y: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Y().value()));
-  DebugOutF("Deg: " + std::to_string(GetDriveTrain().m_Odometry.GetPose().Rotation().Degrees().value()) + "/n");
+
+  //DebugOutF(std::to_string(Deg2Rad(360-(fmod(((GetDriveTrain().m_BackRightModule.GetSteerController().encoder.GetVoltage() * ENCODER_VOLTAGE_TO_DEGREE) + (360+2)), 360))) / STEER_ENCODER_POSITION_CONSTANT));
+  DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().X().value()));
+  DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Y().value()));
+  DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Rotation().Degrees().value()) + "/n");
 }
 
 /**

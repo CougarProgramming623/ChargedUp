@@ -44,9 +44,9 @@ class DriveTrain : public frc2::SubsystemBase {
   void BaseDrive(frc::ChassisSpeeds chassisSpeeds);
   void DriveInit();
   void BreakMode(bool on);
-  void TrajectoryFollow(frc::Trajectory trajectory);
-  void TrajectoryDrive(std::array<frc::SwerveModuleState, 4> states);
-  void PathPlannerFollow(pathplanner::PathPlannerTrajectory trajectory);
+  // void TrajectoryFollow(frc::Trajectory trajectory);
+  // void TrajectoryDrive(std::array<frc::SwerveModuleState, 4> states);
+  // void PathPlannerFollow(pathplanner::PathPlannerTrajectory trajectory);
 
   void Periodic() override;
 
@@ -54,6 +54,23 @@ class DriveTrain : public frc2::SubsystemBase {
   frc::Translation2d m_FrontRightLocation;
   frc::Translation2d m_BackLeftLocation;
   frc::Translation2d m_BackRightLocation;
+
+  inline frc::SwerveDriveKinematics<4> GetKinematics() { return m_Kinematics; }
+  inline frc::SwerveDriveOdometry<4> GetOdometry(){ return m_Odometry; }
+  inline frc::HolonomicDriveController GetHolonomicController(){ return m_HolonomicController; }
+
+  const inline std::array<frc::SwerveModulePosition, 4> GetModulePositions(){ return m_ModulePositions; }
+
+//how fast the robot should be able to drive
+  const units::meters_per_second_t kMAX_VELOCITY_METERS_PER_SECOND = units::meters_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI);
+
+  const double kMAX_VOLTAGE = 12.0; //FIX
+  
+  //theoretical maximum angular velocity - can be replaced with measure amount
+  const units::radians_per_second_t kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = units::radians_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI / std::sqrt(Pow((DRIVETRAIN_TRACKWIDTH_METERS / 2), 2) + Pow((DRIVETRAIN_WHEELBASE_METERS / 2), 2)));
+
+  private:
+
   frc::SwerveDriveKinematics<4> m_Kinematics;
   frc::SwerveDriveOdometry<4> m_Odometry;
   
@@ -72,12 +89,4 @@ class DriveTrain : public frc2::SubsystemBase {
   frc2::PIDController m_yController;
   frc::ProfiledPIDController <units::radians> m_ThetaController;
   frc::HolonomicDriveController m_HolonomicController;
-
-  const double kMAX_VOLTAGE = 12.0; //FIX
-
-  //how fast the robot should be able to drive
-  const units::meters_per_second_t kMAX_VELOCITY_METERS_PER_SECOND = units::meters_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI);
-  
-  //theoretical maximum angular velocity - can be replaced with measure amount
-  const units::radians_per_second_t kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = units::radians_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI / std::sqrt(Pow((DRIVETRAIN_TRACKWIDTH_METERS / 2), 2) + Pow((DRIVETRAIN_WHEELBASE_METERS / 2), 2)));
 };

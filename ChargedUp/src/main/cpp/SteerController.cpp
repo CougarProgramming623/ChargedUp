@@ -1,6 +1,7 @@
 #include "SteerController.h"
 #include "Constants.h"
 
+//Constructor
 SteerController::SteerController(int motorID, int EncoderPort, double AngleOffset):
     motor(motorID),
     encoder{EncoderPort},
@@ -10,8 +11,10 @@ SteerController::SteerController(int motorID, int EncoderPort, double AngleOffse
     motor.SetSelectedSensorPosition(Deg2Rad(360-(fmod(((encoder.GetVoltage() * ENCODER_VOLTAGE_TO_DEGREE) + (360-AngleOffset)), 360))) / STEER_ENCODER_POSITION_CONSTANT);
 }
 
+//Returns the reference angle which is just like not useful in radians
 double SteerController::GetReferenceAngle() {return referenceAngleRadians;}
 
+//Returns the angle of the module in radians
 double SteerController::GetStateAngle(){ //gets the current angle of the motor
     double motorAngleRadians = motor.GetSelectedSensorPosition() * STEER_ENCODER_POSITION_CONSTANT;
     motorAngleRadians = fmod(motorAngleRadians, 2.0 * M_PI);
@@ -21,6 +24,7 @@ double SteerController::GetStateAngle(){ //gets the current angle of the motor
     return motorAngleRadians;
 }
 
+//Moves the module to the correct angle
 void SteerController::SetReferenceAngle(double referenceAngleRadians){
     double currentAngleRadians = motor.GetSelectedSensorPosition() * STEER_ENCODER_POSITION_CONSTANT;
 

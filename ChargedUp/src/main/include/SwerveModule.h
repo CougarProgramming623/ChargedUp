@@ -17,7 +17,10 @@ class SwerveModule {
 
         void Set(double driveVoltage, double steerAngle);
         void BreakMode(bool on);
-        
+
+        // inline DriveController GetDriveController(){ return m_DriveController; }
+        // inline SteerController GetSteerController(){ return m_SteerController; }
+    
         DriveController m_DriveController;
         SteerController m_SteerController;
 };
