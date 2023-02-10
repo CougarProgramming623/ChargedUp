@@ -7,14 +7,16 @@
 class Vision {
 
     public:
-        static void PrintValues();
-        static void PushDistance();
+        Vision();
+        void PrintValues();
+        void PushDistance();
+        void VisionInit();
     private:
         //Pose2d orgin;
-        double targetOffsetAngleVertical;
-        double totalAngleToTarget;
-        double totalRadiansToTarget;
-        double totalDistanceInCM;
+        double m_TargetOffsetAngleVertical;
+        double m_TotalAngleToTarget;
+        double m_TotalRadiansToTarget;
+        double m_TotalDistanceInCM;
  
         //frc::AprilTagFieldLayout::AprilTagFieldLayout m_FieldLayout;
 

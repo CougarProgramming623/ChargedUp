@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Robot.h"
-#include "Vision.h"
+
 
 
 
@@ -16,6 +16,8 @@ void Robot::RobotInit() {
   GetNavX().ZeroYaw();
   s_Instance = this;
   m_DriveTrain.DriveInit();
+  m_Vision.VisionInit(); //Make one
+  
 }
 
 /**
@@ -28,7 +30,7 @@ void Robot::RobotInit() {
  */
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
-  Vision::PushDistance();
+  m_Vision.PushDistance();
   DebugOutF( std::to_string(GetCOB().GetTable().GetEntry(COB_KEY_DISTANCE).GetDouble(0)));
 }
 
@@ -73,7 +75,7 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
-  Vision::PrintValues();
+  m_Vision.PrintValues();
 }
 
 /**

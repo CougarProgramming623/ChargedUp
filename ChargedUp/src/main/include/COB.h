@@ -5,9 +5,6 @@
 #include "networktables/NetworkTableEntry.h"
 //#include "networktables/NetworkTableValue.h" //idk
 
-#define LIMELIGHT_HEIGHT 0  // 78.74 //cm
-#define TARGET_HEIGHT    0    // cm
-#define LIMELIGHT_ANGLE  0
 
 class COB {
  public:

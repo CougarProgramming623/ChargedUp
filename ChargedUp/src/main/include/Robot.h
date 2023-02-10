@@ -13,6 +13,7 @@
 #include "subsystems/DriveTrain.h"
 #include "frc/smartdashboard/Smartdashboard.h"
 #include "COB.h"
+#include "Vision.h"
 
 
 class Robot : public frc::TimedRobot {
@@ -31,7 +32,7 @@ class Robot : public frc::TimedRobot {
   inline AHRS& GetNavX() { return m_NavX; }
   inline void zeroGyroscope() {m_NavX.ZeroYaw();}
   inline double getYaw() {
-    //return 360 m_NavX.GetYaw() - 90;
+    return m_NavX.GetYaw();
   }
 
   static Robot* GetRobot() { return s_Instance; }
@@ -41,6 +42,8 @@ class Robot : public frc::TimedRobot {
   inline frc::Joystick& GetJoyStick() { return m_Joystick; }
 
   inline COB& GetCOB() { return m_COB; }
+
+  inline Vision& GetVision() { return m_Vision; }
 
   static Robot* s_Instance;
 
@@ -59,6 +62,8 @@ class Robot : public frc::TimedRobot {
   RobotContainer m_container;
 
   DriveTrain m_DriveTrain;
+
+  Vision m_Vision;
 
   COB m_COB;
 };
