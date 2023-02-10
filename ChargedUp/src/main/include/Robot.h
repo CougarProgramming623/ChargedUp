@@ -40,6 +40,7 @@ class Robot : public frc::TimedRobot {
 
   double previousErrorX = 0;
   double previousErrorY = 0;
+  double dErrorY = 0;
   double previousErrorT = 0;
   
   double previousValueX = 0;
