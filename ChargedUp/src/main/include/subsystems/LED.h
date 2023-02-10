@@ -20,9 +20,10 @@ Class LED {
 
     private:
 
-        const int kSTART_BL = 13;
-        const int kSTART_TL = 39;
-        const int kSTART_TR = 74;
-        const int kSTART_BR = 100;
+        //set values
+        const int kSTART_BL = 0;
+        const int kSTART_TL = 0;
+        const int kSTART_TR = 0;
+        const int kSTART_BR = 0;
 
 };
