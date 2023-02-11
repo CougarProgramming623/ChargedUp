@@ -6,7 +6,11 @@ AutoBalance:: AutoBalance() {
 }
 
 void AutoBalance::Initialize() {
-
+    bool balanced = false;
+    double angle = Robot::GetRobot()->GetNavX().GetPitch() + 0.05;
+    Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/pitchAngle").SetDouble(Robot::GetRobot()->GetNavX().GetPitch() + 0.05;);
+    if(angle > -0.5 && angle < 0.5) (balanced = true);
+    Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/balanced").SetBoolean(balanced);
 }
 
 void AutoBalance::Execute() {

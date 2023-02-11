@@ -10,6 +10,7 @@
 #include "subsystems/DriveTrain.h"
 #include <AHRS.h>
 #include <frc/Joystick.h>
+#include <COB.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -37,6 +38,7 @@ class Robot : public frc::TimedRobot {
   static Robot* GetRobot() { return s_Instance; } 
   inline DriveTrain& GetDriveTrain() { return m_DriveTrain; }
   inline frc::Joystick& GetJoyStick() { return m_Joystick; }
+  inline COB& GetCOB() { return m_COB; }
 
   double previousErrorX = 0;
   double previousErrorY = 0;
@@ -62,4 +64,6 @@ class Robot : public frc::TimedRobot {
   RobotContainer m_container;
 
   DriveTrain m_DriveTrain;
+
+  COB m_COB;
 };
