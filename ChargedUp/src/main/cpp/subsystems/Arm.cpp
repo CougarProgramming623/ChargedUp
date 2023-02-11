@@ -5,19 +5,32 @@ using ctre::phoenix::motorcontrol::can::TalonFX;
 
 Arm::Arm() :
 	m_Pivot(PIVOT_MOTOR),
-	m_Extraction(EXTRACTION_MOTOR),	
-	//m_LeftBrake(LEFT_BRAKE),
-	//m_RightBrake(RIGHT_BRAKE),
-
-	m_Button([&] {return m_ButtonBoard.GetRawButton(13);})
+	m_Extraction(EXTRACTION_MOTOR)
+	// m_LeftBrake(LEFT_BRAKE),
+	// m_RightBrake(RIGHT_BRAKE),
+	// m_UnlockPivot([&] {return m_ButtonBoard.GetRawButton(TELE_NUKE);})
 	{}
 
 void Arm::Init() {
 	// m_LeftBrake.Set(0);
 	// m_RightBrake.Set(0);
-	// SetPID(&m_Pivot, 0, .1, .1, .1, 0); //EPIDF values are for testing
+	SetPID(&m_Pivot, 0, .5, .5, .5, 0); //EPIDF values are for testing
+	m_Pivot.SetSelectedSensorPosition(0);
 	startingTicks = m_Pivot.GetSelectedSensorPosition();
-	currentTicks = m_Pivot.GetSelectedSensorPosition();
+
+	DebugOutF("Initial encoder value");
+	DebugOutF(std::to_string(startingTicks));
+
+	SetButtons();
+}
+
+void Arm::PrintTest() {
+	DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
+}
+
+void Arm::SetButtons() {
+	// m_UnlockPivot.WhileHeld(frc2::InstantCommand([&] {m_Pivot.Set(ControlMode::PercentOutput, m_ButtonBoard.GetRawAxis(UP_DOWN_JOYSTICK));}));
+	// m_UnlockPivot.WhenReleased(frc2::InstantCommand([&] {m_Pivot.Set(ControlMode::PercentOutput, 0);}));
 }
 
 //sets the EPIDF values for motor provided
@@ -33,12 +46,35 @@ frc2::FunctionalCommand* Arm::PivotToPosition(double angle) {
 	return new frc2::FunctionalCommand(
           [&] {  // onInit
 			DebugOutF("Running Functional Command");
-          },[&] {  // onExecute
-		  	double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition() - startingTicks); //current angle of the arm
+
+			double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition() - startingTicks); //current angle of the arm
 			double degToMove = angle - currentAngle; //how many degrees the arm needs to move in the correct direction
 			ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
+			setpoint = startingTicks + ticksToMove;
 
-			m_Pivot.Set(ControlMode::Position, ticksToMove + startingTicks); 
+			DebugOutF("setpoint and current ticks:");
+			DebugOutF(std::to_string(setpoint));
+			DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
+			
+          },[&] {  // onExecute
+		  	const double deadband1 = 1000; //figure out deadband
+		  	const double deadband2 = 500; //figure out deadband
+		  	const double deadband3 = 200; //figure out deadband
+
+			double power;
+			if(abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband3) m_Pivot.Set(ControlMode::PercentOutput, 0);
+			else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband2) power = .05;
+			else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband1) power = .1;
+			else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) > deadband1) power = .2;
+
+			if(setpoint > m_Pivot.GetSelectedSensorPosition()) {
+				m_Pivot.Set(ControlMode::PercentOutput, power);
+				DebugOutF("UNDER");
+			} else if (setpoint < m_Pivot.GetSelectedSensorPosition()) {
+				m_Pivot.Set(ControlMode::PercentOutput, -power);
+				DebugOutF("OVER");
+			}
+
           }, [&](bool e) {  // onEnd
 			m_Pivot.Set(ControlMode::PercentOutput, 0);
 			startingTicks = m_Pivot.GetSelectedSensorPosition();//increments currentTicks counter
@@ -47,70 +83,42 @@ frc2::FunctionalCommand* Arm::PivotToPosition(double angle) {
           });
 }
 
-//Toggles the status of the brakes; currently assuming 0 is off, 1 is on
-// void Arm::ToggleBrakes() {
-// 	if (m_brakesActive) {
-// 		m_LeftBrake.Set(0);
-// 		m_RightBrake.Set(0);	
-// 	} else { 
+// Toggles the status of the brakes; currently assuming 0 is off, 1 is on
+// void Arm::ToggleBrakes(bool isBraked) {
+// 	if (isBraked) {
 // 		m_LeftBrake.Set(1);
-// 		m_RightBrake.Set(1);
+// 		m_RightBrake.Set(1);	
+// 	} else { 
+// 		m_LeftBrake.Set(0);
+// 		m_RightBrake.Set(0);
 // 	}
 // }
 
-//Changes the length of the arm; positive parameter is longer, negative parameter is shorter || currently assuming forward (positive) direction is extension
+//length should be a setpoint in the units the pot uses || assumes more units = longer arm || assumes forward power is increase length
 void Arm::Telescope(double length) {
+	// ToggleBrakes(false);
+	const double telescopeDriveConstant = .5; //test to see how much power is needed
+	const double deadband = -1; //figure out deadband
 
-	double ticksPerBarRotation = EXTRACTION_GEAR_RATIO * 2048;
-	double tickPerInch = ticksPerBarRotation / EXTRACTION_BAR_CIRCUMFERENCE;
-	double ticksToMove = tickPerInch * (length - currentLength);
-	double setpoint = m_Extraction.GetSelectedSensorPosition() + ticksToMove;
-
-	// if (m_brakesActive) ToggleBrakes();
-
-	m_Pivot.Set(ControlMode::Position, setpoint);
-}
-
-//Toggles if the arm is squeezing shut or not to hold game pieces
-void Arm::Squeeze(bool shouldSqueeze) {
-	double squeezeConstant = 1; //scalar for amount of power needed to squeeze || should be 0-1
-	if (!shouldSqueeze) squeezeConstant * -1; //inverts power to release
-
-	// if (!m_brakesActive) ToggleBrakes();
-
-	m_Extraction.Set(ControlMode::PercentOutput, squeezeConstant);
-}
-
-//Should be called when arm is holding a game piece and robot is ready to drop it. Level is 0 as the lowest and 1 as the highest
-void Arm::AutoDrop(bool isCone, int level) {
-
-	//angles use parallel to ground on side of arm as zero
-	double coneAngles[] = {49.74, 44.83}; // {low target angle, high target angle}
-	double cubeAngles[] = {30.14, 25.90}; // {low target angle, high target angle}
-
-	double coneArmLengths[] = {40.62, 60.99}; //same as cone arrays (in inches)
-	double cubeArmLengths[] = {40.83, 74.41}; // ^^^
-
-	if(isCone) {
-		Telescope(coneArmLengths[level]);
-		PivotToPosition(coneAngles[level]);
-		Squeeze(false);
+	if (length > m_StringPot.GetValue()) {
+		while (abs(length - m_StringPot.GetValue()) > deadband) m_Extraction.Set(ControlMode::PercentOutput, telescopeDriveConstant);
+		m_Extraction.Set(ControlMode::PercentOutput, 0);
 	} else {
-		Telescope(cubeArmLengths[level]);
-		PivotToPosition(cubeAngles[level]);
-		Squeeze(false);
+		while (abs(length - m_StringPot.GetValue()) > deadband) m_Extraction.Set(ControlMode::PercentOutput, -telescopeDriveConstant);
+		m_Extraction.Set(ControlMode::PercentOutput, 0);
+
 	}
 }
 
-void Arm::LoadingReady() {
-	Telescope(38.19);
-	PivotToPosition(103.43);
-}
+//------------------------------------------------------------------------------------------------------------------- constant might be used later dont delete
+// 	//angles use parallel to ground on side of arm as zero
+// 	double coneAngles[] = {49.74, 44.83}; // {low target angle, high target angle}
+// 	double cubeAngles[] = {30.14, 25.90}; // {low target angle, high target angle}
 
-//rotates the wheel 15 degrees when button is pressed || TESTING PURPOSES ONLY
-void Arm::TurnFifteen() {
-	
-	m_Button.WhenPressed(frc2::InstantCommand([&]{("Yo this shit is working so slay amazing");}));
-		//frc2::InstantCommand([&] {PivotToPosition(15);})),
-	
-}
+// 	double coneArmLengths[] = {40.62, 60.99}; //same as cone arrays (in inches)
+// 	double cubeArmLengths[] = {40.83, 74.41}; // ^^^
+
+// void Arm::LoadingReady() {
+// 	Telescope(38.19);
+// 	PivotToPosition(103.43);
+// }
