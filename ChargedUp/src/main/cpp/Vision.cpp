@@ -28,12 +28,14 @@ DebugOutF("tv: " + std::to_string(tv));
     m_TotalAngleToTarget = LIMELIGHT_ANGLE + m_TargetOffsetAngleVertical;
     m_TotalRadiansToTarget = Deg2Rad(m_TotalAngleToTarget);
 
-    if(true){//Short Target
-    m_TotalDistanceInCM =(TARGET_HEIGHT_SHORT - LIMELIGHT_HEIGHT)/tan(m_TotalRadiansToTarget);
+    if(true){//kAprilTagID[Robot::GetRobot()->GetCOB().GetTable().GetEntry("/limelight/tid").GetBoolean(false)]){//Short Target
+    DebugOutF("short Target");
+    m_TotalDistanceInCM =(TARGET_HEIGHT_SHORT - LIMELIGHT_HEIGHT)/tan(std::abs(m_TotalRadiansToTarget));
     Robot::GetRobot()->GetCOB().GetTable().GetEntry(COB_KEY_DISTANCE).SetDouble(m_TotalDistanceInCM);
     }
-    else if(false){//Tall Target
-    m_TotalDistanceInCM =(TARGET_HEIGHT_TALL - LIMELIGHT_HEIGHT)/tan(m_TotalRadiansToTarget);
+    else if(!kAprilTagID[Robot::GetRobot()->GetCOB().GetTable().GetEntry("/limelight/tid").GetBoolean(true)]){//Tall Target
+    
+    m_TotalDistanceInCM =(TARGET_HEIGHT_TALL - LIMELIGHT_HEIGHT)/tan(std::abs(m_TotalRadiansToTarget));
     Robot::GetRobot()->GetCOB().GetTable().GetEntry(COB_KEY_DISTANCE).SetDouble(m_TotalDistanceInCM);
     }
 
