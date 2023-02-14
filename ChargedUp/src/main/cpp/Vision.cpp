@@ -17,26 +17,46 @@ DebugOutF("ty: " + std::to_string(ty));
 DebugOutF("tv: " + std::to_string(tv));
 }
 
-/*Equation d = (h2 - h1) / tan(a1 + a2)
-    h1 = height of lime light
-    h2 = height of center of traget 
-    a1 = angle of limelight
-    a2 = angle of target to limelight ty
-*/
- void Vision::PushDistance() {
-    m_TargetOffsetAngleVertical = Robot::GetRobot()->GetCOB().GetTable().GetEntry("/limelight/ty").GetDouble(0.0);
-    m_TotalAngleToTarget = LIMELIGHT_ANGLE + m_TargetOffsetAngleVertical;
-    m_TotalRadiansToTarget = Deg2Rad(m_TotalAngleToTarget);
 
-    if(true){//kAprilTagID[Robot::GetRobot()->GetCOB().GetTable().GetEntry("/limelight/tid").GetBoolean(false)]){//Short Target
-    //DebugOutF("Ty" + std::to_string(m_TargetOffsetAngleVertical));
-    m_TotalDistanceInCM =(TARGET_HEIGHT_SHORT - LIMELIGHT_HEIGHT)/tan(std::abs(m_TotalRadiansToTarget));
+/*
+  Looking UP
+    Equation d = (h2 - h1) / tan(a1 + a2)
+      h1 = height of lime light
+      h2 = height of center of traget 
+      a1 = angle of limelight
+      a2 = angle of target to limelight ty
+
+  Looking Down
+    Equation d = (h1 - h2) / tan(a2 - a1)
+      h1 = height of lime light
+      h2 = height of center of traget 
+      a1 = angle of limelight
+      a2 = angle of target to limelight ty
+
+*/
+
+
+ void Vision::PushDistance() {
+  if(true){//kAprilTagID[Robot::GetRobot()->GetCOB().GetTable().GetEntry("/limelight/tid").GetBoolean(false)]){//Short Target
+    m_TargetOffsetAngleVertical = Robot::GetRobot()->GetCOB().GetTable().GetEntry("/limelight/ty").GetDouble(0.0);
+    m_TotalAngleToTarget = m_TargetOffsetAngleVertical - LIMELIGHT_ANGLE;
+    m_TotalRadiansToTarget = Deg2Rad(m_TotalAngleToTarget);
+    
+    DebugOutF("Ty: " + std::to_string(m_TargetOffsetAngleVertical));
+    DebugOutF("Rad Ty: " + std::to_string(m_TotalRadiansToTarget));
+    m_TotalDistanceInCM =(LIMELIGHT_HEIGHT - TARGET_HEIGHT_SHORT)/tan(std::abs(m_TotalRadiansToTarget));
     Robot::GetRobot()->GetCOB().GetTable().GetEntry(COB_KEY_DISTANCE).SetDouble(m_TotalDistanceInCM);
     }
-   //  else if(!kAprilTagID[Robot::GetRobot()->GetCOB().GetTable().GetEntry("/limelight/tid").GetBoolean(true)]){//Tall Target
-    
-   //  m_TotalDistanceInCM =(TARGET_HEIGHT_TALL - LIMELIGHT_HEIGHT)/tan(std::abs(m_TotalRadiansToTarget));
-   //  Robot::GetRobot()->GetCOB().GetTable().GetEntry(COB_KEY_DISTANCE).SetDouble(m_TotalDistanceInCM);
-   //  }
+  //  else if(!kAprilTagID[Robot::GetRobot()->GetCOB().GetTable().GetEntry("/limelight/tid").GetBoolean(true)]){//Tall Target
+    // m_TargetOffsetAngleVertical = Robot::GetRobot()->GetCOB().GetTable().GetEntry("/limelight/ty").GetDouble(0.0);
+    // m_TotalAngleToTarget = LIMELIGHT_ANGLE + m_TargetOffsetAngleVertical;
+    // m_TotalRadiansToTarget = Deg2Rad(m_TotalAngleToTarget);
+    //  m_TotalDistanceInCM =(TARGET_HEIGHT_TALL - LIMELIGHT_HEIGHT)/tan(std::abs(m_TotalRadiansToTarget));
+    //  Robot::GetRobot()->GetCOB().GetTable().GetEntry(COB_KEY_DISTANCE).SetDouble(m_TotalDistanceInCM);
+  //  }
 
+ }
+
+ double Vision::GetDistance(){
+    return m_TotalDistanceInCM;
  }

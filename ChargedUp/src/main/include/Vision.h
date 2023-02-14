@@ -11,6 +11,7 @@ class Vision {
         void PrintValues();
         void PushDistance();
         void VisionInit();
+        double GetDistance();
     private:
         //Pose2d orgin;
         double m_TargetOffsetAngleVertical;
