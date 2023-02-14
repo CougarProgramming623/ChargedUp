@@ -8,9 +8,7 @@ Arm::Arm() :
 	m_Extraction(EXTRACTION_MOTOR),
 	// m_LeftBrake(LEFT_BRAKE),
 	// m_RightBrake(RIGHT_BRAKE),
-	m_UnlockPivot([&] {return m_ButtonBoard.GetRawButton(TELE_NUKE);}),
-	m_TestButton([&] {return m_ButtonBoard.GetRawButton(RELEASE_BUTTON);}),
-	m_TestButton2([&] {return m_ButtonBoard.GetRawButton(FEED_BUTTON);})
+	m_UnlockPivot([&] {return m_ButtonBoard.GetRawButton(TELE_NUKE);})
 	{}
 
 void Arm::Init() {
@@ -33,16 +31,8 @@ void Arm::PrintPosition() {
 }
 
 void Arm::SetButtons() {
-	// m_UnlockPivot.WhileHeld(frc2::InstantCommand([&] {m_Pivot.Set(ControlMode::PercentOutput, m_ButtonBoard.GetRawAxis(UP_DOWN_JOYSTICK));}));
-	// m_UnlockPivot.WhenReleased(frc2::InstantCommand([&] {m_Pivot.Set(ControlMode::PercentOutput, 0);}));
-
-	m_TestButton.WhenPressed(frc2::InstantCommand([&]{PivotToPosition(90)->Schedule();}));
-	m_TestButton2.WhenPressed(frc2::InstantCommand([&]{
-		DebugOutF("startingTicks and currentposition");
-		DebugOutF(std::to_string(startingTicks));
-		PrintPosition();
-	}));
-
+	m_UnlockPivot.WhileHeld(frc2::InstantCommand([&] {m_Pivot.Set(ControlMode::PercentOutput, m_ButtonBoard.GetRawAxis(UP_DOWN_JOYSTICK));}));
+	m_UnlockPivot.WhenReleased(frc2::InstantCommand([&] {m_Pivot.Set(ControlMode::PercentOutput, 0);}));
 }
 
 
