@@ -59,7 +59,9 @@ class DriveTrain : public frc2::SubsystemBase {
   inline frc::SwerveDriveOdometry<4> GetOdometry(){ return m_Odometry; }
   inline frc::HolonomicDriveController GetHolonomicController(){ return m_HolonomicController; }
 
-  const inline std::array<frc::SwerveModulePosition, 4> GetModulePositions(){ return m_ModulePositions; }
+  //const inline std::array<frc::SwerveModulePosition, 4> GetModulePositions(){ return m_ModulePositions; }
+
+  const inline frc::Rotation2d GetRotation() { return m_Rotation; }
 
 //how fast the robot should be able to drive
   const units::meters_per_second_t kMAX_VELOCITY_METERS_PER_SECOND = units::meters_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI);
@@ -68,6 +70,8 @@ class DriveTrain : public frc2::SubsystemBase {
   
   //theoretical maximum angular velocity - can be replaced with measure amount
   const units::radians_per_second_t kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = units::radians_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI / std::sqrt(Pow((DRIVETRAIN_TRACKWIDTH_METERS / 2), 2) + Pow((DRIVETRAIN_WHEELBASE_METERS / 2), 2)));
+
+  std::array<frc::SwerveModulePosition, 4> m_ModulePositions = {m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition()};
 
   private:
 
@@ -83,7 +87,7 @@ class DriveTrain : public frc2::SubsystemBase {
   SwerveModule m_BackRightModule;
 
   std::array<frc::SwerveModuleState, 4> m_ModuleStates;
-  const std::array<frc::SwerveModulePosition, 4> m_ModulePositions = {m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition()};
+  // const std::array<frc::SwerveModulePosition, 4> m_ModulePositions = {m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition()};
   
   frc2::PIDController m_xController;
   frc2::PIDController m_yController;

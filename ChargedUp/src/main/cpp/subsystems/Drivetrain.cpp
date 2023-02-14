@@ -16,14 +16,15 @@ DriveTrain::DriveTrain()
       m_Kinematics(m_FrontLeftLocation, m_FrontRightLocation, m_BackLeftLocation, m_BackRightLocation),
       m_Rotation(),
       m_Odometry(m_Kinematics, m_Rotation, wpi::array<frc::SwerveModulePosition, 4>
-        (m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition())),
+        (frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)), frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)), frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)), frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad))), frc::Pose2d(0_m, 0_m, 0_rad)),
       m_FrontLeftModule(FRONT_LEFT_MODULE_DRIVE_MOTOR, FRONT_LEFT_MODULE_STEER_MOTOR, FRONT_LEFT_MODULE_ENCODER_PORT, -137),
       m_FrontRightModule(FRONT_RIGHT_MODULE_DRIVE_MOTOR, FRONT_RIGHT_MODULE_STEER_MOTOR, FRONT_RIGHT_MODULE_ENCODER_PORT, -287),
       m_BackLeftModule(BACK_LEFT_MODULE_DRIVE_MOTOR, BACK_LEFT_MODULE_STEER_MOTOR, BACK_LEFT_MODULE_ENCODER_PORT, -140.6),
       m_BackRightModule(BACK_RIGHT_MODULE_DRIVE_MOTOR, BACK_RIGHT_MODULE_STEER_MOTOR, BACK_RIGHT_MODULE_ENCODER_PORT, -2),
       m_ChassisSpeeds{0_mps, 0_mps, 0_rad_per_s}, 
-      m_xController(0.7, 0.4, 0.2),
-      m_yController(0.7, 0.4, 0.2),
+      m_xController(1, 0.4, 0),
+      m_yController(1, 0.4, 0),
+      //m_yController(0,0,0),
       m_ThetaController(0, 0, 0, frc::TrapezoidProfile<units::radian>::Constraints{6.28_rad_per_s, 3.14_rad_per_s / 1_s}),
       m_HolonomicController(m_xController, m_yController, m_ThetaController)
 {}
@@ -73,7 +74,6 @@ void DriveTrain::Periodic(){
 
 }
 
-
 //Converts chassis speed object and updates module states
 void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
   m_ChassisSpeeds = chassisSpeeds;
@@ -85,14 +85,17 @@ void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
 void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::s_Instance->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
+  for(int i = 0; i < 4; i++){
+    m_ModulePositions[i] = frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad));
+  }
 }
 
 //Sets breakmode
 void DriveTrain::BreakMode(bool on){
-  m_FrontLeftModule.BreakMode(true);
-  m_FrontRightModule.BreakMode(true);
-  m_BackLeftModule.BreakMode(true);
-  m_BackRightModule.BreakMode(true);
+  m_FrontLeftModule.BreakMode(on);
+  m_FrontRightModule.BreakMode(on);
+  m_BackLeftModule.BreakMode(on);
+  m_BackRightModule.BreakMode(on);
 }
 
 // void DriveTrain::TrajectoryDrive(std::array<frc::SwerveModuleState, 4> states){

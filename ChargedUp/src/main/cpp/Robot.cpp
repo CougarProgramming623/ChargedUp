@@ -10,6 +10,7 @@
 #include <frc/geometry/Pose2d.h>
 #include "Util.h"
 #include "commands/TrajectoryCommand.h"
+#include <frc/kinematics/SwerveModulePosition.h>
 
 using namespace pathplanner;
 
@@ -47,41 +48,61 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
+  DebugOutF("Auto init");
+
   frc2::CommandScheduler::GetInstance().CancelAll();
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(-90);
 
+  GetDriveTrain().BreakMode(true);
+
   //Load trajectory
   PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(2_mps, 2_mps_sq));
 
+  //traj = traj.transformTrajectoryForAlliance();
+
   //Match starting pose to trajectory pose, pose becomes field relative
-  GetDriveTrain().GetOdometry().ResetPosition(traj.getInitialHolonomicPose().Rotation(), GetDriveTrain().GetModulePositions(), traj.asWPILibTrajectory().InitialPose());
+  //GetDriveTrain().GetOdometry().GetPose().RelativeTo();
+  //GetDriveTrain().GetOdometry().ResetPosition(GetDriveTrain().GetRotation(),
+  /*frc::Rotation2d(0_rad)*///, 
 
-  DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
-  DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
-  DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
-
-  frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
-
-  if (m_autonomousCommand != nullptr) {
-    m_autonomousCommand->Schedule();
+  for(int i = 0; i < 4; i++){
+    GetDriveTrain().m_ModulePositions[i] = frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad));
   }
+
+  //wpi::array<frc::SwerveModulePosition,4>(
+  //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)),
+  //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)),
+  //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)),
+  //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)))
+  //GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad));
+  //GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(0), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad));
+
+
+  // DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
+  // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
+  // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
+
+  //frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
 }
 
 void Robot::AutonomousPeriodic() {
-  DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().X().value()));
-  DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Y().value()));
-  DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Rotation().Degrees().value()));
+  // int i = 0;
+  // if(i % 100 == 0){
+    DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().X().value()));
+    DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Y().value()));
+    DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Rotation().Degrees().value()));
+  //   i = 0;
+  // }
+  // i++;
+  
 }
 
 void Robot::TeleopInit() {
+
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(-90);
-
-  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(2_mps, 2_mps_sq));
-  GetDriveTrain().GetOdometry().ResetPosition(traj.getInitialHolonomicPose().Rotation(), GetDriveTrain().GetModulePositions(), traj.asWPILibTrajectory().InitialPose());
-
-  
+   
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
@@ -94,10 +115,6 @@ void Robot::TeleopInit() {
 
   //Standard teleop pose init
   //GetDriveTrain().GetOdometry().ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().GetModulePositions(), frc::Pose2d());
-
-  DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
-  DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
-  DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
 }
 
 /**
