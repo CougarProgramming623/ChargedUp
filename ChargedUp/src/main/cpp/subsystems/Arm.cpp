@@ -50,48 +50,15 @@ frc2::FunctionalCommand* Arm::PivotToPosition(double angle) {
 	return new frc2::FunctionalCommand(
           [&] {  // onInit
 			startingTicks = m_Pivot.GetSelectedSensorPosition();
-
-
-			
 			double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition()); //current angle of the arm
 			double degToMove = angle - currentAngle; //how many degrees the arm needs to move in the correct direction
 			ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
 			setpoint = startingTicks + ticksToMove;
 
-			DebugOutF("setpoint");
-			DebugOutF(std::to_string(setpoint));
-			DebugOutF(std::to_string(startingTicks));
-			DebugOutF(std::to_string(ticksToMove));
-			
-			
-
-          },[&] {  // onExecute
-		  	// const double deadband1 = 2000; //figure out deadband
-		  	// const double deadband2 = 1000; //figure out deadband
-		  	// const double deadband3 = 500; //figure out deadband
-
-			double power;
-			// if(abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband3) m_Pivot.Set(ControlMode::PercentOutput, 0);
-			// else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband2) power = .075;
-			// else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband1) power = .08;
-			// else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) > deadband1) power = .15;
-
-			if ((setpoint - m_Pivot.GetSelectedSensorPosition())/ticksToMove > .1)
-				power = (ticksToMove/(setpoint - m_Pivot.GetSelectedSensorPosition()));
-			else power = .1;
-					
-			if (abs(setpoint - m_Pivot.GetSelectedSensorPosition()) < 200) {
-				m_Pivot.Set(ControlMode::PercentOutput, 0);
-			} else if(setpoint > m_Pivot.GetSelectedSensorPosition()) {
-				m_Pivot.Set(ControlMode::PercentOutput, power);
-			} else if (setpoint < m_Pivot.GetSelectedSensorPosition()) {
-				m_Pivot.Set(ControlMode::PercentOutput, -power);
-			}
-
+          },[&] {  // onExecute		  	
+			m_Pivot.Set(ControlMode::Position, setpoint);
           }, [&](bool e) {  // onEnd
 			m_Pivot.Set(ControlMode::PercentOutput, 0);
-			DebugOutF("New starting point:");
-			DebugOutF(std::to_string(startingTicks));
 		  }, [&] {  // isFinished
 			return (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) < 200); //deadband of 100 ticks 
 		  });

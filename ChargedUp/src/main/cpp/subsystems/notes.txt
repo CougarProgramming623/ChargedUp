@@ -12,4 +12,4 @@
 	
 
 	ticksToMove is a HUGE value- will need to check the function to convert values between degrees and ticks. it looks like whatever happens in
-	line 58 goes wrong and produces a HUGE value (also flip flops between negative and positive)
+	line 58 goes wrong and produces a HUGE value (also flip flops between negative and positive22)
