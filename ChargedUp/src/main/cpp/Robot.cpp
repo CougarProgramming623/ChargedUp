@@ -10,6 +10,8 @@
 #include <frc/geometry/Pose2d.h>
 #include "Util.h"
 #include "commands/TrajectoryCommand.h"
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/WaitCommand.h>
 
 using namespace pathplanner;
 
@@ -50,6 +52,7 @@ void Robot::AutonomousInit() {
   frc2::CommandScheduler::GetInstance().CancelAll();
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(-90);
+  GetDriveTrain().BreakMode(false);
 
   //Load trajectory
   PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(2_mps, 2_mps_sq));
@@ -61,7 +64,7 @@ void Robot::AutonomousInit() {
   DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
 
-  frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
+  frc2::CommandScheduler::GetInstance().Schedule(new frc2::SequentialCommandGroup(frc2::WaitCommand(2_s), TrajectoryCommand(traj)));
 
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Schedule();
@@ -69,9 +72,9 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-  DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().X().value()));
-  DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Y().value()));
-  DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Rotation().Degrees().value()));
+  // DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().X().value()));
+  // DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Y().value()));
+  // DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Rotation().Degrees().value()));
 }
 
 void Robot::TeleopInit() {

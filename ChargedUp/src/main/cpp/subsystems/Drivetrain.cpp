@@ -89,10 +89,10 @@ void DriveTrain::DriveInit(){
 
 //Sets breakmode
 void DriveTrain::BreakMode(bool on){
-  m_FrontLeftModule.BreakMode(true);
-  m_FrontRightModule.BreakMode(true);
-  m_BackLeftModule.BreakMode(true);
-  m_BackRightModule.BreakMode(true);
+  m_FrontLeftModule.BreakMode(on);
+  m_FrontRightModule.BreakMode(on);
+  m_BackLeftModule.BreakMode(on);
+  m_BackRightModule.BreakMode(on);
 }
 
 // void DriveTrain::TrajectoryDrive(std::array<frc::SwerveModuleState, 4> states){
