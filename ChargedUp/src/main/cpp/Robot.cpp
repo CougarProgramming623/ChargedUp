@@ -58,7 +58,7 @@ void Robot::TeleopInit() {
     m_autonomousCommand->Cancel();
   }
   
-  m_Arm.PivotToPosition(90)->Schedule();
+  
 
 }
 
@@ -66,7 +66,6 @@ void Robot::TeleopInit() {
  * This function is called periodically during operator control.
  */
 void Robot::TeleopPeriodic() {
-  m_Arm.PrintTest();
    
 }
 

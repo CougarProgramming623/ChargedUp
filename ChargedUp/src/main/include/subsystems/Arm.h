@@ -31,13 +31,12 @@ class Arm {
 
 	Arm();
 	void Init();
-	void PrintTest();
+	void PrintPosition();
 
 	void SetButtons();
 
 	inline double PivotDegToTicks(double degree) {return degree * PIVOT_TICKS_PER_ARM_DEGREE;} //converts degrees to ticks of Pivot motor
 	inline double PivotTicksToDeg(double ticks) {return ticks / PIVOT_TICKS_PER_ARM_DEGREE;} //converts ticks to degrees of arm rotation
-	void SetPID(TalonFX* motor, double E, double P, double I, double D, double F);
 	
 	frc2::FunctionalCommand* PivotToPosition(double angle); 
 	void ToggleBrakes(bool isBraked); 
@@ -59,7 +58,9 @@ class Arm {
 	// frc::Servo m_LeftBrake;
 	// frc::Servo m_RightBrake;
 	
-	// frc::Joystick m_ButtonBoard = frc::Joystick(0);
-	// frc2::Button m_UnlockPivot;
+	frc::Joystick m_ButtonBoard = frc::Joystick(0);
+	frc2::Button m_UnlockPivot;
+	frc2::Button m_TestButton;
+	frc2::Button m_TestButton2;
 
 };

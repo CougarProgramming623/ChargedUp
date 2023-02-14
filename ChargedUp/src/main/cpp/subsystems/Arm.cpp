@@ -5,82 +5,96 @@ using ctre::phoenix::motorcontrol::can::TalonFX;
 
 Arm::Arm() :
 	m_Pivot(PIVOT_MOTOR),
-	m_Extraction(EXTRACTION_MOTOR)
+	m_Extraction(EXTRACTION_MOTOR),
 	// m_LeftBrake(LEFT_BRAKE),
 	// m_RightBrake(RIGHT_BRAKE),
-	// m_UnlockPivot([&] {return m_ButtonBoard.GetRawButton(TELE_NUKE);})
+	m_UnlockPivot([&] {return m_ButtonBoard.GetRawButton(TELE_NUKE);}),
+	m_TestButton([&] {return m_ButtonBoard.GetRawButton(RELEASE_BUTTON);}),
+	m_TestButton2([&] {return m_ButtonBoard.GetRawButton(FEED_BUTTON);})
 	{}
 
 void Arm::Init() {
 	// m_LeftBrake.Set(0);
 	// m_RightBrake.Set(0);
-	SetPID(&m_Pivot, 0, .5, .5, .5, 0); //EPIDF values are for testing
 	m_Pivot.SetSelectedSensorPosition(0);
-	startingTicks = m_Pivot.GetSelectedSensorPosition();
-
-	DebugOutF("Initial encoder value");
-	DebugOutF(std::to_string(startingTicks));
-
 	SetButtons();
+
+	m_Pivot.ConfigAllowableClosedloopError(0.0, 0.0, 0.0);
+	m_Pivot.Config_kP(0.0, 0, 0.0);
+	m_Pivot.Config_kI(0.0, 0, 0.0);
+	m_Pivot.Config_kD(0.0, 0, 0.0);
+	m_Pivot.Config_kF(0.0, 0, 0.0);
+	m_Pivot.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+
 }
 
-void Arm::PrintTest() {
+void Arm::PrintPosition() {
 	DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
 }
 
 void Arm::SetButtons() {
 	// m_UnlockPivot.WhileHeld(frc2::InstantCommand([&] {m_Pivot.Set(ControlMode::PercentOutput, m_ButtonBoard.GetRawAxis(UP_DOWN_JOYSTICK));}));
 	// m_UnlockPivot.WhenReleased(frc2::InstantCommand([&] {m_Pivot.Set(ControlMode::PercentOutput, 0);}));
+
+	m_TestButton.WhenPressed(frc2::InstantCommand([&]{PivotToPosition(90)->Schedule();}));
+	m_TestButton2.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("startingTicks and currentposition");
+		DebugOutF(std::to_string(startingTicks));
+		PrintPosition();
+	}));
+
 }
 
-//sets the EPIDF values for motor provided
-void Arm::SetPID(TalonFX* motor, double E, double P, double I, double D, double F) {
-	motor->ConfigAllowableClosedloopError(0.0, E, 0.0);
-	motor->Config_kP(0.0, P, 0.0);
-	motor->Config_kI(0.0, I, 0.0);
-	motor->Config_kD(0.0, D, 0.0);
-	motor->Config_kF(0.0, F, 0.0);
-}
 
 frc2::FunctionalCommand* Arm::PivotToPosition(double angle) {
 	return new frc2::FunctionalCommand(
           [&] {  // onInit
-			DebugOutF("Running Functional Command");
+			startingTicks = m_Pivot.GetSelectedSensorPosition();
 
-			double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition() - startingTicks); //current angle of the arm
+
+			
+			double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition()); //current angle of the arm
 			double degToMove = angle - currentAngle; //how many degrees the arm needs to move in the correct direction
 			ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
 			setpoint = startingTicks + ticksToMove;
 
-			DebugOutF("setpoint and current ticks:");
+			DebugOutF("setpoint");
 			DebugOutF(std::to_string(setpoint));
-			DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
+			DebugOutF(std::to_string(startingTicks));
+			DebugOutF(std::to_string(ticksToMove));
 			
+			
+
           },[&] {  // onExecute
-		  	const double deadband1 = 1000; //figure out deadband
-		  	const double deadband2 = 500; //figure out deadband
-		  	const double deadband3 = 200; //figure out deadband
+		  	// const double deadband1 = 2000; //figure out deadband
+		  	// const double deadband2 = 1000; //figure out deadband
+		  	// const double deadband3 = 500; //figure out deadband
 
 			double power;
-			if(abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband3) m_Pivot.Set(ControlMode::PercentOutput, 0);
-			else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband2) power = .05;
-			else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband1) power = .1;
-			else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) > deadband1) power = .2;
+			// if(abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband3) m_Pivot.Set(ControlMode::PercentOutput, 0);
+			// else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband2) power = .075;
+			// else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) <= deadband1) power = .08;
+			// else if (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) > deadband1) power = .15;
 
-			if(setpoint > m_Pivot.GetSelectedSensorPosition()) {
+			if ((setpoint - m_Pivot.GetSelectedSensorPosition())/ticksToMove > .1)
+				power = (ticksToMove/(setpoint - m_Pivot.GetSelectedSensorPosition()));
+			else power = .1;
+					
+			if (abs(setpoint - m_Pivot.GetSelectedSensorPosition()) < 200) {
+				m_Pivot.Set(ControlMode::PercentOutput, 0);
+			} else if(setpoint > m_Pivot.GetSelectedSensorPosition()) {
 				m_Pivot.Set(ControlMode::PercentOutput, power);
-				DebugOutF("UNDER");
 			} else if (setpoint < m_Pivot.GetSelectedSensorPosition()) {
 				m_Pivot.Set(ControlMode::PercentOutput, -power);
-				DebugOutF("OVER");
 			}
 
           }, [&](bool e) {  // onEnd
 			m_Pivot.Set(ControlMode::PercentOutput, 0);
-			startingTicks = m_Pivot.GetSelectedSensorPosition();//increments currentTicks counter
-          }, [&] {  // isFinished
-			return false; //(m_Pivot.GetSelectedSensorPosition() - (ticksToMove + currentTicks) < 100); //deadband of 100 ticks 
-          });
+			DebugOutF("New starting point:");
+			DebugOutF(std::to_string(startingTicks));
+		  }, [&] {  // isFinished
+			return (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) < 200); //deadband of 100 ticks 
+		  });
 }
 
 // Toggles the status of the brakes; currently assuming 0 is off, 1 is on

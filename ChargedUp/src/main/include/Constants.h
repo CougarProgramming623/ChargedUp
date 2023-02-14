@@ -26,5 +26,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 //button IDs
 #define TELE_NUKE 9
 #define UP_DOWN_JOYSTICK 2
+#define RELEASE_BUTTON 12
+#define FEED_BUTTON 13
 
 #endif

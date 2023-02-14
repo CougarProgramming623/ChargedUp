@@ -1,0 +1,15 @@
+2/13/2023
+	Arm.cpp 56-64
+	double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition()); //current angle of the arm
+	double degToMove = angle - currentAngle; //how many degrees the arm needs to move in the correct direction
+	ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
+	setpoint = startingTicks + ticksToMove;
+
+	DebugOutF("setpoint");
+	DebugOutF(std::to_string(setpoint));
+	DebugOutF(std::to_string(startingTicks));
+	DebugOutF(std::to_string(ticksToMove));
+	
+
+	ticksToMove is a HUGE value- will need to check the function to convert values between degrees and ticks. it looks like whatever happens in
+	line 58 goes wrong and produces a HUGE value (also flip flops between negative and positive)
