@@ -63,11 +63,11 @@ void Robot::AutonomousInit() {
   GetDriveTrain().m_BackRightModule.m_DriveController.motor.SetSelectedSensorPosition(0);
 
   for(int i = 0; i < 4; i++){
-    GetDriveTrain().m_ModulePositions[i] = frc::SwerveModulePosition(10_m, frc::Rotation2d(0_rad));
+    GetDriveTrain().m_ModulePositions[i] = frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad));
   }
 
-  //GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(0), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad));
-  GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360))), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad)); //uncomment this
+  GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(0), GetDriveTrain().GetModulePositions(), frc::Pose2d(5_m, 4_m, 0_rad));
+  //GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360))), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad)); //uncomment this
 
   GetDriveTrain().BreakMode(true);
 
