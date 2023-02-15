@@ -48,8 +48,6 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
-  //GetDriveTrain().m_Odometry.update;
-
   
   DebugOutF("Auto init");
 
@@ -65,6 +63,8 @@ void Robot::AutonomousInit() {
   for(int i = 0; i < 4; i++){
     GetDriveTrain().m_ModulePositions[i] = frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad));
   }
+
+  GetDriveTrain().m_Odometry.Update(units::radian_t(0), GetDriveTrain().GetModulePositions());
 
   GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(0), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad));
   //GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360))), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad)); //uncomment this
