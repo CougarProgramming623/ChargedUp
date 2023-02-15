@@ -48,22 +48,26 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
-  GetDriveTrain().m_FrontLeftModule.m_DriveController.motor.SetSelectedSensorPosition(0);
-  GetDriveTrain().m_FrontRightModule.m_DriveController.motor.SetSelectedSensorPosition(0);
-  GetDriveTrain().m_BackLeftModule.m_DriveController.motor.SetSelectedSensorPosition(0);
-  GetDriveTrain().m_BackRightModule.m_DriveController.motor.SetSelectedSensorPosition(0);
-
   //GetDriveTrain().m_Odometry.update;
 
-  for(int i = 0; i < 4; i++){
-    GetDriveTrain().m_ModulePositions[i] = frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad));
-  }
-  GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(0), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad));
+  
   DebugOutF("Auto init");
 
   frc2::CommandScheduler::GetInstance().CancelAll();
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(-90);
+
+  GetDriveTrain().m_FrontLeftModule.m_DriveController.motor.SetSelectedSensorPosition(0);
+  GetDriveTrain().m_FrontRightModule.m_DriveController.motor.SetSelectedSensorPosition(0);
+  GetDriveTrain().m_BackLeftModule.m_DriveController.motor.SetSelectedSensorPosition(0);
+  GetDriveTrain().m_BackRightModule.m_DriveController.motor.SetSelectedSensorPosition(0);
+
+  for(int i = 0; i < 4; i++){
+    GetDriveTrain().m_ModulePositions[i] = frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad));
+  }
+
+  GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(0), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad));
+  GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360))), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad)); //uncomment this
 
   GetDriveTrain().BreakMode(true);
 

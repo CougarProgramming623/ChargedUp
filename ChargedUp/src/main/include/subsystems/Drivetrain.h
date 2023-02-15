@@ -59,7 +59,7 @@ class DriveTrain : public frc2::SubsystemBase {
   inline frc::SwerveDriveOdometry<4> GetOdometry(){ return m_Odometry; }
   inline frc::HolonomicDriveController GetHolonomicController(){ return m_HolonomicController; }
 
-  const inline std::array<frc::SwerveModulePosition, 4> GetModulePositions(){ return m_ModulePositions; }
+  inline std::array<frc::SwerveModulePosition, 4> GetModulePositions(){ return m_ModulePositions; }
 
 //how fast the robot should be able to drive
   const units::meters_per_second_t kMAX_VELOCITY_METERS_PER_SECOND = units::meters_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI);
