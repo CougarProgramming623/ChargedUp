@@ -48,6 +48,17 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
+  GetDriveTrain().m_FrontLeftModule.m_DriveController.motor.SetSelectedSensorPosition(0);
+  GetDriveTrain().m_FrontRightModule.m_DriveController.motor.SetSelectedSensorPosition(0);
+  GetDriveTrain().m_BackLeftModule.m_DriveController.motor.SetSelectedSensorPosition(0);
+  GetDriveTrain().m_BackRightModule.m_DriveController.motor.SetSelectedSensorPosition(0);
+
+  //GetDriveTrain().m_Odometry.update;
+
+  for(int i = 0; i < 4; i++){
+    GetDriveTrain().m_ModulePositions[i] = frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad));
+  }
+  GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(0), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad));
   DebugOutF("Auto init");
 
   frc2::CommandScheduler::GetInstance().CancelAll();
@@ -66,17 +77,13 @@ void Robot::AutonomousInit() {
   //GetDriveTrain().GetOdometry().ResetPosition(GetDriveTrain().GetRotation(),
   /*frc::Rotation2d(0_rad)*///, 
 
-  for(int i = 0; i < 4; i++){
-    GetDriveTrain().m_ModulePositions[i] = frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad));
-  }
-
   //wpi::array<frc::SwerveModulePosition,4>(
   //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)),
   //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)),
   //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)),
   //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)))
   //GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad));
-  //GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(0), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad));
+  //
 
 
   // DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));

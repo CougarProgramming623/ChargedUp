@@ -64,8 +64,15 @@ class DriveTrain : public frc2::SubsystemBase {
 //how fast the robot should be able to drive
   const units::meters_per_second_t kMAX_VELOCITY_METERS_PER_SECOND = units::meters_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI);
 
+  std::array<frc::SwerveModulePosition, 4> m_ModulePositions = {m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition()};
+
   const double kMAX_VOLTAGE = 12.0; //FIX
   
+  SwerveModule m_FrontLeftModule;
+  SwerveModule m_FrontRightModule;
+  SwerveModule m_BackLeftModule;
+  SwerveModule m_BackRightModule;
+
   //theoretical maximum angular velocity - can be replaced with measure amount
   const units::radians_per_second_t kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = units::radians_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI / std::sqrt(Pow((DRIVETRAIN_TRACKWIDTH_METERS / 2), 2) + Pow((DRIVETRAIN_WHEELBASE_METERS / 2), 2)));
 
@@ -77,13 +84,7 @@ class DriveTrain : public frc2::SubsystemBase {
   frc::Rotation2d m_Rotation;             
   frc::ChassisSpeeds m_ChassisSpeeds;
 
-  SwerveModule m_FrontLeftModule;
-  SwerveModule m_FrontRightModule;
-  SwerveModule m_BackLeftModule;
-  SwerveModule m_BackRightModule;
-
   std::array<frc::SwerveModuleState, 4> m_ModuleStates;
-  const std::array<frc::SwerveModulePosition, 4> m_ModulePositions = {m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition()};
   
   frc2::PIDController m_xController;
   frc2::PIDController m_yController;
