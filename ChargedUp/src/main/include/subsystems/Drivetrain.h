@@ -56,7 +56,7 @@ class DriveTrain : public frc2::SubsystemBase {
   frc::Translation2d m_BackRightLocation;
 
   inline frc::SwerveDriveKinematics<4> GetKinematics() { return m_Kinematics; }
-  inline frc::SwerveDriveOdometry<4> GetOdometry(){ return m_Odometry; }
+  inline frc::SwerveDriveOdometry<4>* GetOdometry(){ return &m_Odometry; }
   inline frc::HolonomicDriveController GetHolonomicController(){ return m_HolonomicController; }
 
   inline std::array<frc::SwerveModulePosition, 4> GetModulePositions(){ return m_ModulePositions; }
@@ -64,7 +64,7 @@ class DriveTrain : public frc2::SubsystemBase {
 //how fast the robot should be able to drive
   const units::meters_per_second_t kMAX_VELOCITY_METERS_PER_SECOND = units::meters_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI);
 
-  std::array<frc::SwerveModulePosition, 4> m_ModulePositions = {m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition()};
+  std::array<frc::SwerveModulePosition, 4> m_ModulePositions;
 
   const double kMAX_VOLTAGE = 12.0; //FIX
   

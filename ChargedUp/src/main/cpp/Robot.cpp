@@ -54,55 +54,37 @@ void Robot::AutonomousInit() {
   frc2::CommandScheduler::GetInstance().CancelAll();
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(-90);
-
-  GetDriveTrain().m_FrontLeftModule.m_DriveController.motor.SetSelectedSensorPosition(0);
-  GetDriveTrain().m_FrontRightModule.m_DriveController.motor.SetSelectedSensorPosition(0);
-  GetDriveTrain().m_BackLeftModule.m_DriveController.motor.SetSelectedSensorPosition(0);
-  GetDriveTrain().m_BackRightModule.m_DriveController.motor.SetSelectedSensorPosition(0);
-
-  for(int i = 0; i < 4; i++){
-    GetDriveTrain().m_ModulePositions[i] = frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad));
-  }
-
-  GetDriveTrain().m_Odometry.Update(units::radian_t(0), GetDriveTrain().GetModulePositions());
-
-  GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(0), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad));
-  //GetDriveTrain().GetOdometry().ResetPosition(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360))), GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad)); //uncomment this
-
   GetDriveTrain().BreakMode(true);
+
+  // GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360))), 
+  //   wpi::array<frc::SwerveModulePosition, 4>
+  //        (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
+  //   frc::Pose2d(1_m, 3_m, 90_deg));
 
   //Load trajectory
   PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(2_mps, 2_mps_sq));
 
-  //traj = traj.transformTrajectoryForAlliance();
 
-  //Match starting pose to trajectory pose, pose becomes field relative
-  //GetDriveTrain().GetOdometry().GetPose().RelativeTo();
-  //GetDriveTrain().GetOdometry().ResetPosition(GetDriveTrain().GetRotation(),
-  /*frc::Rotation2d(0_rad)*///, 
-
-  //wpi::array<frc::SwerveModulePosition,4>(
-  //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)),
-  //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)),
-  //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)),
-  //   frc::SwerveModulePosition(0_m, frc::Rotation2d(0_rad)))
-  //GetDriveTrain().GetModulePositions(), frc::Pose2d(0_m, 0_m, 0_rad));
-  //
+  GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360))), 
+    wpi::array<frc::SwerveModulePosition, 4>
+         (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
+    traj.getInitialHolonomicPose());
 
 
+  
   // DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
   // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
 
-  //frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
+  frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
 }
 
 void Robot::AutonomousPeriodic() {
   // int i = 0;
   // if(i % 100 == 0){
-    DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().X().value()));
-    DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Y().value()));
-    DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Rotation().Degrees().value()));
+    DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().X().value()));
+    DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Y().value()));
+    DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Rotation().Degrees().value()));
   //   i = 0;
   // }
   // i++;
@@ -125,7 +107,7 @@ void Robot::TeleopInit() {
   }
 
   //Standard teleop pose init
-  //GetDriveTrain().GetOdometry().ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().GetModulePositions(), frc::Pose2d());
+  //GetDriveTrain().GetOdometry()->ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().GetModulePositions(), frc::Pose2d());
 }
 
 /**
@@ -136,9 +118,9 @@ void Robot::TeleopPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
 
   //DebugOutF(std::to_string(Deg2Rad(360-(fmod(((GetDriveTrain().m_BackRightModule.GetSteerController().encoder.GetVoltage() * ENCODER_VOLTAGE_TO_DEGREE) + (360+2)), 360))) / STEER_ENCODER_POSITION_CONSTANT));
-  DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().X().value()));
-  DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Y().value()));
-  DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry().GetPose().Rotation().Degrees().value()) + "/n");
+  DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().X().value()));
+  DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Y().value()));
+  DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Rotation().Degrees().value()) + "/n");
 }
 
 /**

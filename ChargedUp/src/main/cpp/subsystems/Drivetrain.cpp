@@ -14,9 +14,12 @@ DriveTrain::DriveTrain()
       m_BackLeftLocation(units::meter_t (-DRIVETRAIN_TRACKWIDTH_METERS / 2.0), units::meter_t (-DRIVETRAIN_WHEELBASE_METERS / 2.0)),
       m_BackRightLocation(units::meter_t (-DRIVETRAIN_TRACKWIDTH_METERS / 2.0), units::meter_t (DRIVETRAIN_WHEELBASE_METERS / 2.0)),
       m_Kinematics(m_FrontLeftLocation, m_FrontRightLocation, m_BackLeftLocation, m_BackRightLocation),
-      m_Rotation(),
-      m_Odometry(m_Kinematics, m_Rotation, wpi::array<frc::SwerveModulePosition, 4>
-        (m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition()), frc::Pose2d(0_m, 0_m, 0_rad)),
+      m_Rotation(0_rad),
+      m_ModulePositions( wpi::array<frc::SwerveModulePosition, 4>
+         (m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition())),
+      //m_Odometry(m_Kinematics, m_Rotation, m_ModulePositions, frc::Pose2d(0_m, 0_m, 0_rad)),
+      m_Odometry(m_Kinematics, m_Rotation, ( wpi::array<frc::SwerveModulePosition, 4>
+         (m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition())), frc::Pose2d(0_m, 0_m, 0_rad)),
       m_FrontLeftModule(FRONT_LEFT_MODULE_DRIVE_MOTOR, FRONT_LEFT_MODULE_STEER_MOTOR, FRONT_LEFT_MODULE_ENCODER_PORT, -137),
       m_FrontRightModule(FRONT_RIGHT_MODULE_DRIVE_MOTOR, FRONT_RIGHT_MODULE_STEER_MOTOR, FRONT_RIGHT_MODULE_ENCODER_PORT, -287),
       m_BackLeftModule(BACK_LEFT_MODULE_DRIVE_MOTOR, BACK_LEFT_MODULE_STEER_MOTOR, BACK_LEFT_MODULE_ENCODER_PORT, -140.6),
@@ -64,8 +67,9 @@ void DriveTrain::Periodic(){
 
   m_Rotation = frc::Rotation2d(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360))));
 
-  m_Odometry.Update(m_Rotation, wpi::array<frc::SwerveModulePosition, 4>
-        (m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition()));
+  m_ModulePositions = wpi::array<frc::SwerveModulePosition, 4>(m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition());
+
+  m_Odometry.Update(m_Rotation, m_ModulePositions);
     
   // DebugOutF("X: " + std::to_string(m_Odometry.GetPose().X().value()));
   // DebugOutF("Y: " + std::to_string(m_Odometry.GetPose().Y().value()));
