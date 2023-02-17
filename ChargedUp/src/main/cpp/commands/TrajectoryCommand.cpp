@@ -25,7 +25,7 @@ void TrajectoryCommand::Execute() {
     Robot* r = Robot::s_Instance;
     
     r->GetDriveTrain().BaseDrive(
-        r->GetDriveTrain().GetHolonomicController().Calculate(r->GetDriveTrain().GetOdometry()->GetPose(), m_Trajectory.sample(m_Timer.Get()).asWPILibState(), m_Trajectory.sample(m_Timer.Get()).holonomicRotation)
+        r->GetDriveTrain().GetHolonomicController().Calculate(r->GetDriveTrain().GetOdometry()->GetPose(), m_Trajectory.sample(m_Timer.Get()).pose, m_Trajectory.sample(m_Timer.Get()).velocity(), m_Trajectory.sample(m_Timer.Get()).holonomicRotation)
     );   
 }
 

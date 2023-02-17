@@ -62,7 +62,7 @@ void Robot::AutonomousInit() {
   //   frc::Pose2d(1_m, 3_m, 90_deg));
 
   //Load trajectory
-  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(2_mps, 2_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("Triangle", PathConstraints(2_mps, 2_mps_sq));
 
 
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360))), 
