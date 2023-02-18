@@ -53,7 +53,7 @@ void Robot::AutonomousInit() {
 
   frc2::CommandScheduler::GetInstance().CancelAll();
   GetNavX().ZeroYaw();
-  GetNavX().SetAngleAdjustment(-90);
+  GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
 
   // GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360))), 
@@ -94,7 +94,7 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
 
   GetNavX().ZeroYaw();
-  GetNavX().SetAngleAdjustment(-90);
+  GetNavX().SetAngleAdjustment(0);
    
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
@@ -120,7 +120,7 @@ void Robot::TeleopPeriodic() {
   //DebugOutF(std::to_string(Deg2Rad(360-(fmod(((GetDriveTrain().m_BackRightModule.GetSteerController().encoder.GetVoltage() * ENCODER_VOLTAGE_TO_DEGREE) + (360+2)), 360))) / STEER_ENCODER_POSITION_CONSTANT));
   DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().X().value()));
   DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Y().value()));
-  DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Rotation().Degrees().value()) + "/n");
+  DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Rotation().Degrees().value()));
 }
 
 /**
