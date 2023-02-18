@@ -3,6 +3,8 @@
 #include "Util.h"
 #include <math.h>
 
+using namespace frc;
+
 Vision::Vision(){}
 void Vision::VisionInit(){}
 
@@ -34,9 +36,7 @@ DebugOutF("tv: " + std::to_string(tv));
       a2 = angle of target to limelight ty
 
 */
-
-
- void Vision::PushDistance() {
+void Vision::PushDistance() {
   if(true){//kAprilTagID[Robot::GetRobot()->GetCOB().GetTable().GetEntry("/limelight/tid").GetBoolean(false)]){//Short Target
     m_TargetOffsetAngleVertical = Robot::GetRobot()->GetCOB().GetTable().GetEntry("/limelight/ty").GetDouble(0.0);
     m_TotalAngleToTarget = m_TargetOffsetAngleVertical - LIMELIGHT_ANGLE;
@@ -55,7 +55,19 @@ DebugOutF("tv: " + std::to_string(tv));
     //  Robot::GetRobot()->GetCOB().GetTable().GetEntry(COB_KEY_DISTANCE).SetDouble(m_TotalDistanceInCM);
   //  }
 
+}
+
+Pose2d Vision::GetPose(){
+  return Pose2d();
  }
+
+Pose2d Vision::AprilTagRelativePose(){
+  return Pose2d();
+}
+
+Pose2d Vision::CreateAbsolutePose(){
+  return Pose2d();
+}
 
  double Vision::GetDistance(){
     return m_TotalDistanceInCM;
