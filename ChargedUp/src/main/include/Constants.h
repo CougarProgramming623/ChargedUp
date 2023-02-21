@@ -63,5 +63,12 @@
     #define TARGET_HEIGHT_SHORT 31.59125 //cm on the cone roughly 12.5 in
     #define LIMELIGHT_ANGLE  2.25     // degrees
     
+    #define COB_GET_ENTRY Robot::GetRobot()->GetCOB().GetTable().GetEntry
+    
+    #define COB_KEY_IS_RED   "/FMSInfo/IsRedAlliance"
+
     #define COB_KEY_DISTANCE "/COB/distance"
+    #define COB_KEY_BOT_POSE "/limelight/botpose"
+
+
 #endif
