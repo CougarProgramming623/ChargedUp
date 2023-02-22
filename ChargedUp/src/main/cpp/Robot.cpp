@@ -30,6 +30,8 @@ void Robot::RobotInit() {
  */
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+  m_Vision.CalcPose();
+  m_Vision.PrintValues();
 }
 
 /**

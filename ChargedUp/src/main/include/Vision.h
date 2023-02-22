@@ -12,6 +12,7 @@ class Vision {
         Vision();
         void PrintValues();
         void VisionInit();
+        void CalcPose();
 
         Pose2d GetPose();
 
@@ -24,7 +25,7 @@ class Vision {
 
         Pose2d m_AbsolutePose;
 
-        void CalcPose();
+        
 
 
 
