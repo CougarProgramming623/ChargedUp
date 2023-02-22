@@ -25,9 +25,9 @@ void TrajectoryCommand::Execute() {
     Robot* r = Robot::s_Instance;
     
     r->GetDriveTrain().BaseDrive(
-        r->GetDriveTrain().GetHolonomicController().Calculate(r->GetDriveTrain().GetOdometry()->GetPose(), m_Trajectory.sample(m_Timer.Get()).asWPILibState(), /*frc::Rotation2d(units::radian_t(Deg2Rad(90)))*/m_Trajectory.sample(m_Timer.Get()).pose.Rotation())
+        r->GetDriveTrain().GetHolonomicController().Calculate(r->GetDriveTrain().GetOdometry()->GetPose(), m_Trajectory.sample(m_Timer.Get()).asWPILibState(), /*frc::Rotation2d(units::radian_t(Deg2Rad(90)))*/m_Trajectory.sample(m_Timer.Get()).holonomicRotation)
     );
-    DebugOutF("Running");
+    //DebugOutF(std::to_string(m_Trajectory.sample(m_Timer.Get()).holonomicRotation.Degrees().value()));
 }
 
 void TrajectoryCommand::End(bool interrupted){
