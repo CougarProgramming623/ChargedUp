@@ -60,11 +60,12 @@ void Robot::AutonomousInit() {
   //Load trajectory
   PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(1_mps, 1_mps_sq));
 
+  frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), traj.getInitialState().holonomicRotation);
 
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
     wpi::array<frc::SwerveModulePosition, 4>
          (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
-    traj.getInitialHolonomicPose());
+    startingPose);
   
   
   // DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));

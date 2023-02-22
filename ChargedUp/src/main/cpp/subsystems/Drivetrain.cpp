@@ -26,8 +26,8 @@ DriveTrain::DriveTrain()
       m_BackRightModule(BACK_RIGHT_MODULE_DRIVE_MOTOR, BACK_RIGHT_MODULE_STEER_MOTOR, BACK_RIGHT_MODULE_ENCODER_PORT, -2),
       m_ChassisSpeeds{0_mps, 0_mps, 0_rad_per_s}, 
       m_xController(.7, 0.4, 0.2),
-      m_yController(-.7, -0.4, -0.2),
-      m_ThetaController(-15, -15, -0.01, frc::TrapezoidProfile<units::radian>::Constraints{(1/2) * 3.14_rad_per_s, (1/4) * 3.14_rad_per_s / 1_s}),
+      m_yController(.7, 0.4, 0.2),
+      m_ThetaController(15, 15, 0.01, frc::TrapezoidProfile<units::radian>::Constraints{(1/2) * 3.14_rad_per_s, (1/4) * 3.14_rad_per_s / 1_s}),
       m_HolonomicController(m_xController, m_yController, m_ThetaController)
 {}
 
@@ -73,9 +73,9 @@ void DriveTrain::Periodic(){
 
   m_Odometry.Update(m_Rotation, m_ModulePositions);
     
-  // DebugOutF("X: " + std::to_string(m_Odometry.GetPose().X().value()));
-  // DebugOutF("Y: " + std::to_string(m_Odometry.GetPose().Y().value()));
-  // DebugOutF("Deg: " + std::to_string(m_Odometry.GetPose().Rotation().Degrees().value()));
+  DebugOutF("X: " + std::to_string(m_Odometry.GetPose().X().value()));
+  DebugOutF("Y: " + std::to_string(m_Odometry.GetPose().Y().value()));
+  DebugOutF("Deg: " + std::to_string(m_Odometry.GetPose().Rotation().Degrees().value()));
 
 }
 
@@ -83,8 +83,8 @@ void DriveTrain::Periodic(){
 //Converts chassis speed object and updates module states
 void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
   m_ChassisSpeeds = chassisSpeeds;
-  DebugOutF("Y speed: " + std::to_string(Rad2Deg(m_ChassisSpeeds.vy.value())));
-  DebugOutF("Omega: " + std::to_string(Rad2Deg(m_ChassisSpeeds.omega.value())));
+  // DebugOutF("Y speed: " + std::to_string(Rad2Deg(m_ChassisSpeeds.vy.value())));
+  // DebugOutF("Omega: " + std::to_string(Rad2Deg(m_ChassisSpeeds.omega.value())));
   auto [fl, fr, bl, br] = m_Kinematics.ToSwerveModuleStates(m_ChassisSpeeds);
   m_ModuleStates = {fl, fr, bl, br};
 }
@@ -93,6 +93,7 @@ void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
 void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::s_Instance->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
+  //m_ThetaController.EnableContinuousInput(-M_PI, M_PI);
 }
 
 //Sets breakmode

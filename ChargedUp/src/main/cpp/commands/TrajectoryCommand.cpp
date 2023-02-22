@@ -10,6 +10,7 @@ using namespace pathplanner;
 TrajectoryCommand::TrajectoryCommand(PathPlannerTrajectory trajectory) {
     AddRequirements(&Robot::s_Instance->GetDriveTrain());
     m_Trajectory = trajectory;
+
 }
 
 //Start timer
@@ -24,8 +25,13 @@ Passes ChassisSpeed object to BaseDrive() function
 void TrajectoryCommand::Execute() {
     Robot* r = Robot::s_Instance;
     
+    frc::ChassisSpeeds speeds = r->GetDriveTrain().GetHolonomicController().Calculate(r->GetDriveTrain().GetOdometry()->GetPose(), m_Trajectory.sample(m_Timer.Get()).asWPILibState(), /*frc::Rotation2d(units::radian_t(Deg2Rad(90)))*/m_Trajectory.sample(m_Timer.Get()).holonomicRotation);
+
+    speeds.vy = -speeds.vy;
+    speeds.omega = -speeds.omega;
+
     r->GetDriveTrain().BaseDrive(
-        r->GetDriveTrain().GetHolonomicController().Calculate(r->GetDriveTrain().GetOdometry()->GetPose(), m_Trajectory.sample(m_Timer.Get()).asWPILibState(), /*frc::Rotation2d(units::radian_t(Deg2Rad(90)))*/m_Trajectory.sample(m_Timer.Get()).holonomicRotation)
+        speeds
     );
     //DebugOutF(std::to_string(m_Trajectory.sample(m_Timer.Get()).holonomicRotation.Degrees().value()));
 }
