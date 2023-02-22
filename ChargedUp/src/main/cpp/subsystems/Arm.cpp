@@ -33,13 +33,7 @@ void Arm::PrintPosition() {
 }
 
 void Arm::SetButtons() {
-	m_UnlockPivot.WhileHeld(frc2::InstantCommand([&] {m_Pivot.Set(ControlMode::PercentOutput, m_ButtonBoard.GetRawAxis(UP_DOWN_JOYSTICK));}));
-	m_UnlockPivot.WhenReleased(frc2::InstantCommand([&] {m_Pivot.Set(ControlMode::PercentOutput, 0);}));
-
-	m_BrakeButton.WhenPressed(frc2::InstantCommand([&] {ToggleBrakes(true);}));
-	m_BrakeButton.WhenReleased(frc2::InstantCommand([&] {ToggleBrakes(false);})); 
-
-	m_TestingPOTButton.WhenPressed(Telescope(12));
+	m_BrakeButton.WhenPressed(Telescope(2)); //"release"8 button
 }
 
 
@@ -76,22 +70,21 @@ void Arm::ToggleBrakes(bool isBraked) {
 frc2::FunctionalCommand Arm::Telescope(double setpoint) {
 	setpointLength = setpoint;
 	return frc2::FunctionalCommand(
-          [&] {  // onInit
-			DebugOutF(std::to_string(setpointLength));
+		[&] {  // onInit
+		DebugOutF(std::to_string(setpointLength));
+		},[&] {  // onExecute		  	
+		armLength = StringPotUnitsToInches(m_StringPot.GetValue());
 
-          },[&] {  // onExecute		  	
-			armLength = StringPotUnitsToInches(m_StringPot.GetValue());
+		if(armLength < setpointLength) m_Extraction.Set(ControlMode::PercentOutput, .5);
+		else if(armLength > setpointLength) m_Extraction.Set(ControlMode::PercentOutput, -.5);
 
-			if(armLength < setpointLength) m_Extraction.Set(ControlMode::PercentOutput, .5);
-			else if(armLength > setpointLength) m_Extraction.Set(ControlMode::PercentOutput, -.5);
-
-			DebugOutF(std::to_string(armLength));
-			DebugOutF(std::to_string(m_StringPot.GetValue()));
-          }, [&](bool e) {  // onEnd
-			m_Extraction.Set(ControlMode::PercentOutput, 0);
-		  }, [&] {  // isFinished
-				return (abs(armLength - setpointLength) < 1);
-		  });
+		DebugOutF(std::to_string(armLength));
+		DebugOutF(std::to_string(m_StringPot.GetValue()));
+		}, [&](bool e) {  // onEnd
+		m_Extraction.Set(ControlMode::PercentOutput, 0);
+		}, [&] {  // isFinished
+			return (abs(armLength - setpointLength) < .01);
+		});
 }
 
 
