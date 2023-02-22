@@ -25,9 +25,9 @@ DriveTrain::DriveTrain()
       m_BackLeftModule(BACK_LEFT_MODULE_DRIVE_MOTOR, BACK_LEFT_MODULE_STEER_MOTOR, BACK_LEFT_MODULE_ENCODER_PORT, -140.6),
       m_BackRightModule(BACK_RIGHT_MODULE_DRIVE_MOTOR, BACK_RIGHT_MODULE_STEER_MOTOR, BACK_RIGHT_MODULE_ENCODER_PORT, -2),
       m_ChassisSpeeds{0_mps, 0_mps, 0_rad_per_s}, 
-      m_xController(1, 0.4, 0.2),
-      m_yController(1, 0.4, 0.2),
-      m_ThetaController(10, 0.4, 10, frc::TrapezoidProfile<units::radian>::Constraints{6.28_rad_per_s, 3.14_rad_per_s / 1_s}),
+      m_xController(.7, 0.4, 0.2),
+      m_yController(-.7, -0.4, -0.2),
+      m_ThetaController(-15, -15, -.5, frc::TrapezoidProfile<units::radian>::Constraints{(1/2) * 3.14_rad_per_s, (1/4) * 3.14_rad_per_s / 1_s}),
       m_HolonomicController(m_xController, m_yController, m_ThetaController)
 {}
 
@@ -83,6 +83,7 @@ void DriveTrain::Periodic(){
 //Converts chassis speed object and updates module states
 void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
   m_ChassisSpeeds = chassisSpeeds;
+  DebugOutF(std::to_string(Rad2Deg(m_ChassisSpeeds.omega.value())));
   auto [fl, fr, bl, br] = m_Kinematics.ToSwerveModuleStates(m_ChassisSpeeds);
   m_ModuleStates = {fl, fr, bl, br};
 }

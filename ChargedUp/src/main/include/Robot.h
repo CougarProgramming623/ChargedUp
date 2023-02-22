@@ -34,7 +34,7 @@ class Robot : public frc::TimedRobot {
 
   inline frc::Joystick& GetJoyStick() { return m_Joystick; }
 
-  inline double GetAngle() {return fmod(360 - GetNavX().GetYaw(), 360); }
+  double GetAngle() {return fmod(360 - GetNavX().GetYaw(), 360); }
 
   static Robot* s_Instance;
 

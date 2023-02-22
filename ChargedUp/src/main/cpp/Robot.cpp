@@ -58,19 +58,18 @@ void Robot::AutonomousInit() {
   GetDriveTrain().BreakMode(true);
 
   //Load trajectory
-  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(2_mps, 2_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(1_mps, 1_mps_sq));
 
 
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
     wpi::array<frc::SwerveModulePosition, 4>
          (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
     traj.getInitialHolonomicPose());
-
-
   
-  DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
-  DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
-  DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
+  
+  // DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
+  // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
+  // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
 
   frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
 }
@@ -117,9 +116,9 @@ void Robot::TeleopPeriodic() {
   //DebugOutF("Angle: " + std::to_string(-GetNavX().GetYaw()));
   //DebugOutF("Angle2: " + std::to_string(fmod(360 - GetNavX().GetYaw(), 360)));
   //DebugOutF(std::to_string(Deg2Rad(360-(fmod(((GetDriveTrain().m_BackRightModule.GetSteerController().encoder.GetVoltage() * ENCODER_VOLTAGE_TO_DEGREE) + (360+2)), 360))) / STEER_ENCODER_POSITION_CONSTANT));
-  DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().X().value()));
-  DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Y().value()));
-  DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Rotation().Degrees().value()));
+  // DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().X().value()));
+  // DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Y().value()));
+  // DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Rotation().Degrees().value()));
     // DebugOutF("Angle: " + std::to_string(frc::Rotation2d(units::radian_t(Deg2Rad(GetAngle()))).Degrees().value()));
 
 }
