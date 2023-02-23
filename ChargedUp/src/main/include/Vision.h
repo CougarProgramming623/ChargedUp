@@ -13,8 +13,11 @@ class Vision {
         void PrintValues();
         void VisionInit();
         void CalcPose();
+        
+        Pose2d GetPoseBlue();
+        Pose2d GetPoseRed();
+        Pose2d GetfieldPose();
 
-        Pose2d GetPose();
 
     private:
         double m_TargetOffsetAngleVertical;
@@ -24,6 +27,8 @@ class Vision {
         double m_BotPose[6];
 
         Pose2d m_AbsolutePose;
+        const Pose2d kBlueOrigin = Pose2d(units::meter_t(0), units::meter_t(0), units::radian_t(0)); //FIX
+        const Pose2d kRedOrigin = Pose2d(units::meter_t(0), units::meter_t(0), units::radian_t(0)); //FIX
 
         
 

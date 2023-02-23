@@ -19,10 +19,6 @@ DebugOutF("tx: " + std::to_string((double) m_AbsolutePose.X()));
 DebugOutF("ty: " + std::to_string((double) m_AbsolutePose.Y()));
 }
 
-Pose2d Vision::GetPose(){ 
-  CalcPose();
-  return m_AbsolutePose; 
-}
 
 void Vision::CalcPose(){
 
@@ -51,5 +47,16 @@ void Vision::CalcPose(){
 
 }
 
+Pose2d Vision::GetPoseBlue(){
+  return m_AbsolutePose;
+}
+Pose2d Vision::GetPoseRed(){
+  return m_AbsolutePose;
+}
+
+Pose2d Vision::GetfieldPose(){ 
+  CalcPose();
+  return m_AbsolutePose; 
+}
 
 
