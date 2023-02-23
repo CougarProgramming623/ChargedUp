@@ -40,7 +40,9 @@ void Robot::RobotPeriodic() {
  * can use it to reset any subsystem information you want to clear when the
  * robot is disabled.
  */
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() {
+  GetDriveTrain().BreakMode(false);
+}
 
 void Robot::DisabledPeriodic() {}
 
@@ -58,7 +60,7 @@ void Robot::AutonomousInit() {
   GetDriveTrain().BreakMode(true);
 
   //Load trajectory
-  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(1_mps, 1_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(4_mps, 4_mps_sq));
 
   frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), traj.getInitialState().holonomicRotation);
 
@@ -92,6 +94,7 @@ void Robot::TeleopInit() {
 
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
+  GetDriveTrain().BreakMode(true);
    
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
