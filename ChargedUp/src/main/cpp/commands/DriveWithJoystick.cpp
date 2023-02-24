@@ -3,7 +3,7 @@
 #include "frc/kinematics/ChassisSpeeds.h"
 
 DriveWithJoystick::DriveWithJoystick() {
-    AddRequirements(&Robot::s_Instance->GetDriveTrain());
+    AddRequirements(&Robot::GetRobot()->GetDriveTrain());
 }
 
 //DriveWithJoystick::~DriveWithJoystick(){}
@@ -20,7 +20,9 @@ double DriveWithJoystick::Deadfix(double in, double deadband) {
 
 //Take joystick input, convert to ChassisSpeeds object, and pass to BaseDrive() function
 void DriveWithJoystick::Execute() {
-    Robot* r = Robot::s_Instance;    
+    Robot* r = Robot::GetRobot();
+    DebugOutF(std::to_string(fmod(360 + 90 - r->GetNavX().GetAngle(), 360)));
+    
     r->GetDriveTrain().BaseDrive(
         frc::ChassisSpeeds::FromFieldRelativeSpeeds(
             units::meters_per_second_t(-Deadfix(r->GetJoyStick().GetRawAxis(1), 0.15) * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND),

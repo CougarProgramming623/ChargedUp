@@ -4,16 +4,22 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include <frc/TimedRobot.h>
+#include <frc2/command/CommandPtr.h>
+
 #include <frc2/command/Command.h>
-#include <AHRS.h>
-#include <frc/Joystick.h>
 
 #include <pathplanner/lib/PathPlanner.h>
 #include "RobotContainer.h"
 #include "subsystems/DriveTrain.h"
+#include <AHRS.h>
+#include <frc/Joystick.h>
+#include <COB.h>
 
 class Robot : public frc::TimedRobot {
  public:
+
+  Robot();
+
   void RobotInit() override;
   void RobotPeriodic() override;
   void DisabledInit() override;
@@ -23,23 +29,34 @@ class Robot : public frc::TimedRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
-
+  //void SimulationInit() override;
+  //void SimulationPeriodic() override;
 
   inline AHRS& GetNavX() { return m_NavX; }
   inline void zeroGyroscope() {m_NavX.ZeroYaw();}
+  inline double getYaw() {return m_NavX.GetYaw();}
+  inline double getPitch() {return m_NavX.GetPitch();}
 
-  static Robot* GetRobot() { return s_Instance; }
 
+  static Robot* GetRobot() { return s_Instance; } 
   inline DriveTrain& GetDriveTrain() { return m_DriveTrain; }
-
   inline frc::Joystick& GetJoyStick() { return m_Joystick; }
 
   double GetAngle() {return fmod(360 - GetNavX().GetYaw(), 360); }
+  inline COB& GetCOB() { return m_COB; }
 
-  static Robot* s_Instance;
-
+  double previousErrorX = 0;
+  double previousErrorY = 0;
+  double dErrorY = 0;
+  double previousErrorT = 0;
+  
+  double previousValueX = 0;
+  double previousValueY = 0;
+  double previousValueT = 0;
 
  private:
+
+  static Robot* s_Instance;
 
   AHRS m_NavX{frc::SPI::Port::kMXP};
 
@@ -53,4 +70,6 @@ class Robot : public frc::TimedRobot {
 
   frc::Timer m_AutoTimer;
   DriveTrain m_DriveTrain;
+
+  COB m_COB;
 };

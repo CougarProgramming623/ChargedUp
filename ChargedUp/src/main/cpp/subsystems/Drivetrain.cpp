@@ -65,7 +65,7 @@ void DriveTrain::Periodic(){
     m_BackRightModule.Set(m_ModuleStates[3].speed / kMAX_VELOCITY_METERS_PER_SECOND * kMAX_VOLTAGE, (double) m_ModuleStates[3].angle.Radians());
   }
 
-  m_Rotation = frc::Rotation2d(units::radian_t(Deg2Rad(Robot::s_Instance->GetAngle())));
+  m_Rotation = frc::Rotation2d(units::radian_t(Deg2Rad(Robot::GetRobot()->GetAngle())));
 
   //m_Rotation = frc::Rotation2d(frc::Rotation2d(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360)))).Cos(), -frc::Rotation2d(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - Robot::s_Instance->GetNavX().GetAngle(), 360)))).Sin());
 
@@ -91,7 +91,7 @@ void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
 
 //Initializes rotation angle and default command
 void DriveTrain::DriveInit(){
-  m_Rotation = frc::Rotation2d(units::radian_t(Robot::s_Instance->GetNavX().GetAngle()));
+  m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
   //m_ThetaController.EnableContinuousInput(-M_PI, M_PI);
 }

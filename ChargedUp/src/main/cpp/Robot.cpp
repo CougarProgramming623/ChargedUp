@@ -13,14 +13,23 @@
 #include <frc/kinematics/SwerveModulePosition.h>
 
 using namespace pathplanner;
+#include <frc/RobotController.h>
+
 
 Robot* Robot::s_Instance = nullptr;
 
+Robot::Robot() {
+
+  s_Instance = this;
+}
+
 void Robot::RobotInit() {
+
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
   s_Instance = this;
   m_DriveTrain.DriveInit();
+  
 }
 
 /**
