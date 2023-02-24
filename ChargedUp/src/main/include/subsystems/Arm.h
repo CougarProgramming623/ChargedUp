@@ -31,13 +31,11 @@ class Arm {
 
 	Arm();
 	void Init();
-	void PrintPosition();
-
 	void SetButtons();
 
 	inline double PivotDegToTicks(double degree) {return degree * PIVOT_TICKS_PER_ARM_DEGREE;} //converts degrees to ticks of Pivot motor
 	inline double PivotTicksToDeg(double ticks) {return ticks / PIVOT_TICKS_PER_ARM_DEGREE;} //converts ticks to degrees of arm rotation
-	inline double StringPotUnitsToInches(double units) {return (units - 166) * STRING_POT_INCHES_PER_TICK;}
+	inline double StringPotUnitsToInches(double units) {return (units - 166) * STRING_POT_INCHES_PER_TICK;} //166 = length of slider
 	inline double InchesToStringPotUnits(double inches) {return inches / STRING_POT_INCHES_PER_TICK;}
 
 	frc2::FunctionalCommand PivotToPosition(double angle); 
@@ -45,16 +43,21 @@ class Arm {
 
 	frc2::FunctionalCommand Telescope(double setpoint); //3988 - 4058 +-2 on both bounds?
 
+	frc2::FunctionalCommand Squeeze(bool shouldSqueeze);
+
 	private:
 	
+	//class constants
 	bool m_brakesActive = false;
-	double startingTicks; //current ticks of encoder after movement
-	double setpoint;
-	double ticksToMove;
-	double angle;
+	double TicksToUndoSqueeze = 0;
+	
+	double StartingTicks; //current ticks of encoder after movement
+	double Setpoint;
+	double TicksToMove;
+	double Angle;
 
-	double setpointLength;
-	double armLength;
+	double SetpointLength;
+	double ArmLength;
 
 	TalonFX m_Pivot;
 	TalonFX m_Extraction;
@@ -64,9 +67,8 @@ class Arm {
 	frc::Servo m_LeftBrake;
 	// frc::Servo m_RightBrake;
 	
-	frc::Joystick m_ButtonBoard = frc::Joystick(0);
-	frc2::Button m_UnlockPivot;
-	frc2::Button m_BrakeButton;
-	frc2::Button m_TestingPOTButton;
+	// frc::Joystick m_ButtonBoard = frc::Joystick(0);
+	frc::Joystick m_Joystick = frc::Joystick(1);
+	frc2::Button m_TestJoystickButton;
 
 };

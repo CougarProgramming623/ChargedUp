@@ -8,9 +8,7 @@ Arm::Arm() :
 	m_Extraction(EXTRACTION_MOTOR),
 	m_LeftBrake(LEFT_BRAKE),
 	// m_RightBrake(RIGHT_BRAKE),
-	m_UnlockPivot([&] {return m_ButtonBoard.GetRawButton(TELE_NUKE);}),
-	m_BrakeButton([&] {return m_ButtonBoard.GetRawButton(RELEASE_BUTTON);}),
-	m_TestingPOTButton([&]{return m_ButtonBoard.GetRawButton(FEED_BUTTON);})
+	m_TestJoystickButton([&] {return m_Joystick.GetRawButton(1);})
 	{}
 
 void Arm::Init() {
@@ -18,40 +16,34 @@ void Arm::Init() {
 	// m_RightBrake.Set(0);
 	m_Pivot.SetSelectedSensorPosition(0);
 	SetButtons();
-
-	m_Pivot.ConfigAllowableClosedloopError(0.0, 0.0, 0.0);
-	m_Pivot.Config_kP(0.0, 0, 0.0);
-	m_Pivot.Config_kI(0.0, 0, 0.0);
-	m_Pivot.Config_kD(0.0, 0, 0.0);
-	m_Pivot.Config_kF(0.0, 0, 0.0);
+	ToggleBrakes(true);
 	m_Pivot.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	m_Extraction.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
 }
 
-void Arm::PrintPosition() {
-	DebugOutF(std::to_string(m_Pivot.GetSelectedSensorPosition()));
-}
+
 
 void Arm::SetButtons() {
-	m_BrakeButton.WhenPressed(Telescope(2)); //"release"8 button
+	m_TestJoystickButton.WhenPressed(Telescope(2));
 }
 
 
 frc2::FunctionalCommand Arm::PivotToPosition(double angleSetpoint) {
-	angle = angleSetpoint;
+	Angle = angleSetpoint;
 	return frc2::FunctionalCommand(
           [&] {  // onInit
-			startingTicks = m_Pivot.GetSelectedSensorPosition();
+			StartingTicks = m_Pivot.GetSelectedSensorPosition();
 			double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition()); //current angle of the arm
-			double degToMove = angle - currentAngle; //how many degrees the arm needs to move in the correct direction
-			ticksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
-			setpoint = startingTicks + ticksToMove;
+			double degToMove = Angle - currentAngle; //how many degrees the arm needs to move in the correct direction
+			TicksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
+			Setpoint = StartingTicks + TicksToMove;
           },[&] {  // onExecute		  	
-			m_Pivot.Set(ControlMode::Position, setpoint);
+			m_Pivot.Set(ControlMode::Position, Setpoint);
           }, [&](bool e) {  // onEnd
 			m_Pivot.Set(ControlMode::PercentOutput, 0);
 		  }, [&] {  // isFinished
-			return (abs(m_Pivot.GetSelectedSensorPosition() - setpoint) < 200); //deadband of 100 ticks 
+			return (abs(m_Pivot.GetSelectedSensorPosition() - Setpoint) < 200); //deadband of 100 ticks 
 		  });
 }
 
@@ -64,40 +56,55 @@ void Arm::ToggleBrakes(bool isBraked) {
 		m_LeftBrake.Set(0);
 		// m_RightBrake.Set(0);
 	}
+	m_brakesActive = isBraked;
 }
 
 //length should be a setpoint in inches || assumes forward power is increase length
-frc2::FunctionalCommand Arm::Telescope(double setpoint) {
-	setpointLength = setpoint;
+frc2::FunctionalCommand Arm::Telescope(double Setpoint) {
+	SetpointLength = Setpoint;
 	return frc2::FunctionalCommand(
 		[&] {  // onInit
-		DebugOutF(std::to_string(setpointLength));
+		ToggleBrakes(false);
+		DebugOutF(std::to_string(SetpointLength));
 		},[&] {  // onExecute		  	
-		armLength = StringPotUnitsToInches(m_StringPot.GetValue());
+		ArmLength = StringPotUnitsToInches(m_StringPot.GetValue());
 
-		if(armLength < setpointLength) m_Extraction.Set(ControlMode::PercentOutput, .5);
-		else if(armLength > setpointLength) m_Extraction.Set(ControlMode::PercentOutput, -.5);
+		if(ArmLength < SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, .5);
+		else if(ArmLength > SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, -.5);
 
-		DebugOutF(std::to_string(armLength));
+		DebugOutF(std::to_string(ArmLength));
 		DebugOutF(std::to_string(m_StringPot.GetValue()));
 		}, [&](bool e) {  // onEnd
-		m_Extraction.Set(ControlMode::PercentOutput, 0);
+			ToggleBrakes(true);
+			m_Extraction.Set(ControlMode::PercentOutput, 0);
 		}, [&] {  // isFinished
-			return (abs(armLength - setpointLength) < .01);
+			return (abs(ArmLength - SetpointLength) < .01);
 		});
 }
 
-
-
-//------------------------------------------------------------------------------------------------------------------- constant might be used later dont delete
-// 	//angles use parallel to ground on side of arm as zero
-// 	double coneAngles[] = {49.74, 44.83}; // {low target angle, high target angle}
-// 	double cubeAngles[] = {30.14, 25.90}; // {low target angle, high target angle}
-
-// 	double coneArmLengths[] = {40.62, 60.99}; //same as cone arrays (in inches)
-// 	double cubeArmLengths[] = {40.83, 74.41}; // ^^^
-
-// void Arm::LoadingReady() {
-// 	Telescope(38.19);
-// 	PivotToPosition(103.43);
-// }
+frc2::FunctionalCommand Arm::Squeeze(bool shouldSqueeze) {	
+	if(shouldSqueeze) {
+		return frc2::FunctionalCommand( [&] { //onInit
+			TicksToUndoSqueeze = m_Extraction.GetSelectedSensorPosition();
+			m_Extraction.Set(ControlMode::PercentOutput, 1);
+		}, [&] {//onExecute
+			//empty
+		}, [&](bool e) {//onEnd
+			m_Extraction.Set(ControlMode::PercentOutput, 0);
+			TicksToUndoSqueeze = TicksToUndoSqueeze - m_Extraction.GetSelectedSensorPosition();
+		}, [&] {//isFinished
+			return m_Extraction.GetSupplyCurrent() < SQUEEZE_AMP_THRESHHOLD;
+		});}
+	else {
+		return frc2::FunctionalCommand( [&] { //onInit
+			TicksToUndoSqueeze = m_Extraction.GetSelectedSensorPosition() - TicksToUndoSqueeze;
+			m_Extraction.Set(ControlMode::Position, TicksToUndoSqueeze);
+		}, [&] {//onExecute
+			//empty
+		}, [&](bool e) {//onEnd
+			m_Extraction.Set(ControlMode::PercentOutput, 0);
+		}, [&] {//isFinished
+			return m_Extraction.GetSelectedSensorPosition() - TicksToUndoSqueeze  < 100; 
+		});
+		}
+	}
