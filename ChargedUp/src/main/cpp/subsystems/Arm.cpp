@@ -7,13 +7,11 @@ Arm::Arm() :
 	m_Pivot(PIVOT_MOTOR),
 	m_Extraction(EXTRACTION_MOTOR),
 	m_LeftBrake(LEFT_BRAKE),
-	// m_RightBrake(RIGHT_BRAKE),
+	m_RightBrake(RIGHT_BRAKE),
 	m_TestJoystickButton([&] {return m_Joystick.GetRawButton(1);})
 	{}
 
 void Arm::Init() {
-	// m_LeftBrake.Set(0);
-	// m_RightBrake.Set(0);
 	m_Pivot.SetSelectedSensorPosition(0);
 	SetButtons();
 	ToggleBrakes(true);
@@ -51,10 +49,10 @@ frc2::FunctionalCommand Arm::PivotToPosition(double angleSetpoint) {
 void Arm::ToggleBrakes(bool isBraked) {
 	if (isBraked) {
 		m_LeftBrake.Set(1);
-		// m_RightBrake.Set(1);	
+		m_RightBrake.Set(1);	
 	} else { 
 		m_LeftBrake.Set(0);
-		// m_RightBrake.Set(0);
+		m_RightBrake.Set(0);
 	}
 	m_brakesActive = isBraked;
 }
@@ -72,8 +70,6 @@ frc2::FunctionalCommand Arm::Telescope(double Setpoint) {
 		if(ArmLength < SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, .5);
 		else if(ArmLength > SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, -.5);
 
-		DebugOutF(std::to_string(ArmLength));
-		DebugOutF(std::to_string(m_StringPot.GetValue()));
 		}, [&](bool e) {  // onEnd
 			ToggleBrakes(true);
 			m_Extraction.Set(ControlMode::PercentOutput, 0);
@@ -93,7 +89,7 @@ frc2::FunctionalCommand Arm::Squeeze(bool shouldSqueeze) {
 			m_Extraction.Set(ControlMode::PercentOutput, 0);
 			TicksToUndoSqueeze = TicksToUndoSqueeze - m_Extraction.GetSelectedSensorPosition();
 		}, [&] {//isFinished
-			return m_Extraction.GetSupplyCurrent() < SQUEEZE_AMP_THRESHHOLD;
+			return m_Extraction.GetSupplyCurrent() < SQUEEZE_AMP_THRESHOLD;
 		});}
 	else {
 		return frc2::FunctionalCommand( [&] { //onInit
@@ -108,3 +104,35 @@ frc2::FunctionalCommand Arm::Squeeze(bool shouldSqueeze) {
 		});
 		}
 	}
+
+//sets arm to a set angle and radius based on element being places; rows and column read top to bottom and left to right respectively
+//type can be either CONE or CUBE
+void Arm::PlaceElement(int type, int row, int column = 1) {
+	//index 0 is TL; index 8 is BR (read like a book)
+	double RadiiValues[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //inches
+	double AngleValues[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //degrees
+	int ArrayValueNeeded = (row*3) + column;
+
+	PivotToPosition(AngleValues[ArrayValueNeeded]);
+	Telescope(RadiiValues[ArrayValueNeeded]);
+	if(type = CONE) PivotToPosition(AngleValues[ArrayValueNeeded]-2); //get cone closer to pole
+	Squeeze(false);
+	if(type = CONE) PivotToPosition(AngleValues[ArrayValueNeeded]+2);
+}
+
+//Gets arm as short as possible and in the bot
+void Arm::TransitMode() {
+	PivotToPosition(145);
+	Telescope(0);
+}
+
+//Gets arm ready to load from shelf || boolean represents if loading should be from the same side as the arm is mounted 
+void Arm::LoadReady(bool isOnSameSide) {
+	if (isOnSameSide) {
+		PivotToPosition(29.8728516038);
+		Telescope(65);
+	} else {
+		PivotToPosition(150.127148396);
+		Telescope(65);
+	}
+}

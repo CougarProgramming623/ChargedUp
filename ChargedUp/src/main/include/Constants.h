@@ -10,9 +10,6 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 
 #ifdef ARM
 
-#define SLIDER
-//#define STRING_POT
-
 //motor and sensor IDs
 #define EXTRACTION_MOTOR 53
 #define PIVOT_MOTOR 32 
@@ -26,14 +23,13 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define PIVOT_TICKS_PER_ARM_DEGREE 6.75*2048/360
 #define EXTRACTION_GEAR_RATIO 1 //NOT CORRECT- UPDATE VARIABLES
 #define EXTRACTION_BAR_CIRCUMFERENCE 1 //NOT CORRECT- NEEDS TO BE UPDATED || MUST BE IN INCHES
-#define SQUEEZE_AMP_THRESHHOLD -1
-
-#ifdef SLIDER
-#define STRING_POT_INCHES_PER_TICK 0.00348432055
-#endif
-#ifdef STRING_POT
+#define SQUEEZE_AMP_THRESHOLD -1
+#define SLIDER_INCHES_PER_TICK 0.00348432055
 #define STRING_POT_INCHES_PER_TICK -1 //UPDATE
-#endif
+
+//keywords
+#define CONE 0
+#define CUBE 1
 
 //button IDs
 #define TELE_NUKE 9
