@@ -62,8 +62,8 @@ void AutoBalance::Execute() {
     outputY = (std::abs(outputY) > 1) ? 1 : outputY;
     outputT = (std::abs(outputT) > 1) ? 1 : outputT;
 
-    outputY = (m_currentAngleT >= 90 && m_currentAngleT <= 270) ? -1*outputY : outputY;
-    outputX = (m_currentAngleT >= 0 && m_currentAngleT <= 180) ? -1*outputX : outputX;
+    outputY = (m_currentAngleT >= 90 && m_currentAngleT <= 270) ? outputY : -outputY;
+    outputX = (m_currentAngleT >= 0 && m_currentAngleT <= 180) ? -outputX : outputX;
 
     Robot *r = Robot::GetRobot();
     
