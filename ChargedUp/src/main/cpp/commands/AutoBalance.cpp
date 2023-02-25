@@ -17,9 +17,9 @@ void AutoBalance::Initialize() {
 
 void AutoBalance::Execute() {
 
-    double kPy = 0.00005;
-    double kIy = 0.0000001;
-    double kDy = 0.0001;
+    double kPy = 0.01;//0.00005;
+    double kIy = 0;//0.0000001;
+    double kDy = 0;//0.0001;
 
     double kPx = 0.01;
     double kIx = 0;
@@ -27,9 +27,9 @@ void AutoBalance::Execute() {
     double kPt = 0.01;
     double kIt = 0;
 
-    double m_currentAngleY = Robot::GetRobot()->GetNavX().GetPitch() + 0.05;
-    double m_currentAngleX = Robot::GetRobot()->GetNavX().GetRoll();
-    double m_currentAngleT = Robot::GetRobot()->GetNavX().GetYaw(); 
+    double m_currentAngleY = Robot::GetRobot()->GetNavX().GetPitch() + 0.5;
+    double m_currentAngleX = Robot::GetRobot()->GetNavX().GetRoll() + 0.5;
+    double m_currentAngleT = Robot::GetRobot()->GetAngle(); 
 
     double errorX = 0 /*setpoint constant*/ - m_currentAngleX;
     double errorY = 0 /*setpoint constant*/ - m_currentAngleY;
@@ -41,8 +41,9 @@ void AutoBalance::Execute() {
     }
 
     //double outputX = Robot::GetRobot()->previousValueX + (kPx * errorX) + (kIx * (Robot::GetRobot()->previousErrorX));
-    double outputY = Robot::GetRobot()->previousValueY + (kPy * errorY) + (kIy * (Robot::GetRobot()->previousErrorY)) + (kDy * (errorY - Robot::GetRobot()->dErrorY) / (0.02));
+    //double outputY = Robot::GetRobot()->previousValueY + (kPy * errorY) + (kIy * (Robot::GetRobot()->previousErrorY)) + (kDy * (errorY - Robot::GetRobot()->dErrorY) / (0.02));
     //double outputY = (kPy * errorY) + (kDy * (errorY - Robot::GetRobot()->previousErrorY) / (0.02));
+    double outputY = (kPy * errorY);
     double outputX = (kPx * errorX);
     double outputT = (kPt * errorT);
     //double outputT = Robot::GetRobot()->previousValueT + (kPt * errorT) + (kIt * (Robot::GetRobot()->previousErrorT));
@@ -61,15 +62,18 @@ void AutoBalance::Execute() {
     outputY = (std::abs(outputY) > 1) ? 1 : outputY;
     outputT = (std::abs(outputT) > 1) ? 1 : outputT;
 
+    outputY = (m_currentAngleT >= 90 && m_currentAngleT <= 270) ? -1*outputY : outputY;
+    outputX = (m_currentAngleT >= 0 && m_currentAngleT <= 180) ? -1*outputX : outputX;
+
     Robot *r = Robot::GetRobot();
     
     r->GetDriveTrain().BaseDrive(
         frc::ChassisSpeeds::FromFieldRelativeSpeeds(
             //units::meters_per_second_t(0 * outputX * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //x
-            units::meters_per_second_t(-outputY * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //y
-            units::meters_per_second_t(0 * outputX * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //x
+            units::meters_per_second_t(outputY * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //y
+            units::meters_per_second_t(outputX * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //x
             units::radians_per_second_t(/*outputT*/0 * r->GetDriveTrain().kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND), //rotation
-            frc::Rotation2d(units::radian_t(Deg2Rad(-fmod(360 - r->GetNavX().GetAngle(), 360))))
+            frc::Rotation2d(units::radian_t(/*Deg2Rad(-fmod(360 - r->GetNavX().GetAngle(), 360)*/0))
         )
     );
     // DebugOutF("Error: " + std::to_string(errorY));
