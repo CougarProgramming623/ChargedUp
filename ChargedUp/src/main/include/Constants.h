@@ -69,7 +69,7 @@
 
     #define COB_KEY_DISTANCE "/COB/distance"
     #define COB_KEY_BOT_POSE "/limelight/botpose"
-    #define COB_KEY_TV "/imelight/tv"
+    #define COB_KEY_TV "/limelight/tv"
 
 
 #endif

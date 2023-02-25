@@ -66,6 +66,7 @@ void Robot::TeleopInit() {
   }
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(-90);
+  DebugOutF("Tele init");
 }
 
 /**
@@ -74,6 +75,7 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
   m_Vision.CalcPose();
+  m_Vision.PrintValues();
 }
 
 /**
