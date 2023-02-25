@@ -14,10 +14,11 @@ public:
 
   void Initialize() override;
   void Execute() override;
+  void End(bool interrupted) override;
 
  private:
   double m_currentAngleX;
   double m_currentAngleY;
   double m_currentAngleT;
-
+  bool m_IsBalancing;
 };

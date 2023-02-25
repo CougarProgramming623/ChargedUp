@@ -21,7 +21,7 @@ double DriveWithJoystick::Deadfix(double in, double deadband) {
 //Take joystick input, convert to ChassisSpeeds object, and pass to BaseDrive() function
 void DriveWithJoystick::Execute() {
     Robot* r = Robot::GetRobot();
-    DebugOutF(std::to_string(fmod(360 + 90 - r->GetNavX().GetAngle(), 360)));
+    //DebugOutF(std::to_string(fmod(360 + 90 - r->GetNavX().GetAngle(), 360)));
     
     r->GetDriveTrain().BaseDrive(
         frc::ChassisSpeeds::FromFieldRelativeSpeeds(

@@ -37,6 +37,7 @@
 #include <frc/geometry/Pose2d.h>
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <pathplanner/lib/PathPlanner.h>
+#include <frc2/command/button/Button.h>
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
 
@@ -63,6 +64,15 @@ class DriveTrain : public frc2::SubsystemBase {
 
   inline std::array<frc::SwerveModulePosition, 4> GetModulePositions(){ return m_ModulePositions; }
 
+  inline bool GetIsBalancing() { return m_IsBalancing; }
+  inline void SetIsBalancing(bool b) { m_IsBalancing = b; }
+
+  frc2::FunctionalCommand AutoBalanceCommand();
+  void AutoBalanceFunction();
+
+  //TrajectoryCommand DriveTrain::DriveToPos();
+
+
 //how fast the robot should be able to drive
   const units::meters_per_second_t kMAX_VELOCITY_METERS_PER_SECOND = units::meters_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI);
 
@@ -79,6 +89,10 @@ class DriveTrain : public frc2::SubsystemBase {
   const units::radians_per_second_t kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = units::radians_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI / std::sqrt(Pow((DRIVETRAIN_TRACKWIDTH_METERS / 2), 2) + Pow((DRIVETRAIN_WHEELBASE_METERS / 2), 2)));
 
   private:
+
+  frc2::Button m_TestJoystickButton;
+
+  bool m_IsBalancing;
 
   frc::SwerveDriveKinematics<4> m_Kinematics;
   frc::SwerveDriveOdometry<4> m_Odometry;

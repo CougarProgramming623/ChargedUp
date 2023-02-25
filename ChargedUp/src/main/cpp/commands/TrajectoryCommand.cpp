@@ -42,5 +42,5 @@ void TrajectoryCommand::End(bool interrupted){
 
 //End command when close to intended pose
 bool TrajectoryCommand::IsFinished(){
-    return false;
+    return m_Trajectory.getTotalTime() + .5_s < m_Timer.Get();
 }

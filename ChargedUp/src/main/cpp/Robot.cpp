@@ -125,6 +125,7 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
   
   frc2::CommandScheduler::GetInstance().Run();
+  //frc2::CommandScheduler::GetInstance().Schedule(new AutoBalance());
 
   //DebugOutF("Angle: " + std::to_string(-GetNavX().GetYaw()));
   //DebugOutF("Angle2: " + std::to_string(fmod(360 - GetNavX().GetYaw(), 360)));

@@ -6,6 +6,7 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc2/command/SwerveControllerCommand.h>
 #include <frc/Timer.h>
+#include <./commands/TrajectoryCommand.h>
 
 //Constructor
 DriveTrain::DriveTrain()
@@ -28,8 +29,10 @@ DriveTrain::DriveTrain()
       m_xController(.7, 0.4, 0.2),
       m_yController(.7, 0.4, 0.2),
       m_ThetaController(15.5, 25, 0.01, frc::TrapezoidProfile<units::radian>::Constraints{3.14_rad_per_s, (1/2) * 3.14_rad_per_s / 1_s}),
-      m_HolonomicController(m_xController, m_yController, m_ThetaController)
-{}
+      m_HolonomicController(m_xController, m_yController, m_ThetaController),
+      m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);})
+{
+}
 
 /*
 Is called periodically
@@ -73,12 +76,34 @@ void DriveTrain::Periodic(){
 
   m_Odometry.Update(m_Rotation, m_ModulePositions);
     
-  DebugOutF("X: " + std::to_string(m_Odometry.GetPose().X().value()));
-  DebugOutF("Y: " + std::to_string(m_Odometry.GetPose().Y().value()));
-  DebugOutF("Deg: " + std::to_string(m_Odometry.GetPose().Rotation().Degrees().value()));
+  // DebugOutF("X: " + std::to_string(m_Odometry.GetPose().X().value()));
+  // DebugOutF("Y: " + std::to_string(m_Odometry.GetPose().Y().value()));
+  // DebugOutF("Deg: " + std::to_string(m_Odometry.GetPose().Rotation().Degrees().value()));
 
 }
 
+// void DriveTrain::AutoBalanceFunction(){
+//   if(!GetIsBalancing()){
+//       frc2::CommandScheduler::GetInstance().Schedule(&m_BalanceCommand);
+//       DebugOutF("Start");
+//       SetIsBalancing(true);
+//     } else if (GetIsBalancing()) {
+//       frc2::CommandScheduler::GetInstance().Cancel(&m_BalanceCommand);
+//       DebugOutF("End");
+//       SetIsBalancing(false);
+//     }
+// }
+
+// frc2::FunctionalCommand DriveTrain::AutoBalanceCommand(){
+//     return frc2::FunctionalCommand(
+//       [&]{},
+//       [&]{},
+//       [&](bool e){
+//         AutoBalanceFunction();
+//       },
+//       [&] {return true;}
+//     );
+// }
 
 //Converts chassis speed object and updates module states
 void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
@@ -89,10 +114,15 @@ void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
   m_ModuleStates = {fl, fr, bl, br};
 }
 
+// TrajectoryCommand DriveTrain::DriveToPos(){
+
+// }
+
 //Initializes rotation angle and default command
 void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
+  m_TestJoystickButton.WhenHeld(AutoBalance());
   //m_ThetaController.EnableContinuousInput(-M_PI, M_PI);
 }
 

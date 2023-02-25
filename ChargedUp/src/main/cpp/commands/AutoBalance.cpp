@@ -1,11 +1,13 @@
 #include "commands/AutoBalance.h"
 #include "Robot.h"
 
-AutoBalance:: AutoBalance() {
+AutoBalance::AutoBalance() {
     AddRequirements(&Robot::GetRobot()->GetDriveTrain());
+    DebugOutF("Constructed");
 }
 
 void AutoBalance::Initialize() {
+    //DebugOutF("Initialized");
     bool balanced = false;
     double angle = Robot::GetRobot()->GetNavX().GetPitch() + 0.05;
     Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/pitchAngle").SetDouble(Robot::GetRobot()->GetNavX().GetPitch() + 0.05);
@@ -63,13 +65,18 @@ void AutoBalance::Execute() {
     
     r->GetDriveTrain().BaseDrive(
         frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-            units::meters_per_second_t(/*outputX*/0 * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //x
+            //units::meters_per_second_t(0 * outputX * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //x
             units::meters_per_second_t(-outputY * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //y
+            units::meters_per_second_t(0 * outputX * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //x
             units::radians_per_second_t(/*outputT*/0 * r->GetDriveTrain().kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND), //rotation
-            frc::Rotation2d(units::radian_t(Deg2Rad(-fmod(360 - 180 + 90 - r->GetNavX().GetAngle(), 360))))
+            frc::Rotation2d(units::radian_t(Deg2Rad(-fmod(360 - r->GetNavX().GetAngle(), 360))))
         )
     );
-    DebugOutF("Error: " + std::to_string(errorY));
-    DebugOutF("Output: " + std::to_string(outputY));
+    // DebugOutF("Error: " + std::to_string(errorY));
+    // DebugOutF("Output: " + std::to_string(outputY));
     Robot::GetRobot()->dErrorY = errorY;
+}
+
+void AutoBalance::End(bool interrupted){
+    //DebugOutF("Finished");
 }
