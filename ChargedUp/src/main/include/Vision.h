@@ -29,8 +29,8 @@ class Vision {
         int m_timer = 0;
 
         Pose2d m_AbsolutePose;
-        const Pose2d kBlueOrigin = Pose2d(units::meter_t(-813.816), units::meter_t(-400.812), units::radian_t(0)); 
-        const Pose2d kRedOrigin = Pose2d(units::meter_t(0), units::meter_t(0), units::radian_t(0)); //FIX
+        const Pose2d kBlueOrigin = Pose2d(units::meter_t(-8.255), units::meter_t(-4.00812), units::radian_t(0));  //FIX
+        const Pose2d kRedOrigin = Pose2d(units::meter_t(8.12816), units::meter_t(-4.00812), units::radian_t(0));    //FIX
 
         
 
