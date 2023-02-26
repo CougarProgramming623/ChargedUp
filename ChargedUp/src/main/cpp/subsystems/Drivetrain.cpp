@@ -6,7 +6,6 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc2/command/SwerveControllerCommand.h>
 #include <frc/Timer.h>
-#include <./commands/TrajectoryCommand.h>
 
 //Constructor
 DriveTrain::DriveTrain()
@@ -76,9 +75,9 @@ void DriveTrain::Periodic(){
 
   m_Odometry.Update(m_Rotation, m_ModulePositions);
     
-  // DebugOutF("X: " + std::to_string(m_Odometry.GetPose().X().value()));
-  // DebugOutF("Y: " + std::to_string(m_Odometry.GetPose().Y().value()));
-  // DebugOutF("Deg: " + std::to_string(m_Odometry.GetPose().Rotation().Degrees().value()));
+  // DebugOutF("X: " + std::to_string(m_Odometry.GetEstimatedPosition().X().value()));
+  // DebugOutF("Y: " + std::to_string(m_Odometry.GetEstimatedPosition().Y().value()));
+  // DebugOutF("Deg: " + std::to_string(m_Odometry.GetEstimatedPosition().Rotation().Degrees().value()));
 
 }
 
@@ -114,15 +113,42 @@ void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
   m_ModuleStates = {fl, fr, bl, br};
 }
 
-// TrajectoryCommand DriveTrain::DriveToPos(){
-
+// TrajectoryCommand DriveTrain::DriveToPos(frc::Pose2d target){
+//   frc::Pose2d start = m_Odometry.GetEstimatedPosition();
+//   DebugOutF("Start: (" + std::to_string(start.Translation().X().value()) + ", " + std::to_string(start.Translation().Y().value()) + ")");
+//   DebugOutF("End: (" + std::to_string(target.Translation().X().value()) + ", " + std::to_string(target.Translation().Y().value()) + ")");
+//   PathPlannerTrajectory traj = PathPlanner::generatePath(
+//     units::meters_per_second_t(0.5),
+// 		units::meters_per_second_squared_t(0.25),
+    
+// 		false, 
+//       //  PathPoint(
+//       //   m_Odometry.GetEstimatedPosition().Translation(), 
+//       //   target.RelativeTo(frc::Pose2d(m_Odometry.GetEstimatedPosition().Translation(), frc::Rotation2d(0_rad))).Rotation(),
+//       //   m_Odometry.GetEstimatedPosition().Rotation()
+//   //       frc::Translation2d(),
+//   //       frc::Rotation2d(),
+//   //       frc::Rotation2d()
+//       // ), PathPoint(
+//       //   target.Translation(), 
+//       //   -target.RelativeTo(frc::Pose2d(m_Odometry.GetEstimatedPosition().Translation(), frc::Rotation2d(0_rad))).Rotation(),
+//       //   target.Rotation()
+//   //       frc::Translation2d(),
+//   //       frc::Rotation2d(),
+//   //       frc::Rotation2d()
+//   // )
+//     PathPoint(start.Translation(), frc::Rotation2d(0_deg), frc::Rotation2d(0_deg)), // position, heading(direction of travel), holonomic rotation
+//     PathPoint(target.Translation(), frc::Rotation2d(45_deg), frc::Rotation2d(0_deg)
+//   ));
+  
+//   return TrajectoryCommand(traj);
 // }
 
 //Initializes rotation angle and default command
 void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
-  m_TestJoystickButton.WhenHeld(AutoBalance());
+  m_TestJoystickButton.WhenPressed(DriveToPosCommand());
   //m_ThetaController.EnableContinuousInput(-M_PI, M_PI);
 }
 
@@ -141,7 +167,7 @@ void DriveTrain::BreakMode(bool on){
 // void DriveTrain::TrajectoryFollow(frc::Trajectory trajectory, std::function<frc::Rotation2d()> Rotation){
 //     frc2::CommandScheduler::GetInstance().Schedule(new frc2::SwerveControllerCommand<4>{
 //       trajectory, 
-//       m_Odometry.GetPose(),
+//       m_Odometry.GetEstimatedPosition(),
 //       m_Kinematics,
 //       m_xController,
 //       m_yController,
@@ -155,7 +181,7 @@ void DriveTrain::BreakMode(bool on){
 // void DriveTrain::TrajectoryFollow(frc::Trajectory trajectory){
 //   frc2::CommandScheduler::GetInstance().Schedule(new frc2::SwerveControllerCommand<4>{
 //     trajectory, 
-//     [this]() { return m_Odometry.GetPose(); }, 
+//     [this]() { return m_Odometry.GetEstimatedPosition(); }, 
 //     m_Kinematics, 
 //     m_xController, 
 //     m_yController, 

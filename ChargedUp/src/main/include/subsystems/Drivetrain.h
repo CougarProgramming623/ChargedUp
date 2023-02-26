@@ -9,7 +9,7 @@
 #include <frc/geometry/Translation2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
-#include <frc/kinematics/SwerveDriveOdometry.h>
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/kinematics/SwerveModuleState.h>
 #include <frc/kinematics/ChassisSpeeds.h>
 #include <frc/controller/PIDController.h>
@@ -30,6 +30,8 @@
 #include <frc2/command/SubsystemBase.h>
 #include "commands/DriveWithJoystick.h"
 #include "commands/AutoBalance.h"
+#include <./commands/TrajectoryCommand.h>
+#include <./commands/DriveToPosCommand.h>
 
 #include <frc/controller/PIDController.h>
 #include <frc/controller/ProfiledPIDController.h>
@@ -59,7 +61,7 @@ class DriveTrain : public frc2::SubsystemBase {
   frc::Translation2d m_BackRightLocation;
 
   inline frc::SwerveDriveKinematics<4> GetKinematics() { return m_Kinematics; }
-  inline frc::SwerveDriveOdometry<4>* GetOdometry(){ return &m_Odometry; }
+  inline frc::SwerveDrivePoseEstimator<4>* GetOdometry(){ return &m_Odometry; }
   inline frc::HolonomicDriveController GetHolonomicController(){ return m_HolonomicController; }
 
   inline std::array<frc::SwerveModulePosition, 4> GetModulePositions(){ return m_ModulePositions; }
@@ -70,7 +72,7 @@ class DriveTrain : public frc2::SubsystemBase {
   frc2::FunctionalCommand AutoBalanceCommand();
   void AutoBalanceFunction();
 
-  //TrajectoryCommand DriveTrain::DriveToPos();
+  //TrajectoryCommand DriveToPos(frc::Pose2d target);
 
 
 //how fast the robot should be able to drive
@@ -95,7 +97,7 @@ class DriveTrain : public frc2::SubsystemBase {
   bool m_IsBalancing;
 
   frc::SwerveDriveKinematics<4> m_Kinematics;
-  frc::SwerveDriveOdometry<4> m_Odometry;
+  frc::SwerveDrivePoseEstimator<4> m_Odometry;
   
   frc::Rotation2d m_Rotation;             
   frc::ChassisSpeeds m_ChassisSpeeds;
