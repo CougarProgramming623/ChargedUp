@@ -14,7 +14,10 @@
 #include <AHRS.h>
 #include <frc/Joystick.h>
 #include <frc2/command/button/Button.h>
-#include <COB.h>
+#include "frc/smartdashboard/Smartdashboard.h"
+#include "COB.h"
+#include "Vision.h"
+
 
 class Robot : public frc::TimedRobot {
  public:
@@ -44,7 +47,9 @@ class Robot : public frc::TimedRobot {
   inline frc::Joystick& GetJoyStick() { return m_Joystick; }
 
   double GetAngle() {return fmod(360 - GetNavX().GetYaw(), 360); }
+  
   inline COB& GetCOB() { return m_COB; }
+  inline Vision& GetVision() { return m_Vision; }
 
   double previousErrorX = 0;
   double previousErrorY = 0;
@@ -54,6 +59,7 @@ class Robot : public frc::TimedRobot {
   double previousValueX = 0;
   double previousValueY = 0;
   double previousValueT = 0;
+
 
  private:
 
@@ -71,6 +77,8 @@ class Robot : public frc::TimedRobot {
 
   frc::Timer m_AutoTimer;
   DriveTrain m_DriveTrain;
+
+  Vision m_Vision;
 
   COB m_COB;
 };

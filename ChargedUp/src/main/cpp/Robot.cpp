@@ -11,9 +11,9 @@
 #include "Util.h"
 #include "commands/TrajectoryCommand.h"
 #include <frc/kinematics/SwerveModulePosition.h>
+#include <frc/RobotController.h>
 
 using namespace pathplanner;
-#include <frc/RobotController.h>
 
 
 Robot* Robot::s_Instance = nullptr;
@@ -29,6 +29,7 @@ void Robot::RobotInit() {
   GetNavX().SetAngleAdjustment(0);
   s_Instance = this;
   m_DriveTrain.DriveInit();
+  m_Vision.VisionInit(); //Make one
   
 }
 
@@ -111,32 +112,14 @@ void Robot::TeleopInit() {
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
   // this line or comment it out.
-  if (m_autonomousCommand != nullptr) {
-    m_autonomousCommand->Cancel();
-    m_autonomousCommand 
-    = nullptr;
-  }
-
-  //Standard teleop pose init
-  //GetDriveTrain().GetOdometry()->ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().GetModulePositions(), frc::Pose2d());
 }
 
 /**
- * This function is called periodically during operator control.
+ * This function is called periodically during operator control.  
  */
 void Robot::TeleopPeriodic() {
   
   frc2::CommandScheduler::GetInstance().Run();
-  //frc2::CommandScheduler::GetInstance().Schedule(new AutoBalance());
-
-  //DebugOutF("Angle: " + std::to_string(-GetNavX().GetYaw()));
-  //DebugOutF("Angle2: " + std::to_string(fmod(360 - GetNavX().GetYaw(), 360)));
-  //DebugOutF(std::to_string(Deg2Rad(360-(fmod(((GetDriveTrain().m_BackRightModule.GetSteerController().encoder.GetVoltage() * ENCODER_VOLTAGE_TO_DEGREE) + (360+2)), 360))) / STEER_ENCODER_POSITION_CONSTANT));
-  // DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
-  // DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
-  // DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
-    // DebugOutF("Angle: " + std::to_string(frc::Rotation2d(units::radian_t(Deg2Rad(GetAngle()))).Degrees().value()));
-
 }
 
 /**
