@@ -34,6 +34,14 @@ DriveTrain::DriveTrain()
 {
 }
 
+void DriveTrain::DriveInit(){
+  m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
+  SetDefaultCommand(DriveWithJoystick());
+  m_TestJoystickButton.WhenPressed(DriveToPosCommand());
+  m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.15, 0.15, .261799});
+  //m_ThetaController.EnableContinuousInput(-M_PI, M_PI);
+}
+
 /*
 Is called periodically
 Passes module states to motors and updates odometry
@@ -78,15 +86,15 @@ void DriveTrain::Periodic(){
   if(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).size() != 0){
     //DebugOutF("Second if");
     DebugOutF(std::to_string(
-    std::abs(visionRelative.X().value()) < 1));
+    std::abs(visionRelative.X().value())));
     DebugOutF(std::to_string(
-    std::abs(visionRelative.Y().value()) < 1));
+    std::abs(visionRelative.Y().value())));
     DebugOutF(std::to_string(
-    std::abs(visionRelative.Rotation().Degrees().value()) < 15));
+    std::abs(visionRelative.Rotation().Degrees().value())));
     if(
-      std::abs(visionRelative.X().value()) < .1 &&
-      std::abs(visionRelative.Y().value()) < .1 &&
-      std::abs(visionRelative.Rotation().Degrees().value()) < 15
+      std::abs(visionRelative.X().value()) < 1 &&
+      std::abs(visionRelative.Y().value()) < 1 &&
+      std::abs(visionRelative.Rotation().Degrees().value()) < 60
     ) {
       DebugOutF("Adjusting");
       m_Odometry.AddVisionMeasurement(Robot::GetRobot()->GetVision().GetPoseBlue(), m_Timer.GetFPGATimestamp() - units::second_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(6) / 1000));
@@ -101,6 +109,23 @@ void DriveTrain::Periodic(){
   // DebugOutF("Deg: " + std::to_string(m_Odometry.GetEstimatedPosition().Rotation().Degrees().value()));
 
 
+}
+
+//Converts chassis speed object and updates module states
+void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
+  m_ChassisSpeeds = chassisSpeeds;
+  // DebugOutF("Y speed: " + std::to_string(Rad2Deg(m_ChassisSpeeds.vy.value())));
+  // DebugOutF("Omega: " + std::to_string(Rad2Deg(m_ChassisSpeeds.omega.value())));
+  auto [fl, fr, bl, br] = m_Kinematics.ToSwerveModuleStates(m_ChassisSpeeds);
+  m_ModuleStates = {fl, fr, bl, br};
+}
+
+//Sets breakmode
+void DriveTrain::BreakMode(bool on){
+  m_FrontLeftModule.BreakMode(on);
+  m_FrontRightModule.BreakMode(on);
+  m_BackLeftModule.BreakMode(on);
+  m_BackRightModule.BreakMode(on);
 }
 
 // void DriveTrain::AutoBalanceFunction(){
@@ -125,15 +150,6 @@ void DriveTrain::Periodic(){
 //       [&] {return true;}
 //     );
 // }
-
-//Converts chassis speed object and updates module states
-void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
-  m_ChassisSpeeds = chassisSpeeds;
-  // DebugOutF("Y speed: " + std::to_string(Rad2Deg(m_ChassisSpeeds.vy.value())));
-  // DebugOutF("Omega: " + std::to_string(Rad2Deg(m_ChassisSpeeds.omega.value())));
-  auto [fl, fr, bl, br] = m_Kinematics.ToSwerveModuleStates(m_ChassisSpeeds);
-  m_ModuleStates = {fl, fr, bl, br};
-}
 
 // TrajectoryCommand DriveTrain::DriveToPos(frc::Pose2d target){
 //   frc::Pose2d start = m_Odometry.GetEstimatedPosition();
@@ -165,23 +181,6 @@ void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
   
 //   return TrajectoryCommand(traj);
 // }
-
-//Initializes rotation angle and default command
-void DriveTrain::DriveInit(){
-  m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
-  SetDefaultCommand(DriveWithJoystick());
-  m_TestJoystickButton.WhenPressed(DriveToPosCommand());
-  m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.15, 0.15, .261799});
-  //m_ThetaController.EnableContinuousInput(-M_PI, M_PI);
-}
-
-//Sets breakmode
-void DriveTrain::BreakMode(bool on){
-  m_FrontLeftModule.BreakMode(on);
-  m_FrontRightModule.BreakMode(on);
-  m_BackLeftModule.BreakMode(on);
-  m_BackRightModule.BreakMode(on);
-}
 
 // void DriveTrain::TrajectoryDrive(std::array<frc::SwerveModuleState, 4> states){
 //   m_ModuleStates = states;
