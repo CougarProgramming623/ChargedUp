@@ -74,7 +74,8 @@ void Robot::AutonomousInit() {
 
   //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
 
-  frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), traj.getInitialState().holonomicRotation);
+  //frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), traj.getInitialState().holonomicRotation);
+  frc::Pose2d startingPose = Vision().GetPoseBlue();
 
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
     wpi::array<frc::SwerveModulePosition, 4>
@@ -120,6 +121,10 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
   
   frc2::CommandScheduler::GetInstance().Run();
+
+  DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
+  DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
+  DebugOutF("Z: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
 }
 
 /**

@@ -29,7 +29,8 @@ DriveTrain::DriveTrain()
       m_yController(.7, 0.4, 0.2),
       m_ThetaController(15.5, 25, 0.01, frc::TrapezoidProfile<units::radian>::Constraints{3.14_rad_per_s, (1/2) * 3.14_rad_per_s / 1_s}),
       m_HolonomicController(m_xController, m_yController, m_ThetaController),
-      m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);})
+      m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);}),
+      m_Timer()
 {
 }
 
@@ -73,11 +74,32 @@ void DriveTrain::Periodic(){
 
   m_ModulePositions = wpi::array<frc::SwerveModulePosition, 4>(m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition());
 
-  m_Odometry.Update(m_Rotation, m_ModulePositions);
+  frc::Pose2d visionRelative = Robot::GetRobot()->GetVision().GetPoseBlue().RelativeTo(m_Odometry.GetEstimatedPosition());
+  if(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).size() != 0){
+    //DebugOutF("Second if");
+    DebugOutF(std::to_string(
+    std::abs(visionRelative.X().value()) < 1));
+    DebugOutF(std::to_string(
+    std::abs(visionRelative.Y().value()) < 1));
+    DebugOutF(std::to_string(
+    std::abs(visionRelative.Rotation().Degrees().value()) < 15));
+    if(
+      std::abs(visionRelative.X().value()) < .1 &&
+      std::abs(visionRelative.Y().value()) < .1 &&
+      std::abs(visionRelative.Rotation().Degrees().value()) < 15
+    ) {
+      DebugOutF("Adjusting");
+      m_Odometry.AddVisionMeasurement(Robot::GetRobot()->GetVision().GetPoseBlue(), m_Timer.GetFPGATimestamp() - units::second_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(6) / 1000));
+      DebugOutF("Adjusted");
+    }
+  }
+
+  m_Odometry.UpdateWithTime(m_Timer.GetFPGATimestamp(), m_Rotation, m_ModulePositions);
     
   // DebugOutF("X: " + std::to_string(m_Odometry.GetEstimatedPosition().X().value()));
   // DebugOutF("Y: " + std::to_string(m_Odometry.GetEstimatedPosition().Y().value()));
   // DebugOutF("Deg: " + std::to_string(m_Odometry.GetEstimatedPosition().Rotation().Degrees().value()));
+
 
 }
 
@@ -149,6 +171,7 @@ void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
   m_TestJoystickButton.WhenPressed(DriveToPosCommand());
+  m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.15, 0.15, .261799});
   //m_ThetaController.EnableContinuousInput(-M_PI, M_PI);
 }
 

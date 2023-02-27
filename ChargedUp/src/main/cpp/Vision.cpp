@@ -9,7 +9,9 @@
 using namespace frc;
 
 Vision::Vision(){}
-void Vision::VisionInit(){}
+void Vision::VisionInit(){
+  
+}
 
 void Vision::PrintValues() {
   double x = (double)m_AbsolutePose.X();
@@ -38,10 +40,7 @@ void Vision::CalcPose(){
     // DebugOutF("θ: " + std::to_string((int)Robot::GetRobot()->GetCOB().GetTable().GetEntry(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(5)));
 
     //Store current posisition in a pose2d
-    m_AbsolutePose = Pose2d(  units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(0)),
-                              units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(1)),
-                              Rotation2d(units::radian_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(5)))
-                          );
+    m_AbsolutePose = GetFieldPose();
     //Blue 
     DebugOutF("Blue");
     m_AbsolutePose = m_AbsolutePose.RelativeTo(kBlueOrigin);
@@ -49,29 +48,25 @@ void Vision::CalcPose(){
 }
 
 Pose2d Vision::GetPoseBlue(){
-  m_AbsolutePose = Pose2d(  units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(0)),
-                            units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(1)),
-                            Rotation2d(units::radian_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(5)))
-                          );
+  m_AbsolutePose = GetFieldPose();
   m_AbsolutePose = m_AbsolutePose.RelativeTo(kBlueOrigin);
+
   return m_AbsolutePose;
 }
 
 Pose2d Vision::GetPoseRed(){
-  m_AbsolutePose = Pose2d(  units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(0)),
-                            units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(1)),
-                            Rotation2d(units::radian_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(5)))
-                          );
+  m_AbsolutePose = GetFieldPose();
   m_AbsolutePose = m_AbsolutePose.RelativeTo(kRedOrigin);
+
   return m_AbsolutePose;
 }
 
-Pose2d Vision::GetfieldPose(){ 
-  m_AbsolutePose = Pose2d(  units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(0)),
-                            units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(1)),
-                            Rotation2d(units::radian_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(5)))
-                          );
+Pose2d Vision::GetFieldPose(){ 
+  if(COB_GET_ENTRY(COB_KEY_TV).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).size() != 0){
+    m_AbsolutePose = Pose2d(  units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(0)),
+                              units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(1)),
+                              Rotation2d(units::radian_t(Deg2Rad(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(5))))
+                            );
+  }
   return m_AbsolutePose; 
 }
-
-

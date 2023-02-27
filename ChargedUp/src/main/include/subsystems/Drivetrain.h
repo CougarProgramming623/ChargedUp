@@ -32,6 +32,7 @@
 #include "commands/AutoBalance.h"
 #include <./commands/TrajectoryCommand.h>
 #include <./commands/DriveToPosCommand.h>
+#include <frc/Timer.h>
 
 #include <frc/controller/PIDController.h>
 #include <frc/controller/ProfiledPIDController.h>
@@ -91,6 +92,8 @@ class DriveTrain : public frc2::SubsystemBase {
   const units::radians_per_second_t kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = units::radians_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI / std::sqrt(Pow((DRIVETRAIN_TRACKWIDTH_METERS / 2), 2) + Pow((DRIVETRAIN_WHEELBASE_METERS / 2), 2)));
 
   private:
+
+  frc::Timer m_Timer;
 
   frc2::Button m_TestJoystickButton;
 
