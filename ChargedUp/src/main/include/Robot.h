@@ -10,7 +10,6 @@
 
 #include <pathplanner/lib/PathPlanner.h>
 #include "RobotContainer.h"
-#include "subsystems/DriveTrain.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -29,8 +28,6 @@ class Robot : public frc::TimedRobot {
   inline void zeroGyroscope() {m_NavX.ZeroYaw();}
 
   static Robot* GetRobot() { return s_Instance; }
-
-  inline DriveTrain& GetDriveTrain() { return m_DriveTrain; }
 
   inline frc::Joystick& GetJoyStick() { return m_Joystick; }
 
@@ -52,5 +49,4 @@ class Robot : public frc::TimedRobot {
   RobotContainer m_container;
 
   frc::Timer m_AutoTimer;
-  DriveTrain m_DriveTrain;
 };
