@@ -44,7 +44,7 @@ class Arm {
 	frc2::FunctionalCommand Telescope(double setpoint); //3988 - 4058 +-2 on both bounds?
 
 	frc2::FunctionalCommand Squeeze(bool shouldSqueeze);
-	void PlaceElement(int type, int row, int column = 1);
+	void PlaceElement(int type, int row, int column);
 	void TransitMode();
 	void LoadReady(bool isOnSameSide);
 

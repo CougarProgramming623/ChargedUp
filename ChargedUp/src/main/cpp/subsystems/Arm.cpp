@@ -107,7 +107,7 @@ frc2::FunctionalCommand Arm::Squeeze(bool shouldSqueeze) {
 
 //sets arm to a set angle and radius based on element being places; rows and column read top to bottom and left to right respectively
 //type can be either CONE or CUBE
-void Arm::PlaceElement(int type, int row, int column = 1) {
+void Arm::PlaceElement(int type, int row, int column) {
 	//index 0 is TL; index 8 is BR (read like a book)
 	double RadiiValues[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //inches
 	double AngleValues[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //degrees
