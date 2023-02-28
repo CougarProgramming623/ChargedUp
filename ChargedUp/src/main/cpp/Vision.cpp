@@ -18,8 +18,8 @@ void Vision::PrintValues() {
   double y = (double)m_AbsolutePose.Y();
 
   if(x != 0 && y != 0){
-    DebugOutF("tx: " + std::to_string(x));
-    DebugOutF("ty: " + std::to_string(y));
+    // DebugOutF("tx: " + std::to_string(x));
+    // DebugOutF("ty: " + std::to_string(y));
   }
 }
 
@@ -42,7 +42,7 @@ void Vision::CalcPose(){
     //Store current posisition in a pose2d
     m_AbsolutePose = GetFieldPose();
     //Blue 
-    DebugOutF("Blue");
+    //DebugOutF("Blue");
     m_AbsolutePose = m_AbsolutePose.RelativeTo(kBlueOrigin);
   }
 }

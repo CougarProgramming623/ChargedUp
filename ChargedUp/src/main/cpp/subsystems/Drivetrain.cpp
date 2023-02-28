@@ -85,20 +85,24 @@ void DriveTrain::Periodic(){
   frc::Pose2d visionRelative = Robot::GetRobot()->GetVision().GetPoseBlue().RelativeTo(m_Odometry.GetEstimatedPosition());
   if(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).size() != 0){
     //DebugOutF("Second if");
-    DebugOutF(std::to_string(
-    std::abs(visionRelative.X().value())));
-    DebugOutF(std::to_string(
-    std::abs(visionRelative.Y().value())));
-    DebugOutF(std::to_string(
-    std::abs(visionRelative.Rotation().Degrees().value())));
+    // DebugOutF("Relative X: " + std::to_string(
+    // std::abs(visionRelative.X().value())));
+    // DebugOutF("Y: " + std::to_string(
+    // std::abs(visionRelative.Y().value())));
+    // DebugOutF("Relative Z: " + std::to_string(
+    // std::abs(-fmod(360 - visionRelative.Rotation().Degrees().value(), 360)))); //Limelight to 360 TODO
     if(
       std::abs(visionRelative.X().value()) < 1 &&
       std::abs(visionRelative.Y().value()) < 1 &&
-      std::abs(visionRelative.Rotation().Degrees().value()) < 60
+      std::abs(-fmod(360 - visionRelative.Rotation().Degrees().value(), 360)) < 30
     ) {
-      DebugOutF("Adjusting");
-      m_Odometry.AddVisionMeasurement(Robot::GetRobot()->GetVision().GetPoseBlue(), m_Timer.GetFPGATimestamp() - units::second_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(6) / 1000));
-      DebugOutF("Adjusted");
+      //DebugOutF("Adjusting" + std::to_string(m_Timer.GetFPGATimestamp().value()));
+      if(COB_GET_ENTRY(COB_KEY_TV).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).size() != 0){
+        m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
+        - units::second_t((COB_GET_ENTRY("/limelight/tl").GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY("/limelight/cl").GetDouble(0))/1000.0)
+        /*units::second_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(6) / 1000)*/);
+        DebugOutF("Inner Adjusted");
+      }
     }
   }
 

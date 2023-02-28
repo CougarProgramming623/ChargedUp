@@ -50,7 +50,7 @@ Passes ChassisSpeed object to BaseDrive() function
 */
 void DriveToPosCommand::Execute() {
     
-    DebugOutF("Execute");
+    //DebugOutF("Execute");
 
     Robot* r = Robot::GetRobot();
     

@@ -74,8 +74,8 @@ void Robot::AutonomousInit() {
 
   //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
 
-  //frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), traj.getInitialState().holonomicRotation);
-  frc::Pose2d startingPose = Vision().GetPoseBlue();
+  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.54), units::meter_t(1.75), frc::Rotation2d(units::degree_t(180)));
+  //frc::Pose2d startingPose = Vision().GetPoseBlue();
 
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
     wpi::array<frc::SwerveModulePosition, 4>
@@ -109,6 +109,11 @@ void Robot::TeleopInit() {
   GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
    
+  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.54), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
+    GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
+        wpi::array<frc::SwerveModulePosition, 4>
+            (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
+        startingPose);
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
@@ -122,9 +127,13 @@ void Robot::TeleopPeriodic() {
   
   frc2::CommandScheduler::GetInstance().Run();
 
-  DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
-  DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
-  DebugOutF("Z: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
+  DebugOutF("OdoX: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
+  DebugOutF("OdoY: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
+  DebugOutF("OdoZ: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
+
+  // DebugOutF("LLX: " + std::to_string(m_Vision.GetPoseBlue().X().value()));
+  // DebugOutF("LLY: " + std::to_string(m_Vision.GetPoseBlue().Y().value()));
+  // DebugOutF("LLZ: " + std::to_string(m_Vision.GetPoseBlue().Rotation().Degrees().value()));
 }
 
 /**
