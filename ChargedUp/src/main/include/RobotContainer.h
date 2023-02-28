@@ -4,10 +4,9 @@
 
 #pragma once
 
-#include <frc2/command/CommandPtr.h>
-#include <frc2/command/button/CommandXboxController.h>
+#include <frc2/command/Command.h>
 
-#include "Constants.h"
+#include "commands/ExampleCommand.h"
 #include "subsystems/ExampleSubsystem.h"
 
 /**
@@ -15,20 +14,22 @@
  * Command-based is a "declarative" paradigm, very little robot logic should
  * actually be handled in the {@link Robot} periodic methods (other than the
  * scheduler calls).  Instead, the structure of the robot (including subsystems,
- * commands, and trigger mappings) should be declared here.
+ * commands, and button mappings) should be declared here.
  */
 class RobotContainer {
  public:
   RobotContainer();
 
-  frc2::CommandPtr GetAutonomousCommand();
+  frc2::Command* GetAutonomousCommand();
 
  private:
+  // The robot's subsystems and commands are defined here...
   // Replace with CommandPS4Controller or CommandJoystick if needed
   frc2::CommandXboxController m_driverController{kDriverControllerPort};
 
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;
+  ExampleCommand m_autonomousCommand;
 
-  void ConfigureBindings();
+  void ConfigureButtonBindings();
 };

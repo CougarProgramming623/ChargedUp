@@ -1,4 +1,3 @@
-#include <frc2/command/PrintCommand.h>
 
 #pragma once 
 
@@ -9,3 +8,4 @@ inline void DebugOutF(const std::string_view message) {
 
 #define BUTTON_L(id) \
   [&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(id); }
+#include <frc2/command/PrintCommand.h>
