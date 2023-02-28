@@ -41,6 +41,12 @@
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <pathplanner/lib/PathPlanner.h>
 #include <frc2/command/button/Button.h>
+#include <pathplanner/lib/commands/FollowPathWithEvents.h>
+#include <frc2/command/PrintCommand.h>
+#include <frc2/command/Command.h>
+#include <unordered_map>
+
+
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
 
@@ -67,6 +73,9 @@ class DriveTrain : public frc2::SubsystemBase {
 
   inline std::array<frc::SwerveModulePosition, 4> GetModulePositions(){ return m_ModulePositions; }
 
+  pathplanner::FollowPathWithEvents TruePath();
+  pathplanner::FollowPathWithEvents TrueAuto(PathPlannerTrajectory traj);
+  
   inline bool GetIsBalancing() { return m_IsBalancing; }
   inline void SetIsBalancing(bool b) { m_IsBalancing = b; }
 
@@ -91,6 +100,8 @@ class DriveTrain : public frc2::SubsystemBase {
   //theoretical maximum angular velocity - can be replaced with measure amount
   const units::radians_per_second_t kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = units::radians_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI / std::sqrt(Pow((DRIVETRAIN_TRACKWIDTH_METERS / 2), 2) + Pow((DRIVETRAIN_WHEELBASE_METERS / 2), 2)));
 
+  std::unordered_map<std::string, std::shared_ptr<frc2::Command>> m_EventMap;
+  
   private:
 
   frc::Timer m_Timer;

@@ -5,9 +5,6 @@
 #pragma once
 #include <math.h>
 
-
-
-
 #define ROBOT_WHEELBASE
 
 #ifdef ROBOT_WHEELBASE
@@ -70,6 +67,5 @@
     #define COB_KEY_DISTANCE "/COB/distance"
     #define COB_KEY_BOT_POSE "/limelight/botpose"
     #define COB_KEY_TV "/limelight/tv"
-
 
 #endif
