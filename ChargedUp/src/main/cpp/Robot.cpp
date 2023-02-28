@@ -16,8 +16,7 @@ using namespace pathplanner;
 Robot* Robot::s_Instance = nullptr;
 
 void Robot::RobotInit() {
-  GetNavX().ZeroYaw();
-  GetNavX().SetAngleAdjustment(0);
+  
   s_Instance = this;
 }
 
@@ -49,42 +48,15 @@ void Robot::DisabledPeriodic() {}
  */
 void Robot::AutonomousInit() {
   
-  DebugOutF("Auto init");
-
-  frc2::CommandScheduler::GetInstance().CancelAll();
-  GetNavX().ZeroYaw();
-  GetNavX().SetAngleAdjustment(0);
-
-  //Load trajectory
-  PathPlannerTrajectory traj = PathPlanner::loadPath("StraightLine", PathConstraints(4_mps, 4_mps_sq));
-
-  frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), traj.getInitialState().holonomicRotation);
-
-  
-  
-  // DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
-  // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
-  // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
-
 }
 
 void Robot::AutonomousPeriodic() {
-  // int i = 0;
-  // if(i % 100 == 0){
-
-    // DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().X().value()));
-    // DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Y().value()));
-    // DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Rotation().Degrees().value()));
-  //   i = 0;
-  // }
-  // i++;
+  
   
 }
 
 void Robot::TeleopInit() {
 
-  GetNavX().ZeroYaw();
-  GetNavX().SetAngleAdjustment(0);
    
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
@@ -96,8 +68,6 @@ void Robot::TeleopInit() {
     = nullptr;
   }
 
-  //Standard teleop pose init
-  //GetDriveTrain().GetOdometry()->ResetPosition(frc::Rotation2d(units::radian_t(0)), GetDriveTrain().GetModulePositions(), frc::Pose2d());
 }
 
 /**
@@ -107,13 +77,6 @@ void Robot::TeleopPeriodic() {
   
   frc2::CommandScheduler::GetInstance().Run();
 
-  //DebugOutF("Angle: " + std::to_string(-GetNavX().GetYaw()));
-  //DebugOutF("Angle2: " + std::to_string(fmod(360 - GetNavX().GetYaw(), 360)));
-  //DebugOutF(std::to_string(Deg2Rad(360-(fmod(((GetDriveTrain().m_BackRightModule.GetSteerController().encoder.GetVoltage() * ENCODER_VOLTAGE_TO_DEGREE) + (360+2)), 360))) / STEER_ENCODER_POSITION_CONSTANT));
-  // DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().X().value()));
-  // DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Y().value()));
-  // DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetPose().Rotation().Degrees().value()));
-    // DebugOutF("Angle: " + std::to_string(frc::Rotation2d(units::radian_t(Deg2Rad(GetAngle()))).Degrees().value()));
 
 }
 

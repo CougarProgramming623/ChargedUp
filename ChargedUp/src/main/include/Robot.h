@@ -24,14 +24,11 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
 
 
-  inline AHRS& GetNavX() { return m_NavX; }
-  inline void zeroGyroscope() {m_NavX.ZeroYaw();}
+  
 
   static Robot* GetRobot() { return s_Instance; }
 
   inline frc::Joystick& GetJoyStick() { return m_Joystick; }
-
-  double GetAngle() {return fmod(360 - GetNavX().GetYaw(), 360); }
 
   static Robot* s_Instance;
 
