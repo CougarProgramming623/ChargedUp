@@ -62,8 +62,9 @@ void AutoBalance::Execute() {
     outputY = (std::abs(outputY) > 1) ? 1 : outputY;
     outputT = (std::abs(outputT) > 1) ? 1 : outputT;
 
-    outputY = (m_currentAngleT >= 90 && m_currentAngleT <= 270) ? outputY : -outputY;
-    outputX = (m_currentAngleT >= 0 && m_currentAngleT <= 180) ? -outputX : outputX;
+    outputY = (m_currentAngleT >= 270 && m_currentAngleT <= 90) ? outputY : -outputY;
+    outputX = (m_currentAngleT >= 315 && m_currentAngleT <= 45) ? -outputX : outputX;
+
 
     Robot *r = Robot::GetRobot();
     
@@ -71,13 +72,14 @@ void AutoBalance::Execute() {
         frc::ChassisSpeeds::FromFieldRelativeSpeeds(
             //units::meters_per_second_t(0 * outputX * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //x
             units::meters_per_second_t(outputY * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //y
-            units::meters_per_second_t(outputX * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //x
+            units::meters_per_second_t(-outputX * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND), //x
             units::radians_per_second_t(/*outputT*/0 * r->GetDriveTrain().kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND), //rotation
             frc::Rotation2d(units::radian_t(/*Deg2Rad(-fmod(360 - r->GetNavX().GetAngle(), 360)*/0))
         )
     );
     // DebugOutF("Error: " + std::to_string(errorY));
     // DebugOutF("Output: " + std::to_string(outputY));
+    DebugOutF(std::to_string(m_currentAngleT));
     Robot::GetRobot()->dErrorY = errorY;
 }
 
