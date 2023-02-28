@@ -1,0 +1,8 @@
+2/14/2023
+
+Work more with the Pot; it seems like the range of units that the
+pot outputs can change.
+
+I ended working on stopping the motor when a certain length (12in) 
+was hit on the pot. It isnt working because the range is changing,
+so it is stopping immediately

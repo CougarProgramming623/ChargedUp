@@ -15,8 +15,9 @@
     "**/*~": true
   },
   "C_Cpp.default.configurationProvider": "vscode-wpilib",
+  "C_Cpp.errorSquiggles": "enabled",
   "files.associations": {
-    "*.inc": "cpp",
+    "cmath": "cpp",
     "array": "cpp",
     "atomic": "cpp",
     "bit": "cpp",
@@ -26,7 +27,6 @@
     "cfenv": "cpp",
     "chrono": "cpp",
     "clocale": "cpp",
-    "cmath": "cpp",
     "codecvt": "cpp",
     "compare": "cpp",
     "complex": "cpp",
@@ -87,6 +87,7 @@
     "cinttypes": "cpp",
     "typeindex": "cpp",
     "typeinfo": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "*.inc": "cpp"
   }
 }

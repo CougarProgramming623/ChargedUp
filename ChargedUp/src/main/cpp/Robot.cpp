@@ -4,24 +4,18 @@
 
 #include "Robot.h"
 
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
-#include <frc/kinematics/SwerveModuleState.h>
-#include <frc/geometry/Pose2d.h>
-#include "Util.h"
-#include <frc/kinematics/SwerveModulePosition.h>
-
-using namespace pathplanner;
 
 Robot* Robot::s_Instance = nullptr;
 
+Robot::Robot() {s_Instance = this;}
+
 void Robot::RobotInit() {
-  
-  s_Instance = this;
+  m_Arm.Init();
 }
 
 /**
- * This function is called every robot packet, no matter the mode. Use
+ * This function is called every 20 ms, no matter the mode. Use
  * this for items like diagnostics that you want to run during disabled,
  * autonomous, teleoperated and test.
  *
@@ -29,7 +23,7 @@ void Robot::RobotInit() {
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
-  frc2::CommandScheduler::GetInstance().Run();
+  frc2::CommandScheduler::GetInstance().Run();                                                                                
 }
 
 /**
@@ -37,8 +31,7 @@ void Robot::RobotPeriodic() {
  * can use it to reset any subsystem information you want to clear when the
  * robot is disabled.
  */
-void Robot::DisabledInit() {
-}
+void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {}
 
@@ -47,27 +40,23 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
-  
+  m_autonomousCommand = m_container.GetAutonomousCommand();
+
+  if (m_autonomousCommand) {
+    m_autonomousCommand->Schedule();
+  }
 }
 
-void Robot::AutonomousPeriodic() {
-  
-  
-}
+void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-
-   
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
   // this line or comment it out.
-  if (m_autonomousCommand != nullptr) {
+  if (m_autonomousCommand) {
     m_autonomousCommand->Cancel();
-    m_autonomousCommand 
-    = nullptr;
   }
-
 }
 
 /**
@@ -75,8 +64,6 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
   
-  frc2::CommandScheduler::GetInstance().Run();
-
 
 }
 
@@ -84,6 +71,16 @@ void Robot::TeleopPeriodic() {
  * This function is called periodically during test mode.
  */
 void Robot::TestPeriodic() {}
+
+/**
+ * This function is called once when the robot is first started up.
+ */
+void Robot::SimulationInit() {}
+
+/**
+ * This function is called periodically whilst in simulation.
+ */
+void Robot::SimulationPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {
