@@ -31,9 +31,32 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define CUBE 1
 
 //button IDs
-#define TELE_NUKE 9
-#define UP_DOWN_JOYSTICK 2
-#define RELEASE_BUTTON 12
-#define FEED_BUTTON 13
+#define GRID_TL 1
+#define GRID_TC 1
+#define GRID_TR 1
+#define GRID_ML 1
+#define GRID_MC 1
+#define GRID_MR 1 
+#define GRID_BL 1
+#define GRID_BC 1
+#define GRID_BR 1
+
+#define LEFT_GRID 1
+#define CENTER_GRID 1
+#define RIGHT_GRID 1
+
+#define CONE_MODE 1
+#define CUBE_MODE 1
+
+#define FRONT_MODE 1
+#define BACK_MODE 1
+
+#define TRANSIT_MODE 1
+#define GROUND_PICKUP_MODE 1
+#define LOADING_MODE 1
+
+#define PIVOT_CONTROL 1
+#define EXTRACTION_CONTROL 1
+
 
 #endif

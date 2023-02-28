@@ -8,7 +8,30 @@ Arm::Arm() :
 	m_Extraction(EXTRACTION_MOTOR),
 	m_LeftBrake(LEFT_BRAKE),
 	m_RightBrake(RIGHT_BRAKE),
-	m_TestJoystickButton([&] {return m_Joystick.GetRawButton(1);})
+
+	m_TL(BUTTON_L(GRID_TL)),
+	m_TC(BUTTON_L(GRID_TC)),
+	m_TR(BUTTON_L(GRID_TR)),
+	m_ML(BUTTON_L(GRID_ML)),
+	m_MC(BUTTON_L(GRID_MC)),
+	m_MR(BUTTON_L(GRID_MR)),
+	m_BL(BUTTON_L(GRID_BL)),
+	m_BC(BUTTON_L(GRID_BC)),
+	m_BR(BUTTON_L(GRID_BR)),
+
+	m_LeftGrid(BUTTON_L(LEFT_GRID)),
+	m_CenterGrid(BUTTON_L(CENTER_GRID)),
+	m_RightGrid(BUTTON_L(RIGHT_GRID)),
+
+	m_ConeMode(BUTTON_L(CONE_MODE)),
+	m_CubeMode(BUTTON_L(CUBE_MODE)),
+
+	m_FrontMode(BUTTON_L(FRONT_MODE)),
+	m_BackMode(BUTTON_L(BACK_MODE)),
+
+	m_TransitMode(BUTTON_L(TRANSIT_MODE)),
+	m_GroundPickupMode(BUTTON_L(GROUND_PICKUP_MODE)),
+	m_LoadingMode(BUTTON_L(LOADING_MODE))
 	{}
 
 void Arm::Init() {
@@ -23,7 +46,7 @@ void Arm::Init() {
 
 
 void Arm::SetButtons() {
-	m_TestJoystickButton.WhenPressed(Telescope(2));
+//empty
 }
 
 
