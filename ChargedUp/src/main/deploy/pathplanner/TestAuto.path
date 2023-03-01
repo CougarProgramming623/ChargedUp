@@ -67,9 +67,9 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "\"Mark 1\""
+          "Mark 1"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "minimum",
         "waitTime": 100000000.0
       }

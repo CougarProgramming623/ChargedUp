@@ -29,11 +29,7 @@ void Robot::RobotInit() {
   GetNavX().SetAngleAdjustment(0);
   s_Instance = this;
   m_DriveTrain.DriveInit();
-  m_Vision.VisionInit(); //Make one
-
-  m_DriveTrain.m_EventMap.emplace("\"Mark 1\"", std::make_shared<frc2::PrintCommand>("Mark 1"));
-
-  
+  m_Vision.VisionInit(); //Make one  
 }
 
 /**
@@ -89,11 +85,10 @@ void Robot::AutonomousInit() {
   // DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
   // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
-
-  //frc2::CommandPtr Auto = frc2::CommandPtr(GetDriveTrain().TrueAuto(traj));
-  //frc2::CommandScheduler::GetInstance().Schedule(GetDriveTrain().TrueAuto(traj));
+  
+  frc2::CommandScheduler::GetInstance().Schedule(GetDriveTrain().TrueAuto(traj));
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
-  DebugOutF(GetDriveTrain().m_EventMap.at(0).get()->GetName());
+  //(GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
 }
 
 void Robot::AutonomousPeriodic() {

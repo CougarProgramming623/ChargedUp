@@ -30,9 +30,10 @@ DriveTrain::DriveTrain()
       m_ThetaController(14, 25, 0.02, frc::TrapezoidProfile<units::radian>::Constraints{3.14_rad_per_s, (1/2) * 3.14_rad_per_s / 1_s}),
       m_HolonomicController(m_xController, m_yController, m_ThetaController),
       m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);}),
-      m_Timer()
+      m_Timer(),
+      m_EventMap()
 {
-  //m_EventMap.emplace("\"Mark 1\"", std::make_shared<frc2::PrintCommand>("Mark 1"));
+  m_EventMap.emplace(std::string("Mark 1"), std::make_shared<frc2::PrintCommand>(std::string("Mark 1")));
 }
 
 void DriveTrain::DriveInit(){
@@ -41,6 +42,8 @@ void DriveTrain::DriveInit(){
   m_TestJoystickButton.WhenPressed(AutoBalance());
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.15, 0.15, .261799});
   //m_ThetaController.EnableContinuousInput(-M_PI, M_PI);
+  //m_EventMap.emplace(std::string("Mark 1"), std::make_shared<frc2::PrintCommand>(std::string("Mark 1")));
+
 }
 
 /*
@@ -141,6 +144,7 @@ pathplanner::FollowPathWithEvents* DriveTrain::TruePath(){
 
 pathplanner::FollowPathWithEvents* DriveTrain::TrueAuto(PathPlannerTrajectory traj){
   TrajectoryCommand com = TrajectoryCommand(traj);
+  DebugOutF(std::to_string(com.m_Trajectory.getMarkers().at(std::string("Mark 1"))));
   return new pathplanner::FollowPathWithEvents(std::make_unique<TrajectoryCommand>(com), com.m_Trajectory.getMarkers(), m_EventMap);
 }
 
