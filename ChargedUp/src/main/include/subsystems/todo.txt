@@ -1,8 +1,8 @@
 Take measurements (variables from math & range for String Pot)
 
-Update all constants in Constants.h
+DONE || Update all constants in Constants.h
 
-test manual controls for motors (phoenixtuner)
+DONE || test manual controls for motors (phoenixtuner)
 
 test limit switches
 

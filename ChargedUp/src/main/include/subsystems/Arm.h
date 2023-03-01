@@ -71,8 +71,8 @@ class Arm {
 	double TicksToUndoSqueeze = 0;
 
 	//motors
-	TalonFX m_Pivot;
-	TalonFX m_Extraction;
+	TalonFX m_Pivot; //Positive drives towards back; negative drives towards front || Start at 0.1-0.2 power and scale from there while testing
+	TalonFX m_Extraction; //Positive drives arm together and in; negative drives arm apart and out || start at 0.1 power and scale from there while testing
 
 	//Servos
 	frc::Servo m_LeftBrake;

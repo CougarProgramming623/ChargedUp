@@ -10,8 +10,6 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 
 #ifdef ARM_SUBSYSTEM
 
-#define TEMP_SCALAR 5 //scales down motor powers for testing || set as 1 for no change
-
 //motor and sensor IDs
 #define EXTRACTION_MOTOR 30
 #define PIVOT_MOTOR 39
@@ -27,25 +25,25 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define STRING_POT_MINIMUM 1400 //UPDATE
 
 //setpoints
-#define FRONT_LOW_ANGLE FRONT_LOADING_ANGLE
+#define FRONT_LOW_ANGLE GROUND_PICKUP_ANGLE
 #define FRONT_MIDDLE_CONE_ANGLE 24.34
 #define FRONT_MIDDLE_CUBE_ANGLE 13.30
 #define FRONT_HIGH_CONE_ANGLE 0 //UNUSED
 #define FRONT_HIGH_CUBE_ANGLE 0 //UNUSED
 
-#define FRONT_LOW_RADIUS FRONT_LOADING_RADIUS
+#define FRONT_LOW_RADIUS GROUND_PICKUP_RADIUS
 #define FRONT_MIDDLE_CONE_RADIUS 53.38
 #define FRONT_MIDDLE_CUBE_RADIUS 49.98
 #define FRONT_HIGH_CONE_RADIUS 0 //UNUSED
 #define FRONT_HIGH_CUBE_RADIUS 0 //UNUSED
 
-#define BACK_LOW_ANGLE BACK_LOADING_ANGLE
+#define BACK_LOW_ANGLE 0
 #define BACK_MIDDLE_CONE_ANGLE 0 //UNUSED
 #define BACK_MIDDLE_CUBE_ANGLE 0 //UNUSED
 #define BACK_HIGH_CONE_ANGLE 141.90
 #define BACK_HIGH_CUBE_ANGLE 132.70
 
-#define BACK_LOW_RADIUS BACK_LOADING_RADIUS
+#define BACK_LOW_RADIUS 0
 #define BACK_MIDDLE_CONE_RADIUS 0 //UNUSED
 #define BACK_MIDDLE_CUBE_RADIUS 0 //UNUSED
 #define BACK_HIGH_CONE_RADIUS 55.10
@@ -67,34 +65,33 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define CUBE 1
 
 //button IDs
-#define GRID_TL 1
-#define GRID_TC 1
-#define GRID_TR 1
-#define GRID_ML 1
-#define GRID_MC 1
-#define GRID_MR 1 
-#define GRID_BL 1
-#define GRID_BC 1
-#define GRID_BR 1
+#define GRID_TL 1 //check
+#define GRID_TC 1 //check
+#define GRID_TR 1 //check
+#define GRID_ML 1 //check
+#define GRID_MC 1 //check
+#define GRID_MR 1 //check
+#define GRID_BL 1 //check
+#define GRID_BC 1 //check
+#define GRID_BR 1 //check
 
-#define LEFT_GRID 1
-#define CENTER_GRID 1
-#define RIGHT_GRID 1
+#define LEFT_GRID 1 //check
+#define CENTER_GRID 1 //check
+#define RIGHT_GRID 1 //check
 
-#define CONE_MODE 1
-#define CUBE_MODE 1
+#define CONE_MODE 1 //check
+#define CUBE_MODE 1 //check
 
-#define FRONT_MODE 1
-#define BACK_MODE 1
+#define FRONT_MODE 1 //check
+#define BACK_MODE 1 //check
 
-#define TRANSIT_MODE 1
-#define GROUND_PICKUP_MODE 1
-#define LOADING_MODE 1
+#define TRANSIT_MODE 1 //check
+#define GROUND_PICKUP_MODE 1 //check
+#define LOADING_MODE 1 //check
 
-#define PIVOT_CONTROL 1
-#define EXTRACTION_CONTROL 1
+#define PIVOT_CONTROL 1 //check
+#define EXTRACTION_CONTROL 1 //check
 
-#define ARM_OVERRIDE 1
-
+#define ARM_OVERRIDE 1 //check
 
 #endif

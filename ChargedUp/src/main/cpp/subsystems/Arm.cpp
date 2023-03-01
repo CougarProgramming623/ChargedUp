@@ -107,7 +107,7 @@ frc2::InstantCommand Arm::ToggleBrakes(bool isBraked) {
 	});
 }
 
-//length should be a setpoint in inches || assumes forward power is increase length
+//length should be a setpoint in inches
 frc2::FunctionalCommand Arm::Telescope(double Setpoint) {
 	SetpointLength = Setpoint;
 	return frc2::FunctionalCommand(
@@ -116,8 +116,8 @@ frc2::FunctionalCommand Arm::Telescope(double Setpoint) {
 		},[&] {  // onExecute		  	
 		ArmLength = StringPotUnitsToInches(m_StringPot.GetValue());
 
-		if(ArmLength < SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, .5 / TEMP_SCALAR);
-		else if(ArmLength > SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, -.5 / TEMP_SCALAR);
+		if(ArmLength < SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, -.1);
+		else if(ArmLength > SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, .1);
 
 		}, [&](bool e) {  // onEnd
 			m_Extraction.Set(ControlMode::PercentOutput, 0);
@@ -131,14 +131,14 @@ frc2::FunctionalCommand Arm::Squeeze(bool shouldSqueeze) {
 	if(shouldSqueeze) {
 		return frc2::FunctionalCommand( [&] { //onInit
 			TicksToUndoSqueeze = m_Extraction.GetSelectedSensorPosition();
-			m_Extraction.Set(ControlMode::PercentOutput, 1 / TEMP_SCALAR);
+			m_Extraction.Set(ControlMode::PercentOutput, .1);
 		}, [&] {//onExecute
 			//empty
 		}, [&](bool e) {//onEnd
 			m_Extraction.Set(ControlMode::PercentOutput, 0);
 			TicksToUndoSqueeze = TicksToUndoSqueeze - m_Extraction.GetSelectedSensorPosition();
 		}, [&] {//isFinished
-			return m_Extraction.GetSupplyCurrent() < SQUEEZE_AMP_THRESHOLD;
+			return m_Extraction.GetSupplyCurrent() > SQUEEZE_AMP_THRESHOLD;
 		});}
 	else {
 		return frc2::FunctionalCommand( [&] { //onInit
@@ -153,7 +153,7 @@ frc2::FunctionalCommand Arm::Squeeze(bool shouldSqueeze) {
 		}
 	}
 
-//sets arm to a set angle and radius based on element being places; rows and column read top to bottom and left to right respectively
+//sets arm to a set angle and radius based on element being places
 //type can be either CONE or CUBE
 frc2::InstantCommand Arm::PlaceElement(int type, int row, int column) {
 	return frc2::InstantCommand([&]{
@@ -229,8 +229,8 @@ frc2::FunctionalCommand Arm::ManualControls() {
 	return frc2::FunctionalCommand([&] { //onInit
 		//empty
 	}, [&] { //onExecute
-		m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(PIVOT_CONTROL) / TEMP_SCALAR);
-		m_Extraction.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(EXTRACTION_CONTROL) / TEMP_SCALAR);
+		m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(PIVOT_CONTROL) / 5);
+		m_Extraction.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(EXTRACTION_CONTROL) / 5);
 	}, [&] (bool e) { //onEnd
 		m_Pivot.Set(ControlMode::PercentOutput, 0);
 		m_Extraction.Set(ControlMode::PercentOutput, 0);
