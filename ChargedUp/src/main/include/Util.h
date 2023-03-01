@@ -9,3 +9,6 @@ inline void DebugOutF(const std::string_view message) {
 
 #define BUTTON_L(id) \
   [&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(id); }
+
+#define OVERRIDE_BUTTON_L(ID) \
+  [&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(ID) && !Robot::GetRobot()->GetButtonBoard().GetRawButton(ARM_OVERRIDE); }

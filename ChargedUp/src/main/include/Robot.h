@@ -15,7 +15,8 @@
 class Robot : public frc::TimedRobot {
  public:
   Robot();
-  static Robot* GetRobot() { return s_Instance; }
+  static inline Robot* GetRobot() { return s_Instance; }
+  inline Arm& GetArm() { return m_Arm; }
   inline frc::Joystick& GetButtonBoard() { return m_ButtonBoard; }
   inline frc::Joystick& GetJoystick() { return m_Joystick; }
 
@@ -37,8 +38,8 @@ class Robot : public frc::TimedRobot {
   std::optional<frc2::CommandPtr> m_autonomousCommand;
 
   RobotContainer m_container;
-
   Arm m_Arm;
+
   frc::Joystick m_ButtonBoard = frc::Joystick(0);
 	frc::Joystick m_Joystick = frc::Joystick(1);
 };

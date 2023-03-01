@@ -1,0 +1,17 @@
+Take measurements (variables from math & range for String Pot)
+
+Update all constants in Constants.h
+
+test manual controls for motors (phoenixtuner)
+
+test limit switches
+
+Test ManualControls()
+
+test ToggleBrakes, TransitMode(), GroundPickupMode(), LoadingMode()
+
+PID tune
+
+Test PivotToPosition(), Telescope(), Squeeze() 
+
+Test PlaceElement()

@@ -8,9 +8,11 @@
 #include <frc2/command/button/Button.h>
 #include <frc/AnalogInput.h>
 
+
 #include <math.h>
 
-
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/CommandScheduler.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/FunctionalCommand.h>
@@ -19,9 +21,6 @@
 
 #include "Constants.h"
 #include "Util.h"
-#include "Robot.h"
-
-
 
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
@@ -34,25 +33,28 @@ class Arm {
 	void Init();
 	void SetButtons();
 
+	//conversions
 	inline double PivotDegToTicks(double degree) {return degree * PIVOT_TICKS_PER_ARM_DEGREE;} //converts degrees to ticks of Pivot motor
 	inline double PivotTicksToDeg(double ticks) {return ticks / PIVOT_TICKS_PER_ARM_DEGREE;} //converts ticks to degrees of arm rotation
-	inline double StringPotUnitsToInches(double units) {return (units - 166) * SLIDER_INCHES_PER_TICK;} //166 = length of slider
-	inline double InchesToStringPotUnits(double inches) {return inches / SLIDER_INCHES_PER_TICK;}
-
+	inline double StringPotUnitsToInches(double units) {return (units - STRING_POT_MINIMUM) * STRING_POT_INCHES_PER_TICK;} //166 = length of slider
+	inline double InchesToStringPotUnits(double inches) {return inches / STRING_POT_INCHES_PER_TICK;}
+	//basic commands
 	frc2::FunctionalCommand PivotToPosition(double angle); 
-	void ToggleBrakes(bool isBraked); 
-
-	frc2::FunctionalCommand Telescope(double setpoint); //3988 - 4058 +-2 on both bounds?
-
+	frc2::InstantCommand ToggleBrakes(bool isBraked); 
+	frc2::FunctionalCommand Telescope(double setpoint); 
 	frc2::FunctionalCommand Squeeze(bool shouldSqueeze);
-	void PlaceElement(int type, int row, int column);
-	void TransitMode();
-	void LoadReady(bool isOnSameSide);
+	//Automation
+	frc2::InstantCommand PlaceElement(int type, int row, int column);
+	frc2::InstantCommand TransitMode();
+	frc2::InstantCommand GroundPickupMode();
+	frc2::InstantCommand LoadingMode();
+	//misc
+	frc2::FunctionalCommand ManualControls();
 
 	private:
 	
 	//class constants
-	bool m_brakesActive = false;
+	bool isOnFrontSide = true; //switch will flip this boolean to change method behaviour
 	
 	
 	//PivotToPosition()
@@ -80,6 +82,8 @@ class Arm {
 	frc::AnalogInput m_StringPot{STRINGPOT_ANALOG_INPUT_ID};
 
 	//buttons
+	frc2::Button m_Override;
+	
 	frc2::Button m_TL;
 	frc2::Button m_TC;
 	frc2::Button m_TR;
@@ -103,5 +107,4 @@ class Arm {
 	frc2::Button m_TransitMode;
 	frc2::Button m_GroundPickupMode;
 	frc2::Button m_LoadingMode;
-
 };
