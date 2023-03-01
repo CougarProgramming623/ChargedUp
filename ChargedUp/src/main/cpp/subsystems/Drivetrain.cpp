@@ -144,7 +144,7 @@ pathplanner::FollowPathWithEvents* DriveTrain::TruePath(){
 
 pathplanner::FollowPathWithEvents* DriveTrain::TrueAuto(PathPlannerTrajectory traj){
   TrajectoryCommand com = TrajectoryCommand(traj);
-  DebugOutF(std::to_string(com.m_Trajectory.getMarkers().at(std::string("Mark 1"))));
+  //DebugOutF(std::to_string(com.m_Trajectory.getMarkers().at(std::string("Mark 1"))));
   return new pathplanner::FollowPathWithEvents(std::make_unique<TrajectoryCommand>(com), com.m_Trajectory.getMarkers(), m_EventMap);
 }
 
