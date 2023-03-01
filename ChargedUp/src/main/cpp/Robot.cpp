@@ -30,6 +30,9 @@ void Robot::RobotInit() {
   s_Instance = this;
   m_DriveTrain.DriveInit();
   m_Vision.VisionInit(); //Make one
+
+  m_DriveTrain.m_EventMap.emplace("\"Mark 1\"", std::make_shared<frc2::PrintCommand>("Mark 1"));
+
   
 }
 
@@ -70,11 +73,11 @@ void Robot::AutonomousInit() {
   GetDriveTrain().BreakMode(true);
 
   //Load trajectory
-  PathPlannerTrajectory traj = PathPlanner::loadPath("TestAuto", PathConstraints(4_mps, 4_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("TestAuto", PathConstraints(2_mps, 1_mps_sq));
 
   //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
 
-  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.3), units::meter_t(1.75), frc::Rotation2d(units::degree_t(180)));
+  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.3), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
   //frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose);
 
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
@@ -87,16 +90,19 @@ void Robot::AutonomousInit() {
   // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
 
-  //frc2::CommandScheduler::GetInstance().Schedule(new TrajectoryCommand(traj));
+  //frc2::CommandPtr Auto = frc2::CommandPtr(GetDriveTrain().TrueAuto(traj));
+  //frc2::CommandScheduler::GetInstance().Schedule(GetDriveTrain().TrueAuto(traj));
+  //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
+  DebugOutF(GetDriveTrain().m_EventMap.at(0).get()->GetName());
 }
 
 void Robot::AutonomousPeriodic() {
   // int i = 0;
   // if(i % 100 == 0){
 
-    DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
-    DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
-    DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
+    // DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
+    // DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
+    // DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
   //   i = 0;
   // }
   // i++;

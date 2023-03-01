@@ -73,9 +73,9 @@ class DriveTrain : public frc2::SubsystemBase {
 
   inline std::array<frc::SwerveModulePosition, 4> GetModulePositions(){ return m_ModulePositions; }
 
-  pathplanner::FollowPathWithEvents TruePath();
-  pathplanner::FollowPathWithEvents TrueAuto(PathPlannerTrajectory traj);
-  
+  pathplanner::FollowPathWithEvents* TruePath();
+  pathplanner::FollowPathWithEvents* TrueAuto(PathPlannerTrajectory traj);
+
   inline bool GetIsBalancing() { return m_IsBalancing; }
   inline void SetIsBalancing(bool b) { m_IsBalancing = b; }
 
@@ -122,4 +122,6 @@ class DriveTrain : public frc2::SubsystemBase {
   frc2::PIDController m_yController;
   frc::ProfiledPIDController <units::radians> m_ThetaController;
   frc::HolonomicDriveController m_HolonomicController;
+
+  
 };
