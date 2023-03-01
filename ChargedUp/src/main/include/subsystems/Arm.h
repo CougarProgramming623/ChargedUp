@@ -51,7 +51,12 @@ class Arm {
 	//misc
 	frc2::FunctionalCommand ManualControls();
 
+	void Brake(bool brake);
+
+
 	private:
+
+	bool isBraked = false;
 	
 	//class constants
 	bool isOnFrontSide = true; //switch will flip this boolean to change method behaviour
@@ -107,4 +112,7 @@ class Arm {
 	frc2::Button m_TransitMode;
 	frc2::Button m_GroundPickupMode;
 	frc2::Button m_LoadingMode;
+
+	frc2::Button m_TestJoystickButton;
+
 };

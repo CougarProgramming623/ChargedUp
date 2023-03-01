@@ -1,5 +1,6 @@
 #include "subsystems/Arm.h"
 #include "Robot.h"
+#include "frc2/command/PrintCommand.h"
 
 using ctre::phoenix::motorcontrol::ControlMode;
 using ctre::phoenix::motorcontrol::can::TalonFX;
@@ -34,14 +35,16 @@ Arm::Arm() :
 
 	m_TransitMode(OVERRIDE_BUTTON_L(TRANSIT_MODE)),
 	m_GroundPickupMode(OVERRIDE_BUTTON_L(GROUND_PICKUP_MODE)),
-	m_LoadingMode(OVERRIDE_BUTTON_L(LOADING_MODE))
+	m_LoadingMode(OVERRIDE_BUTTON_L(LOADING_MODE)),
+
+	m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoystick().GetRawButton(1); })
 
 	{}
 
 void Arm::Init() {
 	m_Pivot.SetSelectedSensorPosition(0);
 	SetButtons();
-	ToggleBrakes(true);
+	//ToggleBrakes(false);
 	m_Pivot.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 	m_Extraction.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 }
@@ -52,6 +55,10 @@ void Arm::SetButtons() {
 		frc2::InstantCommand([&]{ frc2::CommandScheduler::GetInstance().CancelAll();}),
 		ManualControls()
 	));
+
+	m_TestJoystickButton.WhenPressed(ToggleBrakes(false)/*frc2::PrintCommand("pressed")*/);
+	m_TestJoystickButton.WhenReleased(ToggleBrakes(true)/*frc2::PrintCommand("released")*/);
+
 
 	m_TL.WhenPressed(PlaceElement(CONE, 0, 0));
 	m_TC.WhenPressed(PlaceElement(CUBE, 0, 1));
@@ -73,6 +80,19 @@ void Arm::SetButtons() {
 	m_TransitMode.WhenPressed(TransitMode());
 	m_GroundPickupMode.WhenPressed(GroundPickupMode());
 	m_LoadingMode.WhenPressed(LoadingMode());
+}
+
+void Arm::Brake(bool brake){
+	DebugOutF("Toggle");
+	if (brake) {
+		DebugOutF("1");
+		m_LeftBrake.Set(1);
+		m_RightBrake.Set(1);	
+	} else { 
+		DebugOutF("0");
+		m_LeftBrake.Set(0);
+		m_RightBrake.Set(0);
+	}
 }
 
 
@@ -106,6 +126,8 @@ frc2::InstantCommand Arm::ToggleBrakes(bool isBraked) {
 		}
 	});
 }
+
+
 
 //length should be a setpoint in inches
 frc2::FunctionalCommand Arm::Telescope(double Setpoint) {
