@@ -68,6 +68,8 @@ void Robot::AutonomousInit() {
   GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
 
+  
+
   //Load trajectory
   PathPlannerTrajectory traj = PathPlanner::loadPath("TestAuto", PathConstraints(2_mps, 1_mps_sq));
 
@@ -86,7 +88,8 @@ void Robot::AutonomousInit() {
   // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
   
-  frc2::CommandScheduler::GetInstance().Schedule(GetDriveTrain().TrueAuto(traj));
+  //frc2::CommandScheduler::GetInstance().Schedule(GetDriveTrain().TrueAuto(traj));
+
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
   //(GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
 }
