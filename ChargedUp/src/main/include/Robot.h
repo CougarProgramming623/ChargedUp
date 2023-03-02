@@ -1,7 +1,10 @@
-#pragma once
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+
+#pragma once
+
+#include <optional>
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/CommandPtr.h>
@@ -17,12 +20,15 @@
 #include "frc/smartdashboard/Smartdashboard.h"
 #include "COB.h"
 #include "Vision.h"
-
+#include "subsystems/Arm.h"
 
 class Robot : public frc::TimedRobot {
  public:
-
   Robot();
+  static inline Robot* GetRobot() { return s_Instance; }
+  inline Arm& GetArm() { return m_Arm; }
+  inline frc::Joystick& GetButtonBoard() { return m_ButtonBoard; }
+  inline frc::Joystick& GetJoystick() { return m_Joystick; }
 
   void RobotInit() override;
   void RobotPeriodic() override;
@@ -33,16 +39,12 @@ class Robot : public frc::TimedRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
-  //void SimulationInit() override;
-  //void SimulationPeriodic() override;
 
   inline AHRS& GetNavX() { return m_NavX; }
   inline void zeroGyroscope() {m_NavX.ZeroYaw();}
   inline double getYaw() {return m_NavX.GetYaw();}
   inline double getPitch() {return m_NavX.GetPitch();}
 
-
-  static Robot* GetRobot() { return s_Instance; } 
   inline DriveTrain& GetDriveTrain() { return m_DriveTrain; }
   inline frc::Joystick& GetJoyStick() { return m_Joystick; }
 
@@ -74,6 +76,7 @@ class Robot : public frc::TimedRobot {
   frc2::Command* m_autonomousCommand = nullptr;
 
   RobotContainer m_container;
+  Arm m_Arm;
 
   frc::Timer m_AutoTimer;
   DriveTrain m_DriveTrain;
@@ -81,4 +84,5 @@ class Robot : public frc::TimedRobot {
   Vision m_Vision;
 
   COB m_COB;
+  frc::Joystick m_ButtonBoard = frc::Joystick(0);
 };

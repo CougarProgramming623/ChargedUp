@@ -14,8 +14,8 @@
 #include <frc/RobotController.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
+using ctre::phoenix::motorcontrol::ControlMode;
 using namespace pathplanner;
-
 
 Robot* Robot::s_Instance = nullptr;
 
@@ -30,11 +30,12 @@ void Robot::RobotInit() {
   GetNavX().SetAngleAdjustment(0);
   s_Instance = this;
   m_DriveTrain.DriveInit();
-  m_Vision.VisionInit(); //Make one  
+  m_Vision.VisionInit(); //Make one
+  m_Arm.Init();
 }
 
 /**
- * This function is called every robot packet, no matter the mode. Use
+ * This function is called every 20 ms, no matter the mode. Use
  * this for items like diagnostics that you want to run during disabled,
  * autonomous, teleoperated and test.
  *
@@ -42,7 +43,7 @@ void Robot::RobotInit() {
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
-  frc2::CommandScheduler::GetInstance().Run();
+  frc2::CommandScheduler::GetInstance().Run();                                                                                
 }
 
 /**
@@ -60,8 +61,7 @@ void Robot::DisabledPeriodic() {}
  * This autonomous runs the autonomous command selected by your {@link
  * RobotContainer} class.
  */
-void Robot::AutonomousInit() {
-  
+void Robot::AutonomousInit() {  
   DebugOutF("Auto init");
 
   frc2::CommandScheduler::GetInstance().CancelAll();
@@ -99,15 +99,10 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-  // int i = 0;
-  // if(i % 100 == 0){
 
     DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
     DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
     DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
-  //   i = 0;
-  // }
-  // i++;
   
 }
 
@@ -122,10 +117,8 @@ void Robot::TeleopInit() {
         wpi::array<frc::SwerveModulePosition, 4>
             (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
         startingPose);
-  // This makes sure that the autonomous stops running when
-  // teleop starts running. If you want the autonomous to
-  // continue until interrupted by another command, remove
-  // this line or comment it out.
+  
+  m_Arm.GetPivot().Set(ControlMode::Position, m_Arm.GetPivot().GetSelectedSensorPosition() + 80000);
 }
 
 /**

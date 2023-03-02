@@ -17,7 +17,6 @@
   "C_Cpp.default.configurationProvider": "vscode-wpilib",
   "files.associations": {
     "*.inc": "cpp",
-    "span": "cpp",
     "array": "cpp",
     "atomic": "cpp",
     "bit": "cpp",
