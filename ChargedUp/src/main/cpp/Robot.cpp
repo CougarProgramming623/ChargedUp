@@ -53,6 +53,11 @@ void Robot::RobotPeriodic() {
  */
 void Robot::DisabledInit() {
   GetDriveTrain().BreakMode(false);
+  GetDriveTrain().m_BackLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+  GetDriveTrain().m_BackRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+  GetDriveTrain().m_FrontLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+  GetDriveTrain().m_FrontRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+
 }
 
 void Robot::DisabledPeriodic() {}
@@ -69,15 +74,16 @@ void Robot::AutonomousInit() {
   GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
 
+
   
 
   //Load trajectory
-  PathPlannerTrajectory traj = PathPlanner::loadPath("TestVision", PathConstraints(1_mps, 1_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("TestVision", PathConstraints(4_mps, 1_mps_sq));
 
   //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
 
-  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.3), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
-  //frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose);
+  //frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.3), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
+  frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), frc::Rotation2d(units::degree_t(0)));
 
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
     wpi::array<frc::SwerveModulePosition, 4>
