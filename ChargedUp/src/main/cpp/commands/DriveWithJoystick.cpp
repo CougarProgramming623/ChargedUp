@@ -27,7 +27,7 @@ void DriveWithJoystick::Execute() {
         frc::ChassisSpeeds::FromFieldRelativeSpeeds(
             units::meters_per_second_t(-Deadfix(r->GetJoyStick().GetRawAxis(1), 0.15) * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND),
             units::meters_per_second_t(Deadfix(r->GetJoyStick().GetRawAxis(0), 0.15) * r->GetDriveTrain().kMAX_VELOCITY_METERS_PER_SECOND),
-            units::radians_per_second_t(Deadfix(r->GetJoyStick().GetRawAxis(2), 0.15) * r->GetDriveTrain().kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
+            units::radians_per_second_t(Deadfix(r->GetJoyStick().GetRawAxis(2), 0.05) * r->GetDriveTrain().kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
             frc::Rotation2d(units::radian_t(Deg2Rad(-fmod(360 - r->GetNavX().GetAngle(), 360))))
         )
     );

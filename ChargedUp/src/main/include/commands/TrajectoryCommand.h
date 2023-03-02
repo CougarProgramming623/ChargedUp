@@ -11,7 +11,7 @@ using namespace pathplanner;
 
 class TrajectoryCommand : public frc2::CommandHelper<frc2::CommandBase, TrajectoryCommand> {
  public:
-    explicit TrajectoryCommand(PathPlannerTrajectory trajectory);
+  explicit TrajectoryCommand(PathPlannerTrajectory trajectory);
 
   void Initialize() override;
   void Execute() override;

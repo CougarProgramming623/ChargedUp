@@ -12,6 +12,7 @@
 #include "commands/TrajectoryCommand.h"
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/RobotController.h>
+#include <frc2/command/SequentialCommandGroup.h>
 
 using namespace pathplanner;
 
@@ -71,7 +72,7 @@ void Robot::AutonomousInit() {
   
 
   //Load trajectory
-  PathPlannerTrajectory traj = PathPlanner::loadPath("TestAuto", PathConstraints(2_mps, 1_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("TestVision", PathConstraints(1_mps, 1_mps_sq));
 
   //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
 
@@ -88,19 +89,22 @@ void Robot::AutonomousInit() {
   // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
   
-  //frc2::CommandScheduler::GetInstance().Schedule(GetDriveTrain().TrueAuto(traj));
+  frc2::CommandScheduler::GetInstance().Schedule(new frc2::SequentialCommandGroup(
+    TrajectoryCommand(traj),
+    AutoBalance()
+  ));
 
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
-  //(GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
+  // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
 }
 
 void Robot::AutonomousPeriodic() {
   // int i = 0;
   // if(i % 100 == 0){
 
-    // DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
-    // DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
-    // DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
+    DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
+    DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
+    DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
   //   i = 0;
   // }
   // i++;

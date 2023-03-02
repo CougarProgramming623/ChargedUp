@@ -21,8 +21,8 @@ void DriveToPosCommand::Initialize(){
     DebugOutF("End: (" + std::to_string(m_End.Translation().X().value()) + ", " + std::to_string(m_End.Translation().Y().value()) + ")");
     
     m_Trajectory = PathPlanner::generatePath(
-        units::meters_per_second_t(0.5),
-		units::meters_per_second_squared_t(0.25),
+        units::meters_per_second_t(2),
+		units::meters_per_second_squared_t(0.5),
 		false, 
 
         PathPoint(

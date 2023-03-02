@@ -25,15 +25,16 @@ DriveTrain::DriveTrain()
       m_BackLeftModule(BACK_LEFT_MODULE_DRIVE_MOTOR, BACK_LEFT_MODULE_STEER_MOTOR, BACK_LEFT_MODULE_ENCODER_PORT, BACK_LEFT_MODULE_STEER_OFFSET),
       m_BackRightModule(BACK_RIGHT_MODULE_DRIVE_MOTOR, BACK_RIGHT_MODULE_STEER_MOTOR, BACK_RIGHT_MODULE_ENCODER_PORT, BACK_RIGHT_MODULE_STEER_OFFSET),
       m_ChassisSpeeds{0_mps, 0_mps, 0_rad_per_s}, 
-      m_xController(1, 0.7, 0.2),
-      m_yController(1, 0.7, 0.2),
+      m_xController(.7, .4, 0.3),
+      m_yController(.7, .4, 0.3),
       m_ThetaController(14, 25, 0.02, frc::TrapezoidProfile<units::radian>::Constraints{3.14_rad_per_s, (1/2) * 3.14_rad_per_s / 1_s}),
       m_HolonomicController(m_xController, m_yController, m_ThetaController),
       m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);}),
       m_Timer(),
       m_EventMap()
 {
-  m_EventMap.emplace(std::string("Mark 1"), std::make_shared<frc2::PrintCommand>(std::string("Mark 1")));
+  m_EventMap.emplace(std::string("Mark 1"), std::make_shared<AutoBalance>(AutoBalance()));
+  DebugOutF("Emplaced");
 }
 
 void DriveTrain::DriveInit(){
@@ -42,7 +43,7 @@ void DriveTrain::DriveInit(){
   m_TestJoystickButton.WhenPressed(AutoBalance());
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.15, 0.15, .261799});
   //m_ThetaController.EnableContinuousInput(-M_PI, M_PI);
-  //m_EventMap.emplace(std::string("Mark 1"), std::make_shared<frc2::PrintCommand>(std::string("Mark 1")));
+  //m_EventMap.emplace(std::string("Mark 1"), std::make_shared< frc2::PrintCommand>(std::string("Mark 1")));
 
 }
 
@@ -104,9 +105,8 @@ void DriveTrain::Periodic(){
       if(COB_GET_ENTRY(COB_KEY_TV).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).size() != 0){
         m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
         - units::second_t((COB_GET_ENTRY("/limelight/tl").GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY("/limelight/cl").GetDouble(0))/1000.0)
-        // /*units::second_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(6) / 1000)*/
         );
-        DebugOutF("Inner Adjusted");
+        //DebugOutF("Inner Adjusted");
       }
     }
   }
@@ -137,16 +137,15 @@ void DriveTrain::BreakMode(bool on){
   m_BackRightModule.BreakMode(on);
 }
 
-pathplanner::FollowPathWithEvents* DriveTrain::TruePath(){
-  DriveToPosCommand com = DriveToPosCommand();
-  return new pathplanner::FollowPathWithEvents(std::make_unique<DriveToPosCommand>(com), com.m_Trajectory.getMarkers(), m_EventMap);
-}
+// pathplanner::FollowPathWithEvents* DriveTrain::TruePath(){
+//   DriveToPosCommand com = DriveToPosCommand();
+//   return new pathplanner::FollowPathWithEvents(std::make_unique<DriveToPosCommand>(com), com.m_Trajectory.getMarkers(), m_EventMap);
+// }
 
-pathplanner::FollowPathWithEvents* DriveTrain::TrueAuto(PathPlannerTrajectory traj){
-  TrajectoryCommand com = TrajectoryCommand(traj);
-  //DebugOutF(std::to_string(com.m_Trajectory.getMarkers().at(std::string("Mark 1"))));
-  return new pathplanner::FollowPathWithEvents(std::make_unique<TrajectoryCommand>(com), com.m_Trajectory.getMarkers(), m_EventMap);
-}
+// pathplanner::FollowPathWithEvents* DriveTrain::TrueAuto(PathPlannerTrajectory traj){
+//   TrajectoryCommand* com = new TrajectoryCommand(traj);
+//   return new pathplanner::FollowPathWithEvents(std::make_unique<TrajectoryCommand>(*com), com->m_Trajectory.getMarkers(), m_EventMap);
+// }
 
 // void DriveTrain::AutoBalanceFunction(){
 //   if(!GetIsBalancing()){
