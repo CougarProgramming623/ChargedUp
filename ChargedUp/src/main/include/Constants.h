@@ -11,19 +11,30 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #ifdef ARM_SUBSYSTEM
 
 //motor and sensor IDs
-#define EXTRACTION_MOTOR 30
-#define PIVOT_MOTOR 39
+#define EXTRACTION_MOTOR 39
+#define PIVOT_MOTOR 30
 #define LEFT_BRAKE 1
 #define RIGHT_BRAKE 0
-#define STRINGPOT_ANALOG_INPUT_ID 0
+#define STRINGPOT_ANALOG_INPUT_ID 4
 
 //Math constants
 #define PIVOT_GEAR_RATIO 160
 #define PIVOT_TICKS_PER_ARM_DEGREE PIVOT_GEAR_RATIO*2048/360
-#define SQUEEZE_AMP_THRESHOLD -1
-#define STRING_POT_INCHES_PER_TICK -1 //UPDATE
-#define STRING_POT_MINIMUM 1400 //UPDATE
+#define SQUEEZE_AMP_THRESHOLD -1 //UPDATE
+#define STRING_POT_INCHES_PER_TICK 0.01499326
+#define STRING_POT_MINIMUM 138
+#define STRING_POT_MAXIMUM 1622
 
+//PID constants
+#define PIVOT_ERROR 10
+#define PIVOT_KP 0.01 //0.41928
+#define PIVOT_KI 0 //DO NOT TOUCH AT ALL (.25 and .01 have broken bot)
+#define PIVOT_KD 0.2
+
+#define EXTRACTION_ERROR 0 //check
+#define EXTRACTION_KP 0 //check
+#define EXTRACTION_KI 0 //check 
+#define EXTRACTION_KD 0 //check
 //setpoints
 #define FRONT_LOW_ANGLE GROUND_PICKUP_ANGLE
 #define FRONT_MIDDLE_CONE_ANGLE 24.34

@@ -1,4 +1,4 @@
-Take measurements (variables from math & range for String Pot)
+DONE || Take measurements (variables from math & range for String Pot)
 
 DONE || Update all constants in Constants.h
 
@@ -8,10 +8,12 @@ test limit switches
 
 Test ManualControls()
 
-test ToggleBrakes, TransitMode(), GroundPickupMode(), LoadingMode()
+DONE|| test ToggleBrakes() 
 
 PID tune
 
 Test PivotToPosition(), Telescope(), Squeeze() 
+
+Test TransitMode(), GroundPickupMode(), LoadingMode()
 
 Test PlaceElement()

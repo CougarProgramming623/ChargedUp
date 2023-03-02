@@ -6,6 +6,8 @@
 
 #include <frc2/command/CommandScheduler.h>
 
+using ctre::phoenix::motorcontrol::ControlMode;
+
 Robot* Robot::s_Instance = nullptr;
 
 Robot::Robot() {s_Instance = this;}
@@ -40,12 +42,13 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
-  m_autonomousCommand = m_container.GetAutonomousCommand();
-    Robot::GetArm().Brake(false);
+  // m_autonomousCommand = m_container.GetAutonomousCommand();
 
-  if (m_autonomousCommand) {
-    m_autonomousCommand->Schedule();
-  }
+  // if (m_autonomousCommand) {
+  //   m_autonomousCommand->Schedule();
+  // }
+
+  m_Arm.PrintPot();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -57,11 +60,12 @@ void Robot::TeleopInit() {
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
   // this line or comment it out.
-    Robot::GetArm().Brake(true);
 
   if (m_autonomousCommand) {
     m_autonomousCommand->Cancel();
   }
+  m_Arm.GetPivot().Set(ControlMode::Position, m_Arm.GetPivot().GetSelectedSensorPosition() + 80000);
+
 
 }
 

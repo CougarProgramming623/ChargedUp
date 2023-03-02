@@ -41,6 +41,7 @@ class Arm {
 	//basic commands
 	frc2::FunctionalCommand PivotToPosition(double angle); 
 	frc2::InstantCommand ToggleBrakes(bool isBraked); 
+	void Brake(bool brake);
 	frc2::FunctionalCommand Telescope(double setpoint); 
 	frc2::FunctionalCommand Squeeze(bool shouldSqueeze);
 	//Automation
@@ -51,8 +52,9 @@ class Arm {
 	//misc
 	frc2::FunctionalCommand ManualControls();
 
-	void Brake(bool brake);
-
+	inline frc::AnalogInput& GetPot() { return m_StringPot; }
+	inline void PrintPot() {DebugOutF(std::to_string(m_StringPot.GetValue()));}
+	inline TalonFX& GetPivot() {return m_Pivot; }
 
 	private:
 

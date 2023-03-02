@@ -44,9 +44,19 @@ Arm::Arm() :
 void Arm::Init() {
 	m_Pivot.SetSelectedSensorPosition(0);
 	SetButtons();
-	//ToggleBrakes(false);
+	// Brake(false);
 	m_Pivot.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 	m_Extraction.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	
+	//set PID values
+	m_Pivot.ConfigAllowableClosedloopError(0, PIVOT_ERROR);
+	m_Pivot.Config_kP(0, PIVOT_KP);
+	m_Pivot.Config_kI(0, PIVOT_KI);
+	m_Pivot.Config_kD(0, PIVOT_KD);
+	m_Extraction.ConfigAllowableClosedloopError(0, EXTRACTION_ERROR);
+	m_Extraction.Config_kP(0, EXTRACTION_KP);
+	m_Extraction.Config_kI(0, EXTRACTION_KI);
+	m_Extraction.Config_kD(0, EXTRACTION_KD);
 }
 
 
