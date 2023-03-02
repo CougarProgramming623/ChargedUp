@@ -39,7 +39,7 @@ class Arm {
 	inline double StringPotUnitsToInches(double units) {return (units - STRING_POT_MINIMUM) * STRING_POT_INCHES_PER_TICK;} //166 = length of slider
 	inline double InchesToStringPotUnits(double inches) {return inches / STRING_POT_INCHES_PER_TICK;}
 	//basic commands
-	frc2::FunctionalCommand PivotToPosition(double angle); 
+	void PivotToPosition(double angle); 
 	frc2::InstantCommand ToggleBrakes(bool isBraked); 
 	void Brake(bool brake);
 	frc2::FunctionalCommand Telescope(double setpoint); 

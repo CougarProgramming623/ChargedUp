@@ -105,23 +105,14 @@ void Arm::Brake(bool brake){
 	}
 }
 
+void Arm::PivotToPosition(double angleSetpoint) {
+	StartingTicks = m_Pivot.GetSelectedSensorPosition();
+	double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition()); //current angle of the arm
+	double degToMove = angleSetpoint - currentAngle; //how many degrees the arm needs to move in the correct direction
+	TicksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
+	Setpoint = StartingTicks + TicksToMove;
+	m_Pivot.Set(ControlMode::Position, Setpoint);
 
-frc2::FunctionalCommand Arm::PivotToPosition(double angleSetpoint) {
-	Angle = angleSetpoint;
-	return frc2::FunctionalCommand(
-          [&] {  // onInit
-			StartingTicks = m_Pivot.GetSelectedSensorPosition();
-			double currentAngle = PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition()); //current angle of the arm
-			double degToMove = Angle - currentAngle; //how many degrees the arm needs to move in the correct direction
-			TicksToMove = PivotDegToTicks(degToMove); //how many ticks the pivot motor needs to move in the correct direction
-			Setpoint = StartingTicks + TicksToMove;
-          },[&] {  // onExecute		  	
-			m_Pivot.Set(ControlMode::Position, Setpoint);
-          }, [&](bool e) {  // onEnd
-			m_Pivot.Set(ControlMode::PercentOutput, 0);
-		  }, [&] {  // isFinished
-			return (abs(m_Pivot.GetSelectedSensorPosition() - Setpoint) < 2000); //deadband of 100 ticks 
-		  });
 }
 
 // Toggles the status of the brakes; currently assuming 0 is off, 1 is on
