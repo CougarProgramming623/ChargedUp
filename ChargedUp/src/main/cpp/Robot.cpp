@@ -6,7 +6,13 @@
 
 #include <frc2/command/CommandScheduler.h>
 
-void Robot::RobotInit() {}
+#include "LED.h"
+
+void Robot::RobotInit() {
+  m_LEDYellow.WhenPressed(LED::EyesSolid(frc::Color::kYellow));
+  m_LEDYellow.WhenPressed(LED::EyesSolid(frc::Color::kPurple));
+
+}
 
 /**
  * This function is called every 20 ms, no matter the mode. Use

@@ -18,4 +18,7 @@ namespace OperatorConstants {
 
 constexpr int kDriverControllerPort = 0;
 
+#define LED_YELLOW 1
+#define LED_PURPLE 1
+
 }  // namespace OperatorConstants

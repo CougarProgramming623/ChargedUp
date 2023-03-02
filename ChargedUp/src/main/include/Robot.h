@@ -8,6 +8,8 @@
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/CommandPtr.h>
+#include <frc2/command/button/Button.h>
+
 
 #include "RobotContainer.h"
 
@@ -29,6 +31,10 @@ class Robot : public frc::TimedRobot {
   // Have it empty by default so that if testing teleop it
   // doesn't have undefined behavior and potentially crash.
   std::optional<frc2::CommandPtr> m_autonomousCommand;
+
+
+  frc2::Button m_LEDYellow;
+  frc2::Button m_LEDPurple;
 
   RobotContainer m_container;
 };
