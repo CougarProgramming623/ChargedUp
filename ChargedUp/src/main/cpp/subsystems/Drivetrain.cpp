@@ -44,18 +44,10 @@ void DriveTrain::DriveInit(){
   SetDefaultCommand(DriveWithJoystick());
   // m_TestJoystickButton.WhenPressed(new frc2::ParallelCommandGroup(
   //   DriveToPosCommand(),
-<<<<<<< Updated upstream
   //   *Robot::GetRobot()->GetArm().PlaceElement(
   //     Robot::GetRobot()->GetArm().SelectedRow, 
   //     Robot::GetRobot()->GetArm().SelectedColumn
   //   )
-=======
-  //   // *Robot::GetRobot()->GetArm().PlaceElement(
-  //   //   Robot::GetRobot()->GetArm().SelectedRow, 
-  //   //   Robot::GetRobot()->GetArm().SelectedColumn
-  //   // )  
-  // ));
->>>>>>> Stashed changes
 
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.15, 0.15, .261799});
   m_FrontLeftModule.m_DriveController.motor.SetInverted(true);

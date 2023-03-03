@@ -49,7 +49,7 @@ class Arm : public frc2::SubsystemBase {
 	frc2::FunctionalCommand* Telescope(double setpoint); 
 	frc2::SequentialCommandGroup* Squeeze();
 	//Automation
-	frc2::FunctionalCommand* PlaceElement(int row, int column);
+	void PlaceElement(int row, int column);
 	frc2::SequentialCommandGroup* TransitMode();
 	frc2::SequentialCommandGroup* GroundPickupMode();
 	frc2::SequentialCommandGroup* LoadingMode();
