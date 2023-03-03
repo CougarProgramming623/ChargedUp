@@ -131,7 +131,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 //Math constants
 #define PIVOT_GEAR_RATIO 160
 #define PIVOT_TICKS_PER_ARM_DEGREE (PIVOT_GEAR_RATIO*2048/360)
-#define SQUEEZE_AMP_THRESHOLD .5
+#define SQUEEZE_AMP_THRESHOLD 1
 #define STRING_POT_INCHES_PER_TICK 0.01499326
 #define STRING_POT_MINIMUM 138  
 #define STRING_POT_MAXIMUM 1622
@@ -146,7 +146,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define PIVOT_KD 0.2
 
 #define EXTRACTION_ERROR 0 //check
-#define EXTRACTION_KP 0 //check
+#define EXTRACTION_KP .01 //check
 #define EXTRACTION_KI 0 //check 
 #define EXTRACTION_KD 0 //check
 //setpoints
@@ -174,7 +174,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define BACK_HIGH_CONE_RADIUS 55.10
 #define BACK_HIGH_CUBE_RADIUS 63.95
 
-#define TRANSIT_ANGLE 0 //should be zero
+#define TRANSIT_ANGLE -45
 #define TRANSIT_RADIUS ARM_MINIMUM_LENGTH
 
 #define FRONT_LOADING_ANGLE -62.14
@@ -182,8 +182,8 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define BACK_LOADING_ANGLE 44.38
 #define BACK_LOADING_RADIUS ARM_MINIMUM_LENGTH
 
-#define GROUND_PICKUP_ANGLE -99.57
-#define GROUND_PICKUP_RADIUS 42.09
+#define GROUND_PICKUP_ANGLE (-99.57-2)
+#define GROUND_PICKUP_RADIUS ARM_MINIMUM_LENGTH
 
 //keywords
 #define CONE 0

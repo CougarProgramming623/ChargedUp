@@ -45,9 +45,9 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 
 void Arm::Init()
 {
-	// m_Pivot.SetSelectedSensorPosition(0);
-	// ArmBrakes(true);
-	// SlipBrakes(true);
+	m_Pivot.SetSelectedSensorPosition(0);
+	ArmBrakes(true);
+	SlipBrakes(true);
 
 	SetButtons();
 	// Brake(false);
@@ -100,39 +100,10 @@ void Arm::SetButtons()
 	// 	else ArmBrakes(true);
 	// }));
 
-	// m_ManualSlipBrake.WhenPressed(frc2::InstantCommand([&] {
+	// m_ManualArmBrake.WhenPressed(frc2::InstantCommand([&] {
 	// 	if (m_SlipBrake.Get() != 1) SlipBrakes(false);
 	// 	else SlipBrakes(true);
 	// }));
-
-	m_TL.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_TL");}));
-	m_TC.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_TC");}));
-	m_TR.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_TR");}));
-	m_ML.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_ML");}));
-	m_MC.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_MC");}));
-	m_MR.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_MR");}));
-	m_BL.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_BL");}));
-	m_BC.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_BC");}));
-	m_BR.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_BR");}));
-
-	m_LeftGrid.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_LeftGrid");}));
-	m_CenterGrid.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_CenterGrid");}));
-	m_RightGrid.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_RightGrid");}));
-
-	m_TransitMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_TransitMode");}));
-	m_GroundPickupMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_GroundPickupMode");}));
-	m_LoadingMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_LoadingMode");}));
-
-	m_Override.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_Override");}));
-
-	m_ConeMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_ConeMode");}));
-	m_CubeMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_CubeMode");}));
-
-	m_FrontMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_FrontMode");}));
-	m_BackMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_BackMode");}));
-	
-	m_ManualArmBrake.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_ManualArmBrakes");}));
-	m_ManualSlipBrake.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_ManualSlipBrake");}));
 
 }
 
@@ -171,6 +142,7 @@ void Arm::PivotToPosition(double angleSetpoint)
 	Setpoint = StartingTicks + TicksToMove;
 
 	m_Pivot.Set(ControlMode::Position, Setpoint);
+	DebugOutF(std::to_string(PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition())));
 }
 
 // length should be a setpoint in inches
@@ -183,8 +155,10 @@ frc2::FunctionalCommand* Arm::Telescope(double Setpoint) {
 		},
 		[&] { // onExecute
 			ArmLength = StringPotUnitsToInches(m_StringPot.GetValue()) + 1 + ARM_MINIMUM_LENGTH;
-			if(ArmLength < SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, -.2);
+			DebugOutF(std::to_string(ArmLength));
+			if(ArmLength < SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, -.1);
 			else if(ArmLength > SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, .2);
+			
 		},
 		[&](bool e) { // onEnd
 			m_Extraction.Set(ControlMode::PercentOutput, 0);
@@ -196,52 +170,48 @@ frc2::FunctionalCommand* Arm::Telescope(double Setpoint) {
 		});
 }
 
-frc2::FunctionalCommand Arm::Squeeze(bool shouldSqueeze)
+frc2::FunctionalCommand* Arm::Squeeze(bool shouldSqueeze)
 {
 	if (shouldSqueeze)
 	{
-		return frc2::FunctionalCommand([&] { // onInit
-			TicksToUndoSqueeze = m_Extraction.GetSelectedSensorPosition();
+		return new frc2::FunctionalCommand([&] { // onInit
 			SlipBrakes(false);
 			ArmBrakes(true);
-			m_Extraction.Set(ControlMode::PercentOutput, .1);
+			m_Extraction.Set(ControlMode::PercentOutput, .15);
 		},
 		[&] { // onExecute
-			// empty
+			DebugOutF(std::to_string(m_Extraction.GetSupplyCurrent()));
 		},
 		[&](bool e) { // onEnd
 			m_Extraction.Set(ControlMode::PercentOutput, EXTRACTION_MOTOR_HOLD_POWER);
-			SlipBrakes(true);
-			TicksToUndoSqueeze = TicksToUndoSqueeze - m_Extraction.GetSelectedSensorPosition();
 		},
 		[&] { // isFinished
 			return m_Extraction.GetSupplyCurrent() > SQUEEZE_AMP_THRESHOLD;
 		});
-	}
-	else
-	{
-		return frc2::FunctionalCommand([&] { // onInit
+	} else {
+			double a;
+		return new frc2::FunctionalCommand([&] { // onInit
 			SlipBrakes(false);
-			ArmBrakes(false);
+			ArmBrakes(true);
+			a = m_Extraction.GetSelectedSensorPosition();
+			m_Extraction.Set(ControlMode::Position, m_Extraction.GetSelectedSensorPosition() - 15000);
 		},[&] { // onExecute
-			m_Extraction.Set(ControlMode::Position, m_Extraction.GetSelectedSensorPosition() - TicksToUndoSqueeze);
+		DebugOutF(std::to_string(m_Extraction.GetSelectedSensorVelocity()));
+		//empty
 		},[&](bool e) { // onEnd
 			m_Extraction.Set(ControlMode::PercentOutput, 0);
 			SlipBrakes(true);
 			ArmBrakes(false);
 		},
 		[&] { // isFinished
-			return m_Extraction.GetSelectedSensorPosition() - TicksToUndoSqueeze < 100;
+			return m_Extraction.GetSelectedSensorVelocity() == 0;
 		});
 	}
 }
 
 // sets arm to a set angle and radius based on element being places
 // type can be either CONE or CUBE
-frc2::InstantCommand Arm::PlaceElement(int type, int row, int column)
-{
-	return frc2::InstantCommand([&]
-								{
+void Arm::PlaceElement(int row, int column){
 		//index 0 is TL; index 8 is BR (read like a book)
 		double FrontRadiiValues[9] = {
 			FRONT_HIGH_CONE_RADIUS,   FRONT_HIGH_CUBE_RADIUS,  FRONT_HIGH_CONE_RADIUS,
@@ -271,45 +241,48 @@ frc2::InstantCommand Arm::PlaceElement(int type, int row, int column)
 
 		if (isOnFrontSide) { 
 			PivotToPosition(FrontAngleValues[ArrayValueNeeded]);
-			Telescope(FrontRadiiValues[ArrayValueNeeded]);
+			Telescope(FrontRadiiValues[ArrayValueNeeded])->Schedule();
 		} else {
 			PivotToPosition(BackAngleValues[ArrayValueNeeded]);
-			Telescope(BackRadiiValues[ArrayValueNeeded]);
+			Telescope(BackRadiiValues[ArrayValueNeeded])->Schedule();
 		}
-		Squeeze(false); });
+		// Squeeze(false);
 }
 
 // Arm positions for transit
-frc2::InstantCommand Arm::TransitMode()
+frc2::SequentialCommandGroup* Arm::TransitMode()
 {
-	return frc2::InstantCommand([&]
-								{
-		PivotToPosition(TRANSIT_ANGLE);
-		Telescope(TRANSIT_RADIUS); });
+	return new frc2::SequentialCommandGroup(				
+			frc2::InstantCommand([&] { PivotToPosition(TRANSIT_ANGLE);}),
+			*Telescope(TRANSIT_RADIUS)
+		);
 }
 
 // Arm positions for picking up from the ground
-frc2::InstantCommand Arm::GroundPickupMode()
+frc2::SequentialCommandGroup* Arm::GroundPickupMode()
 {
-	return frc2::InstantCommand([&]
-								{
-		PivotToPosition(GROUND_PICKUP_ANGLE);
-		Telescope(GROUND_PICKUP_RADIUS); });
+	return new frc2::SequentialCommandGroup(
+		frc2::InstantCommand([&] { PivotToPosition(GROUND_PICKUP_ANGLE);}),
+		*Telescope(GROUND_PICKUP_RADIUS));		
 }
 
 // Arm positions to load cone from loading station
-frc2::InstantCommand Arm::LoadingMode()
+frc2::SequentialCommandGroup* Arm::LoadingMode() //untested
 {
-	return frc2::InstantCommand([&]
-								{
-		if (isOnFrontSide) {
-			PivotToPosition(FRONT_LOADING_ANGLE);
-			Telescope(FRONT_LOADING_RADIUS);
+		if(isOnFrontSide) {
+			return new frc2::SequentialCommandGroup(
+				frc2::InstantCommand([&] {PivotToPosition(FRONT_LOADING_ANGLE);}),
+				*Telescope(FRONT_LOADING_RADIUS)
+			);
 		} else {
-			PivotToPosition(BACK_LOADING_ANGLE);
-			Telescope(BACK_LOADING_RADIUS);
-		} });
+			return new frc2::SequentialCommandGroup(
+				frc2::InstantCommand([&] { PivotToPosition(BACK_LOADING_ANGLE);}),
+				*Telescope(BACK_LOADING_RADIUS)
+			);
+		}
 }
+								
+		
 
 // while override is active, gives manual joysticks control over the two arm motors
 frc2::FunctionalCommand Arm::ManualControls()

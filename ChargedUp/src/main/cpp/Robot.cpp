@@ -124,7 +124,8 @@ void Robot::TeleopInit() {
         wpi::array<frc::SwerveModulePosition, 4>
             (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
         startingPose);
-      
+
+  // m_Arm.PlaceElement(0,0);
 }
 
 /**
