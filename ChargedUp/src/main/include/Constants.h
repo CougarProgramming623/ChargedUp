@@ -200,8 +200,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define PIVOT_CONTROL 1 //check
 #define EXTRACTION_CONTROL 1 //check
 #define MANUAL_ARM_BRAKE 22
-#define MANUAL_SLIP_BRAKE 7 
-
+#define MANUAL_SLIP_BRAKE 7
 
 #define ARM_OVERRIDE 1 
 

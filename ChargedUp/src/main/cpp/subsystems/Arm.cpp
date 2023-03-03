@@ -14,40 +14,40 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 //BUTTONBOARD 1
 			 m_Override(BUTTON_L(ARM_OVERRIDE)),
 
-			 m_ConeMode(OVERRIDE_BUTTON_L(CONE_MODE)),
-			 m_CubeMode(OVERRIDE_BUTTON_L(CUBE_MODE)),
+			 m_ConeMode(BUTTON_L(CONE_MODE)),
+			 m_CubeMode(BUTTON_L(CUBE_MODE)),
 
-			 m_FrontMode(OVERRIDE_BUTTON_L(FRONT_MODE)),
-			 m_BackMode(OVERRIDE_BUTTON_L(BACK_MODE)),
+			 m_FrontMode(BUTTON_L(FRONT_MODE)),
+			 m_BackMode(BUTTON_L(BACK_MODE)),
 
-			 m_ManualArmBrake(ACTIVE_OVERRIDE_BUTTON_L(MANUAL_ARM_BRAKE)),
-			 m_ManualSlipBrake(ACTIVE_OVERRIDE_BUTTON_L(MANUAL_SLIP_BRAKE)),
+			 m_ManualArmBrake(BUTTON_L(MANUAL_ARM_BRAKE)),
+			 m_ManualSlipBrake(BUTTON_L(MANUAL_SLIP_BRAKE)),
 
 			//BUTTONBOARD 2
-			 m_TL(OVERRIDE_BUTTON_L_TWO(GRID_TL)),
-			 m_TC(OVERRIDE_BUTTON_L_TWO(GRID_TC)),
-			 m_TR(OVERRIDE_BUTTON_L_TWO(GRID_TR)),
-			 m_ML(OVERRIDE_BUTTON_L_TWO(GRID_ML)),
-			 m_MC(OVERRIDE_BUTTON_L_TWO(GRID_MC)),
-			 m_MR(OVERRIDE_BUTTON_L_TWO(GRID_MR)),
-			 m_BL(OVERRIDE_BUTTON_L_TWO(GRID_BL)),
-			 m_BC(OVERRIDE_BUTTON_L_TWO(GRID_BC)),
-			 m_BR(OVERRIDE_BUTTON_L_TWO(GRID_BR)),
+			 m_TL(BUTTON_L_TWO(GRID_TL)),
+			 m_TC(BUTTON_L_TWO(GRID_TC)),
+			 m_TR(BUTTON_L_TWO(GRID_TR)),
+			 m_ML(BUTTON_L_TWO(GRID_ML)),
+			 m_MC(BUTTON_L_TWO(GRID_MC)),
+			 m_MR(BUTTON_L_TWO(GRID_MR)),
+			 m_BL(BUTTON_L_TWO(GRID_BL)),
+			 m_BC(BUTTON_L_TWO(GRID_BC)),
+			 m_BR(BUTTON_L_TWO(GRID_BR)),
 
-			 m_LeftGrid(OVERRIDE_BUTTON_L_TWO(LEFT_GRID)),
-			 m_CenterGrid(OVERRIDE_BUTTON_L_TWO(CENTER_GRID)),
-			 m_RightGrid(OVERRIDE_BUTTON_L_TWO(RIGHT_GRID)),
+			 m_LeftGrid(BUTTON_L_TWO(LEFT_GRID)),
+			 m_CenterGrid(BUTTON_L_TWO(CENTER_GRID)),
+			 m_RightGrid(BUTTON_L_TWO(RIGHT_GRID)),
 
-			 m_TransitMode(OVERRIDE_BUTTON_L_TWO(TRANSIT_MODE)),
-			 m_GroundPickupMode(OVERRIDE_BUTTON_L_TWO(GROUND_PICKUP_MODE)),
-			 m_LoadingMode(OVERRIDE_BUTTON_L_TWO(LOADING_MODE))
+			 m_TransitMode(BUTTON_L_TWO(TRANSIT_MODE)),
+			 m_GroundPickupMode(BUTTON_L_TWO(GROUND_PICKUP_MODE)),
+			 m_LoadingMode(BUTTON_L_TWO(LOADING_MODE))
 			{}
 
 void Arm::Init()
 {
-	m_Pivot.SetSelectedSensorPosition(0);
-	ArmBrakes(true);
-	SlipBrakes(true);
+	// m_Pivot.SetSelectedSensorPosition(0);
+	// ArmBrakes(true);
+	// SlipBrakes(true);
 
 	SetButtons();
 	// Brake(false);
@@ -67,44 +67,72 @@ void Arm::Init()
 
 void Arm::SetButtons()
 {
-	m_Override.WhenPressed(frc2::SequentialCommandGroup(
-		frc2::InstantCommand([&]
-							 { frc2::CommandScheduler::GetInstance().CancelAll(); }),
-		ManualControls()));
+	// m_Override.WhenPressed(frc2::SequentialCommandGroup(
+	// 	frc2::InstantCommand([&]
+	// 						 { frc2::CommandScheduler::GetInstance().CancelAll(); }),
+	// 	ManualControls()));
 
-	m_TL.WhenPressed(PlaceElement(CONE, 0, 0));
-	m_TC.WhenPressed(PlaceElement(CUBE, 0, 1));
-	m_TR.WhenPressed(PlaceElement(CONE, 0, 2));
-	m_ML.WhenPressed(PlaceElement(CONE, 1, 0));
-	m_MC.WhenPressed(PlaceElement(CUBE, 1, 1));
-	m_MR.WhenPressed(PlaceElement(CONE, 1, 2));
-	m_BL.WhenPressed(PlaceElement(CONE, 2, 0));
-	m_BC.WhenPressed(PlaceElement(CUBE, 2, 1));
-	m_BR.WhenPressed(PlaceElement(CONE, 2, 2));
+	// m_TL.WhenPressed(PlaceElement(CONE, 0, 0));
+	// m_TC.WhenPressed(PlaceElement(CUBE, 0, 1));
+	// m_TR.WhenPressed(PlaceElement(CONE, 0, 2));
+	// m_ML.WhenPressed(PlaceElement(CONE, 1, 0));
+	// m_MC.WhenPressed(PlaceElement(CUBE, 1, 1));
+	// m_MR.WhenPressed(PlaceElement(CONE, 1, 2));
+	// m_BL.WhenPressed(PlaceElement(CONE, 2, 0));
+	// m_BC.WhenPressed(PlaceElement(CUBE, 2, 1));
+	// m_BR.WhenPressed(PlaceElement(CONE, 2, 2));
 
-	// m_LeftGrid.WhenPressed(/*drive to Left grid*/);
-	// m_MiddleGrid.WhenPressed(/*drive to Middle grid*/);
-	// m_RightGrid.WhenPressed(/*drive to Right grid*/);
+	// // m_LeftGrid.WhenPressed(/*drive to Left grid*/);
+	// // m_MiddleGrid.WhenPressed(/*drive to Middle grid*/);
+	// // m_RightGrid.WhenPressed(/*drive to Right grid*/);
 
-	m_FrontMode.WhenPressed(frc2::InstantCommand([&]
-												 { isOnFrontSide = true; }));
-	m_BackMode.WhenPressed(frc2::InstantCommand([&]
-												{ isOnFrontSide = false; }));
+	// m_FrontMode.WhenPressed(frc2::InstantCommand([&]
+	// 											 { isOnFrontSide = true; }));
+	// m_BackMode.WhenPressed(frc2::InstantCommand([&]
+	// 											{ isOnFrontSide = false; }));
 
-	m_TransitMode.WhenPressed(TransitMode());
-	m_GroundPickupMode.WhenPressed(GroundPickupMode());
-	m_LoadingMode.WhenPressed(LoadingMode());
+	// m_TransitMode.WhenPressed(TransitMode());
+	// m_GroundPickupMode.WhenPressed(GroundPickupMode());
+	// m_LoadingMode.WhenPressed(LoadingMode());
 
-	m_ManualArmBrake.WhenPressed(frc2::InstantCommand([&] {
-		if (m_RightBrake.Get() == 0) ArmBrakes(false);
-		else ArmBrakes(true);
-	}));
+	// m_ManualArmBrake.WhenPressed(frc2::InstantCommand([&] {
+	// 	if (m_RightBrake.Get() == 0) ArmBrakes(false);
+	// 	else ArmBrakes(true);
+	// }));
 
-	m_ManualSlipBrake.WhenPressed(frc2::InstantCommand([&] {
-		if (m_SlipBrake.Get() != 1) SlipBrakes(false);
-		else SlipBrakes(true);
-	}));
+	// m_ManualSlipBrake.WhenPressed(frc2::InstantCommand([&] {
+	// 	if (m_SlipBrake.Get() != 1) SlipBrakes(false);
+	// 	else SlipBrakes(true);
+	// }));
 
+	m_TL.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_TL");}));
+	m_TC.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_TC");}));
+	m_TR.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_TR");}));
+	m_ML.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_ML");}));
+	m_MC.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_MC");}));
+	m_MR.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_MR");}));
+	m_BL.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_BL");}));
+	m_BC.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_BC");}));
+	m_BR.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_BR");}));
+
+	m_LeftGrid.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_LeftGrid");}));
+	m_CenterGrid.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_CenterGrid");}));
+	m_RightGrid.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_RightGrid");}));
+
+	m_TransitMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_TransitMode");}));
+	m_GroundPickupMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_GroundPickupMode");}));
+	m_LoadingMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_LoadingMode");}));
+
+	m_Override.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_Override");}));
+
+	m_ConeMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_ConeMode");}));
+	m_CubeMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_CubeMode");}));
+
+	m_FrontMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_FrontMode");}));
+	m_BackMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_BackMode");}));
+	
+	m_ManualArmBrake.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_ManualArmBrakes");}));
+	m_ManualSlipBrake.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_ManualSlipBrake");}));
 
 }
 
