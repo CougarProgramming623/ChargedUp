@@ -62,11 +62,33 @@ Pose2d Vision::GetPoseRed(){
 }
 
 Pose2d Vision::GetFieldPose(){ 
-  if(COB_GET_ENTRY(COB_KEY_TV).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).size() != 0){
-    m_AbsolutePose = Pose2d(  units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(0)),
-                              units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(1)),
-                              Rotation2d(units::radian_t(Deg2Rad(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).at(5))))
+  if(COB_GET_ENTRY(COB_KEY_TV_FRONT).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE_FRONT).GetDoubleArray(std::span<double>()).size() != 0){
+    m_TempPose = Pose2d(    units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_FRONT).GetDoubleArray(std::span<double>()).at(0)),
+                            units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_FRONT).GetDoubleArray(std::span<double>()).at(1)),
+                            Rotation2d(units::radian_t(Deg2Rad(COB_GET_ENTRY(COB_KEY_BOT_POSE_FRONT).GetDoubleArray(std::span<double>()).at(5))))
                             );
   }
+
+  if(COB_GET_ENTRY(COB_KEYP_TV_BACK).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE_BACK).GetDoubleArray(std::span<double>()).size() != 0){
+    m_TempPose = Pose2d(  units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_BACK).GetDoubleArray(std::span<double>()).at(0)),
+                              units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_BACK).GetDoubleArray(std::span<double>()).at(1)),
+                              Rotation2d(units::radian_t(Deg2Rad(COB_GET_ENTRY(COB_KEY_BOT_POSE_BACK).GetDoubleArray(std::span<double>()).at(5))))
+                            );
+  }
+
   return m_AbsolutePose; 
+}
+
+//1 for front 0 for back
+int Vision::FrontBack(){
+  if(m_AbsolutePose.X() == 0 & m_AbsolutePose.Y() ==0){
+    if(COB_GET_ENTRY(COB_KEY_IS_RED))
+      return 1;
+    else
+      return 0;
+  } else {
+    if()
+  }
+
+
 }
