@@ -76,6 +76,291 @@ void Arm::Init()
 
 void Arm::SetButtons()
 {
+<<<<<<< Updated upstream
+=======
+	// m_Override.WhenPressed(frc2::SequentialCommandGroup(
+	// 	frc2::InstantCommand([&]
+	// 						 { frc2::CommandScheduler::GetInstance().CancelAll(); }),
+	// 	ManualControls()));
+
+	// m_TL.WhenPressed(PlaceElement(CONE, 0, 0));
+	// m_TC.WhenPressed(PlaceElement(CUBE, 0, 1));
+	// m_TR.WhenPressed(PlaceElement(CONE, 0, 2));
+	// m_ML.WhenPressed(PlaceElement(CONE, 1, 0));
+	// m_MC.WhenPressed(PlaceElement(CUBE, 1, 1));
+	// m_MR.WhenPressed(PlaceElement(CONE, 1, 2));
+	// m_BL.WhenPressed(PlaceElement(CONE, 2, 0));
+	// m_BC.WhenPressed(PlaceElement(CUBE, 2, 1));
+	// m_BR.WhenPressed(PlaceElement(CONE, 2, 2));
+
+	// // m_LeftGrid.WhenPressed(/*drive to Left grid*/);
+	// // m_MiddleGrid.WhenPressed(/*drive to Middle grid*/);
+	// // m_RightGrid.WhenPressed(/*drive to Right grid*/);
+
+	// m_FrontMode.WhenPressed(frc2::InstantCommand([&]
+	// 											 { isOnFrontSide = true; }));
+	// m_BackMode.WhenPressed(frc2::InstantCommand([&]
+	// 											{ isOnFrontSide = false; }));
+
+	// m_TransitMode.WhenPressed(TransitMode());
+	// m_GroundPickupMode.WhenPressed(GroundPickupMode());
+	// m_LoadingMode.WhenPressed(LoadingMode());
+
+	// m_ManualArmBrake.WhenPressed(frc2::InstantCommand([&] {
+	// 	if (m_RightBrake.Get() == 0) ArmBrakes(false);
+	// 	else ArmBrakes(true);
+	// }));
+
+	// m_ManualArmBrake.WhenPressed(frc2::InstantCommand([&] {
+	// 	if (m_SlipBrake.Get() != 1) SlipBrakes(false);
+	// 	else SlipBrakes(true);
+	// }));
+
+	m_LoadingMode.WhenPressed(Squeeze());
+
+	m_TL.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_TL");
+		SelectedRow = 0;
+		SelectedColumn = 0;
+		frc::Pose2d SelectedPose = 
+			Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
+		if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);
+		} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);		
+		}
+		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+			SelectedPose = 
+				frc::Pose2d(
+					units::meter_t(16.541)-SelectedPose.Translation().X(), 
+					SelectedPose.Translation().Y(),
+					SelectedPose.Rotation().RotateBy(Rotation2d(units::degree_t(180)))
+				);
+		}
+		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
+	}));
+
+	m_TC.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_TC");
+		SelectedRow = 0;
+		SelectedColumn = 1;
+		frc::Pose2d SelectedPose = 
+			Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
+		if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);
+		} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);		
+		}
+		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+			SelectedPose = 
+				frc::Pose2d(
+					units::meter_t(16.541)-SelectedPose.Translation().X(), 
+					SelectedPose.Translation().Y(),
+					SelectedPose.Rotation().RotateBy(Rotation2d(units::degree_t(180)))
+				);
+		}
+		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;	
+		}));
+
+	m_TR.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_TR");
+		}));
+
+	// m_TR.WhenPressed(frc2::SequentialCommandGroup(
+	// 	*PlaceElement(0, 2)
+	// 	));
+
+	m_ML.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_ML");
+		SelectedRow = 1;
+		SelectedColumn = 0;
+		frc::Pose2d SelectedPose = 
+			Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
+		if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);
+		} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);		
+		}
+		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+			SelectedPose = 
+				frc::Pose2d(
+					units::meter_t(16.541)-SelectedPose.Translation().X(), 
+					SelectedPose.Translation().Y(),
+					SelectedPose.Rotation().RotateBy(Rotation2d(units::degree_t(180)))
+				);
+		}
+		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
+		}));
+
+	m_MC.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_MC");
+		SelectedRow = 1;
+		SelectedColumn = 1;
+		frc::Pose2d SelectedPose = 
+			Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
+		if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);
+		} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);		
+		}
+		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+			SelectedPose = 
+				frc::Pose2d(
+					units::meter_t(16.541)-SelectedPose.Translation().X(), 
+					SelectedPose.Translation().Y(),
+					SelectedPose.Rotation().RotateBy(Rotation2d(units::degree_t(180)))
+				);
+		}
+		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
+		}));
+
+
+	m_MR.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_MR");
+		}));
+
+	// m_MR.WhenPressed(frc2::SequentialCommandGroup(
+	// 	*PlaceElement(1, 2)
+	// 	));
+
+	m_BL.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_BL");
+		SelectedRow = 2;
+		SelectedColumn = 0;
+		frc::Pose2d SelectedPose = 
+			Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
+		if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);
+		} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);		
+		}
+		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+			SelectedPose = 
+				frc::Pose2d(
+					units::meter_t(16.541)-SelectedPose.Translation().X(), 
+					SelectedPose.Translation().Y(),
+					SelectedPose.Rotation().RotateBy(Rotation2d(units::degree_t(180)))
+				);
+		}
+		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
+		}));
+
+	m_BC.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_BC");
+		SelectedRow = 2;
+		SelectedColumn = 1;
+		frc::Pose2d SelectedPose = 
+			Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
+		if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);
+		} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
+			SelectedPose = SelectedPose.TransformBy(
+				frc::Transform2d(
+					frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.6764)),
+					frc::Rotation2d(units::radian_t(0))
+				)
+			);		
+		}
+		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+			SelectedPose = 
+				frc::Pose2d(
+					units::meter_t(16.541)-SelectedPose.Translation().X(), 
+					SelectedPose.Translation().Y(),
+					SelectedPose.Rotation().RotateBy(Rotation2d(units::degree_t(180)))
+				);
+		}
+		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
+		}));
+
+	m_BR.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_BR");
+		}));
+
+	// m_BR.WhenPressed(frc2::SequentialCommandGroup(
+	// 	*PlaceElement(2, 2)
+	// 	));
+
+	m_LeftGrid.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_LeftGrid");
+		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
+		} else{
+			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 2;
+		}
+	}));
+
+	m_CenterGrid.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_CenterGrid");
+		Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 1;
+	}));
+
+	m_RightGrid.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_RightGrid");
+		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 2;
+		} else{
+			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
+		}	}));
+
+	m_TransitMode.WhenPressed(TransitMode());
+	m_GroundPickupMode.WhenPressed(GroundPickupMode());
+	//m_LoadingMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_LoadingMode");}));
+>>>>>>> Stashed changes
 
 
 	m_Override.WhenPressed(frc2::InstantCommand([&]{WaitBrakeTelescope(60)->Schedule();}));
