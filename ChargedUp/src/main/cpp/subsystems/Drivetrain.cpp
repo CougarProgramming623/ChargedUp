@@ -116,17 +116,9 @@ void DriveTrain::Periodic(){
         // DebugOutF("Botpose array");
         // if(COB_GET_ENTRY("COB_KEY_BOT_POSE").GetDoubleArray(std::span<double>()).at(1) <= 3 || COB_GET_ENTRY("COB_KEY_BOT_POSE").GetDoubleArray(std::span<double>()).at(1) >= 13){
         //   DebugOutF("Δx check");
-<<<<<<< HEAD
           m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
           - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("tl")).GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("cl")).GetDouble(0))/1000.0)
           );
-=======
-
-          // m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
-          // - units::second_t((COB_GET_ENTRY("/limelight/tl").GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY("/limelight/cl").GetDouble(0))/1000.0)
-          // );
-
->>>>>>> e05c373b2f5bb05f4664cd085abe46ecf64fedd7
         //DebugOutF("Inner Adjusted");
         // }
       }
