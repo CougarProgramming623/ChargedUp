@@ -36,6 +36,7 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 m_BL(BUTTON_L_TWO(GRID_BL)),
 			 m_BC(BUTTON_L_TWO(GRID_BC)),
 			 m_BR(BUTTON_L_TWO(GRID_BR)),
+			 m_Squeeze(BUTTON_L_TWO(6)),
 
 			 m_LeftGrid(BUTTON_L_TWO(LEFT_GRID)),
 			 m_CenterGrid(BUTTON_L_TWO(CENTER_GRID)),
@@ -107,6 +108,8 @@ void Arm::SetButtons()
 	// 	if (m_SlipBrake.Get() != 1) SlipBrakes(false);
 	// 	else SlipBrakes(true);
 	// }));
+
+	m_Squeeze.WhenPressed(Squeeze());
 
 	m_TL.WhenPressed(frc2::InstantCommand([&]{
 		DebugOutF("m_TL");
@@ -495,7 +498,7 @@ frc2::FunctionalCommand* Arm::Telescope(double Setpoint) {
 		});
 }
 
-frc2::FunctionalCommand Arm::Squeeze(bool shouldSqueeze)
+frc2::FunctionalCommand Arm::Squeeze()
 {
 	if (shouldSqueeze)
 	{
@@ -512,6 +515,7 @@ frc2::FunctionalCommand Arm::Squeeze(bool shouldSqueeze)
 			m_Extraction.Set(ControlMode::PercentOutput, EXTRACTION_MOTOR_HOLD_POWER);
 			SlipBrakes(true);
 			TicksToUndoSqueeze = TicksToUndoSqueeze - m_Extraction.GetSelectedSensorPosition();
+			shouldSqueeze = false;
 		},
 		[&] { // isFinished
 			return m_Extraction.GetSupplyCurrent() > SQUEEZE_AMP_THRESHOLD;
@@ -528,6 +532,7 @@ frc2::FunctionalCommand Arm::Squeeze(bool shouldSqueeze)
 			m_Extraction.Set(ControlMode::PercentOutput, 0);
 			SlipBrakes(true);
 			ArmBrakes(false);
+			shouldSqueeze = true;
 		},
 		[&] { // isFinished
 			return m_Extraction.GetSelectedSensorPosition() - TicksToUndoSqueeze < 100;

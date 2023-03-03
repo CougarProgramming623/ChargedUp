@@ -43,7 +43,7 @@ class Arm {
 	void ArmBrakes(bool shouldBreak);
 	void SlipBrakes(bool shouldBreak);
 	frc2::FunctionalCommand* Telescope(double setpoint); 
-	frc2::FunctionalCommand Squeeze(bool shouldSqueeze);
+	frc2::FunctionalCommand Squeeze();
 	//Automation
 	frc2::InstantCommand PlaceElement(/*int type,*/ int row, int column);
 	frc2::InstantCommand TransitMode();
@@ -58,6 +58,8 @@ class Arm {
 
 	int SelectedRow;
 	int SelectedColumn;
+
+	bool shouldSqueeze;
 
 	private:
 	
@@ -91,6 +93,7 @@ class Arm {
 	frc::AnalogInput m_StringPot{STRINGPOT_ANALOG_INPUT_ID};
 
 	//buttons
+	frc2::Button m_Squeeze;
 	
 	frc2::Button m_TL;
 	frc2::Button m_TC;
