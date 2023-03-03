@@ -43,12 +43,12 @@ class Arm {
 	void ArmBrakes(bool shouldBreak);
 	void SlipBrakes(bool shouldBreak);
 	frc2::FunctionalCommand* Telescope(double setpoint); 
-	frc2::FunctionalCommand Squeeze();
+	frc2::FunctionalCommand* Squeeze(bool shouldSqueeze);
 	//Automation
-	frc2::InstantCommand PlaceElement(/*int type,*/ int row, int column);
-	frc2::InstantCommand TransitMode();
-	frc2::InstantCommand GroundPickupMode();
-	frc2::InstantCommand LoadingMode();
+	frc2::FunctionalCommand* PlaceElement(int row, int column);
+	frc2::SequentialCommandGroup* TransitMode();
+	frc2::SequentialCommandGroup* GroundPickupMode();
+	frc2::SequentialCommandGroup* LoadingMode();
 	//misc
 	frc2::FunctionalCommand ManualControls();
 
@@ -64,7 +64,7 @@ class Arm {
 	private:
 	
 	//class constants
-	bool isOnFrontSide = true; //switch will flip this boolean to change method behaviour
+	bool isOnFrontSide = false; //switch will flip this boolean to change method behaviour
 	
 	
 	//PivotToPosition()
