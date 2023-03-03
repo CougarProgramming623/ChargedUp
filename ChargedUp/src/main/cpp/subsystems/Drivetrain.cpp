@@ -97,7 +97,7 @@ void DriveTrain::Periodic(){
   m_ModulePositions = wpi::array<frc::SwerveModulePosition, 4>(m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition());
 
   frc::Pose2d visionRelative = Robot::GetRobot()->GetVision().GetPoseBlue().RelativeTo(m_Odometry.GetEstimatedPosition());
-  if(COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).size() != 0){
+  if(COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){
     //DebugOutF("Second if");
     // DebugOutF("Relative X: " + std::to_string(
     // std::abs(visionRelative.X().value())));
@@ -111,15 +111,13 @@ void DriveTrain::Periodic(){
       std::abs(-fmod(360 - visionRelative.Rotation().Degrees().value(), 360)) < 30
     )     {
       //DebugOutF("Adjusting" + std::to_string(m_Timer.GetFPGATimestamp().value()));
-      if(COB_GET_ENTRY(COB_KEY_TV).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE).GetDoubleArray(std::span<double>()).size() != 0){
+      if(COB_GET_ENTRY(GET_VISION.FrontBack("tv")).GetInteger(0) == 1 && COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){
         // DebugOutF("Botpose array");
         // if(COB_GET_ENTRY("COB_KEY_BOT_POSE").GetDoubleArray(std::span<double>()).at(1) <= 3 || COB_GET_ENTRY("COB_KEY_BOT_POSE").GetDoubleArray(std::span<double>()).at(1) >= 13){
         //   DebugOutF("Δx check");
-
-          // m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
-          // - units::second_t((COB_GET_ENTRY("/limelight/tl").GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY("/limelight/cl").GetDouble(0))/1000.0)
-          // );
-
+          m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
+          - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("tl")).GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("cl")).GetDouble(0))/1000.0)
+          );
         //DebugOutF("Inner Adjusted");
         // }
       }

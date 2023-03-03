@@ -5,6 +5,7 @@
 #pragma once
 #include <math.h>
 
+//#define ROBOT_WHEELBASE
 #define O12
 
 #define DRIVE_REDUCTION ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0))
@@ -106,13 +107,24 @@
 
 #define ENCODER_VOLTAGE_TO_DEGREE (360/4.809)
 
-#define COB_GET_ENTRY Robot::GetRobot()->GetCOB().GetTable().GetEntry
+#define COB_GET_ENTRY   Robot::GetRobot()->GetCOB().GetTable().GetEntry
+#define GET_VISION      Robot::GetRobot()->GetVision()
     
 #define COB_KEY_IS_RED   "/FMSInfo/IsRedAlliance"
 
 #define COB_KEY_DISTANCE "/COB/distance"
-#define COB_KEY_BOT_POSE "/limelight/botpose"
-#define COB_KEY_TV "/limelight/tv"
+
+#define COB_KEY_BOT_POSE_FRONT "/limelight-front/botpose"
+#define COB_KEY_BOT_POSE_BACK "/limelight-back/botpose"
+
+#define COB_KEY_TV_FRONT "/limelight-front/tv"
+#define COB_KEY_TV_BACK "/limelight-back/tv"
+
+#define COB_KEY_TX_FRONT "/limelight-front/tx"
+#define COB_KEY_TX_BACK "/limelight-back/tx"
+
+#define COB_KEY_TA_FRONT "/limelight-front/ta"
+#define COB_KEY_TA_BACK "/limelight-back/ta"
 
 constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without this line
 
