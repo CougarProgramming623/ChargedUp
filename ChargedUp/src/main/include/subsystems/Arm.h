@@ -57,8 +57,6 @@ class Arm {
 	inline TalonFX& GetPivot() {return m_Pivot; }
 
 	private:
-
-	bool isBraked = false;
 	
 	//class constants
 	bool isOnFrontSide = true; //switch will flip this boolean to change method behaviour
@@ -90,7 +88,6 @@ class Arm {
 	frc::AnalogInput m_StringPot{STRINGPOT_ANALOG_INPUT_ID};
 
 	//buttons
-	frc2::Button m_Override;
 	
 	frc2::Button m_TL;
 	frc2::Button m_TC;
@@ -106,16 +103,18 @@ class Arm {
 	frc2::Button m_CenterGrid;
 	frc2::Button m_RightGrid;
 
+	frc2::Button m_TransitMode;
+	frc2::Button m_GroundPickupMode;
+	frc2::Button m_LoadingMode;
+
+	frc2::Button m_Override;
+
 	frc2::Button m_ConeMode;
 	frc2::Button m_CubeMode;
 
 	frc2::Button m_FrontMode;
 	frc2::Button m_BackMode;
 
-	frc2::Button m_TransitMode;
-	frc2::Button m_GroundPickupMode;
-	frc2::Button m_LoadingMode;
-
-	frc2::Button m_TestJoystickButton;
-
+	frc2::Button m_ManualArmBrake;
+	frc2::Button m_ManualSlipBrake;
 };

@@ -28,6 +28,7 @@ class Robot : public frc::TimedRobot {
   static inline Robot* GetRobot() { return s_Instance; }
   inline Arm& GetArm() { return m_Arm; }
   inline frc::Joystick& GetButtonBoard() { return m_ButtonBoard; }
+  inline frc::Joystick& GetButtonBoardTwo() { return m_ButtonBoardTwo; }
   inline frc::Joystick& GetJoystick() { return m_Joystick; }
 
   void RobotInit() override;
@@ -85,4 +86,5 @@ class Robot : public frc::TimedRobot {
 
   COB m_COB;
   frc::Joystick m_ButtonBoard = frc::Joystick(0);
+  frc::Joystick m_ButtonBoardTwo = frc::Joystick(2);
 };

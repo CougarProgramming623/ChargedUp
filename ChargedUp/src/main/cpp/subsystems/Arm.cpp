@@ -11,21 +11,8 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 m_RightBrake(RIGHT_BRAKE),
 			 m_SlipBrake(SLIP_BRAKE),
 
+			 //BUTTONBOARD 1
 			 m_Override(BUTTON_L(ARM_OVERRIDE)),
-
-			 m_TL(OVERRIDE_BUTTON_L(GRID_TL)),
-			 m_TC(OVERRIDE_BUTTON_L(GRID_TC)),
-			 m_TR(OVERRIDE_BUTTON_L(GRID_TR)),
-			 m_ML(OVERRIDE_BUTTON_L(GRID_ML)),
-			 m_MC(OVERRIDE_BUTTON_L(GRID_MC)),
-			 m_MR(OVERRIDE_BUTTON_L(GRID_MR)),
-			 m_BL(OVERRIDE_BUTTON_L(GRID_BL)),
-			 m_BC(OVERRIDE_BUTTON_L(GRID_BC)),
-			 m_BR(OVERRIDE_BUTTON_L(GRID_BR)),
-
-			 m_LeftGrid(OVERRIDE_BUTTON_L(LEFT_GRID)),
-			 m_CenterGrid(OVERRIDE_BUTTON_L(CENTER_GRID)),
-			 m_RightGrid(OVERRIDE_BUTTON_L(RIGHT_GRID)),
 
 			 m_ConeMode(OVERRIDE_BUTTON_L(CONE_MODE)),
 			 m_CubeMode(OVERRIDE_BUTTON_L(CUBE_MODE)),
@@ -33,15 +20,28 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 m_FrontMode(OVERRIDE_BUTTON_L(FRONT_MODE)),
 			 m_BackMode(OVERRIDE_BUTTON_L(BACK_MODE)),
 
-			 m_TransitMode(OVERRIDE_BUTTON_L(TRANSIT_MODE)),
-			 m_GroundPickupMode(OVERRIDE_BUTTON_L(GROUND_PICKUP_MODE)),
-			 m_LoadingMode(OVERRIDE_BUTTON_L(LOADING_MODE)),
+			 m_ManualArmBrake(ACTIVE_OVERRIDE_BUTTON_L(MANUAL_ARM_BRAKE)),
+			 m_ManualSlipBrake(ACTIVE_OVERRIDE_BUTTON_L(MANUAL_SLIP_BRAKE)),
 
-			 m_TestJoystickButton([&]
-								  { return Robot::GetRobot()->GetJoystick().GetRawButton(1); })
+			//BUTTONBOARD 2
+			 m_TL(OVERRIDE_BUTTON_L_TWO(GRID_TL)),
+			 m_TC(OVERRIDE_BUTTON_L_TWO(GRID_TC)),
+			 m_TR(OVERRIDE_BUTTON_L_TWO(GRID_TR)),
+			 m_ML(OVERRIDE_BUTTON_L_TWO(GRID_ML)),
+			 m_MC(OVERRIDE_BUTTON_L_TWO(GRID_MC)),
+			 m_MR(OVERRIDE_BUTTON_L_TWO(GRID_MR)),
+			 m_BL(OVERRIDE_BUTTON_L_TWO(GRID_BL)),
+			 m_BC(OVERRIDE_BUTTON_L_TWO(GRID_BC)),
+			 m_BR(OVERRIDE_BUTTON_L_TWO(GRID_BR)),
 
-{
-}
+			 m_LeftGrid(OVERRIDE_BUTTON_L_TWO(LEFT_GRID)),
+			 m_CenterGrid(OVERRIDE_BUTTON_L_TWO(CENTER_GRID)),
+			 m_RightGrid(OVERRIDE_BUTTON_L_TWO(RIGHT_GRID)),
+
+			 m_TransitMode(OVERRIDE_BUTTON_L_TWO(TRANSIT_MODE)),
+			 m_GroundPickupMode(OVERRIDE_BUTTON_L_TWO(GROUND_PICKUP_MODE)),
+			 m_LoadingMode(OVERRIDE_BUTTON_L_TWO(LOADING_MODE))
+			{}
 
 void Arm::Init()
 {
@@ -94,6 +94,18 @@ void Arm::SetButtons()
 	m_TransitMode.WhenPressed(TransitMode());
 	m_GroundPickupMode.WhenPressed(GroundPickupMode());
 	m_LoadingMode.WhenPressed(LoadingMode());
+
+	m_ManualArmBrake.WhenPressed(frc2::InstantCommand([&] {
+		if (m_RightBrake.Get() == 0) ArmBrakes(false);
+		else ArmBrakes(true);
+	}));
+
+	m_ManualSlipBrake.WhenPressed(frc2::InstantCommand([&] {
+		if (m_SlipBrake.Get() != 1) SlipBrakes(false);
+		else SlipBrakes(true);
+	}));
+
+
 }
 
 void Arm::ArmBrakes(bool shouldBrake)
@@ -142,7 +154,7 @@ frc2::FunctionalCommand* Arm::Telescope(double Setpoint) {
 			SlipBrakes(false);
 		},
 		[&] { // onExecute
-			ArmLength = StringPotUnitsToInches(m_StringPot.GetValue()) + 43.25;
+			ArmLength = StringPotUnitsToInches(m_StringPot.GetValue()) + 1 + ARM_MINIMUM_LENGTH;
 			if(ArmLength < SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, -.2);
 			else if(ArmLength > SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, .2);
 		},
@@ -277,16 +289,16 @@ frc2::FunctionalCommand Arm::ManualControls()
 	return frc2::FunctionalCommand([&] { // onInit
 		SlipBrakes(false);
 	},
-								   [&] { // onExecute
-									   m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(PIVOT_CONTROL) / 5);
-									   m_Extraction.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(EXTRACTION_CONTROL) / 5);
-								   },
-								   [&](bool e) { // onEnd
-									   m_Pivot.Set(ControlMode::PercentOutput, 0);
-									   m_Extraction.Set(ControlMode::PercentOutput, 0);
-									   SlipBrakes(true);
-								   },
-								   [&] { // isFinished
-									   return !Robot::GetRobot()->GetButtonBoard().GetRawButton(ARM_OVERRIDE);
-								   });
+	[&] { // onExecute
+		m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(PIVOT_CONTROL) / 5);
+		m_Extraction.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(EXTRACTION_CONTROL) / 5);
+	},
+	[&](bool e) { // onEnd
+		m_Pivot.Set(ControlMode::PercentOutput, 0);
+		m_Extraction.Set(ControlMode::PercentOutput, 0);
+		SlipBrakes(true);
+	},
+	[&] { // isFinished
+		return !Robot::GetRobot()->GetButtonBoard().GetRawButton(ARM_OVERRIDE);
+	});
 }
