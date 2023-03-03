@@ -45,6 +45,7 @@ class Arm : public frc2::SubsystemBase {
 	void PivotToPosition(double angle); 
 	void ArmBrakes(bool shouldBreak);
 	void SlipBrakes(bool shouldBreak);
+	frc2::SequentialCommandGroup* WaitBrakeTelescope(double setpoint);
 	frc2::FunctionalCommand* Telescope(double setpoint); 
 	frc2::SequentialCommandGroup* Squeeze();
 	//Automation
