@@ -6,6 +6,8 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc2/command/SwerveControllerCommand.h>
 #include <frc/Timer.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/ParallelCommandGroup.h>
 
 //Constructor
 DriveTrain::DriveTrain()
@@ -40,7 +42,14 @@ DriveTrain::DriveTrain()
 void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
-  m_TestJoystickButton.WhenPressed(AutoBalance());
+  m_TestJoystickButton.WhenPressed(new frc2::ParallelCommandGroup(
+    DriveToPosCommand(),
+    Robot::GetRobot()->GetArm().PlaceElement(
+      Robot::GetRobot()->GetArm().SelectedRow, 
+      Robot::GetRobot()->GetArm().SelectedColumn
+    )  
+  ));
+
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.15, 0.15, .261799});
   m_FrontLeftModule.m_DriveController.motor.SetInverted(true);
   //m_ThetaController.EnableContinuousInput(-M_PI, M_PI);

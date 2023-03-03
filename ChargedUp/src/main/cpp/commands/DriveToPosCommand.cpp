@@ -16,7 +16,7 @@ DriveToPosCommand::DriveToPosCommand() {
 void DriveToPosCommand::Initialize(){
     DebugOutF("Init");
     m_Start = Robot::GetRobot()->GetDriveTrain().GetOdometry()->GetEstimatedPosition();
-    m_End = frc::Pose2d(units::meter_t(1), units::meter_t(1), frc::Rotation2d(0_rad));
+    m_End = Robot::GetRobot()->GetDriveTrain().m_TransformedPose;
     DebugOutF("Start: (" + std::to_string(m_Start.Translation().X().value()) + ", " + std::to_string(m_Start.Translation().Y().value()) + ")");
     DebugOutF("End: (" + std::to_string(m_End.Translation().X().value()) + ", " + std::to_string(m_End.Translation().Y().value()) + ")");
     

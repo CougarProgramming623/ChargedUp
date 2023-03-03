@@ -26,5 +26,5 @@ inline long double Pow(double n, int pow){
 #define BUTTON_L(id) \
   [&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(id); }
 
-#define OVERRIDE_BUTTON_L(ID) \
-  [&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(ID) && !Robot::GetRobot()->GetButtonBoard().GetRawButton(ARM_OVERRIDE); }
+  #define BUTTON_L_TWO(ID) \
+  [&] { return Robot::GetRobot()->GetButtonBoardTwo().GetRawButton(ID); }
