@@ -18,11 +18,10 @@ class Vision {
         Pose2d GetPoseRed();
         Pose2d GetFieldPose();
 
+        std::string FrontBack(std::string key);
+
     private:
-        double m_TargetOffsetAngleVertical;
-        double m_TotalAngleToTarget;
-        double m_TotalRadiansToTarget;
-        double m_TotalDistanceInCM;
+        double m_Area;
 
         Pose2d m_AbsolutePose;
         Pose2d m_TempPose;
