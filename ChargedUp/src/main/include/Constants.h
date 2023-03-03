@@ -135,7 +135,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define STRING_POT_INCHES_PER_TICK 0.01499326
 #define STRING_POT_MINIMUM 138  
 #define STRING_POT_MAXIMUM 1622
-#define EXTRACTION_MOTOR_HOLD_POWER .075
+#define EXTRACTION_MOTOR_HOLD_POWER .09
 #define ARM_MINIMUM_LENGTH 42.5
 #define ARM_MAXIMUM_LENGTH 65
 
@@ -182,7 +182,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define BACK_LOADING_ANGLE 44.38
 #define BACK_LOADING_RADIUS ARM_MINIMUM_LENGTH
 
-#define GROUND_PICKUP_ANGLE (-99.57-2)
+#define GROUND_PICKUP_ANGLE (-99.57-4)
 #define GROUND_PICKUP_RADIUS ARM_MINIMUM_LENGTH
 
 //keywords

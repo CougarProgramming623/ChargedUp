@@ -5,6 +5,7 @@
 #include <frc/geometry/Translation2d.h>
 #include <frc/geometry/Transform2d.h>
 #include <frc2/command/ParallelCommandGroup.h>
+#include <frc2/command/WaitCommand.h>
 
 using ctre::phoenix::motorcontrol::ControlMode;
 using ctre::phoenix::motorcontrol::can::TalonFX;
@@ -45,11 +46,14 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 
 			 m_TransitMode(BUTTON_L_TWO(TRANSIT_MODE)),
 			 m_GroundPickupMode(BUTTON_L_TWO(GROUND_PICKUP_MODE)),
-			 m_LoadingMode(BUTTON_L_TWO(LOADING_MODE))
+			 m_LoadingMode(BUTTON_L_TWO(LOADING_MODE)),
+
+			 m_Timer()
 			{}
 
 void Arm::Init()
 {
+	shouldSqueeze = true;
 	m_Pivot.SetSelectedSensorPosition(0);
 	ArmBrakes(true);
 	SlipBrakes(true);
@@ -110,7 +114,7 @@ void Arm::SetButtons()
 	// 	else SlipBrakes(true);
 	// }));
 
-	m_Squeeze.WhenPressed(Squeeze());
+	m_LoadingMode.WhenPressed(Squeeze());
 
 	m_TL.WhenPressed(frc2::InstantCommand([&]{
 		DebugOutF("m_TL");
@@ -422,9 +426,9 @@ void Arm::SetButtons()
 			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
 		}	}));
 
-	m_TransitMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_TransitMode");}));
-	m_GroundPickupMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_GroundPickupMode");}));
-	m_LoadingMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_LoadingMode");}));
+	m_TransitMode.WhenPressed(TransitMode());
+	m_GroundPickupMode.WhenPressed(GroundPickupMode());
+	//m_LoadingMode.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_LoadingMode");}));
 
 	m_Override.WhenPressed(frc2::InstantCommand([&]{DebugOutF("m_Override");}));
 
@@ -502,44 +506,51 @@ frc2::FunctionalCommand* Arm::Telescope(double Setpoint) {
 		});
 }
 
-frc2::FunctionalCommand* Arm::Squeeze(bool shouldSqueeze)
+frc2::SequentialCommandGroup* Arm::Squeeze()
 {
-	if (shouldSqueeze)
-	{
-		return new frc2::FunctionalCommand([&] { // onInit
-			SlipBrakes(false);
+	return new frc2::SequentialCommandGroup(
+		frc2::InstantCommand([&] {if (shouldSqueeze) SlipBrakes(false);}),
+		frc2::WaitCommand(.5_s),
+		frc2::FunctionalCommand([&] { // onInit
+		if(shouldSqueeze) {
 			ArmBrakes(true);
 			m_Extraction.Set(ControlMode::PercentOutput, .15);
-		},
-		[&] { // onExecute
-			DebugOutF(std::to_string(m_Extraction.GetSupplyCurrent()));
-		},
-		[&](bool e) { // onEnd
-			m_Extraction.Set(ControlMode::PercentOutput, EXTRACTION_MOTOR_HOLD_POWER);
-		},
-		[&] { // isFinished
-			return m_Extraction.GetSupplyCurrent() > SQUEEZE_AMP_THRESHOLD;
-		});
-	} else {
+			DebugOutF("set false");
+
+		} else {
 			double a;
-		return new frc2::FunctionalCommand([&] { // onInit
+			DebugOutF("set true");
+			m_Timer.Reset();
+			m_Timer.Start();
 			SlipBrakes(false);
 			ArmBrakes(true);
 			a = m_Extraction.GetSelectedSensorPosition();
-			m_Extraction.Set(ControlMode::Position, m_Extraction.GetSelectedSensorPosition() - 15000);
-		},[&] { // onExecute
-		DebugOutF(std::to_string(m_Extraction.GetSelectedSensorVelocity()));
-		//empty
-		},[&](bool e) { // onEnd
-			m_Extraction.Set(ControlMode::PercentOutput, 0);
-			SlipBrakes(true);
-			ArmBrakes(false);
-			shouldSqueeze = true;
+			m_Extraction.Set(ControlMode::Position, m_Extraction.GetSelectedSensorPosition() - 20000);
+		}
+		},
+		[&] { // onExecute
+			if (shouldSqueeze) DebugOutF(std::to_string(m_Extraction.GetSupplyCurrent()));
+			else DebugOutF(std::to_string(m_Extraction.GetSelectedSensorVelocity()));
+
+		},
+		[&](bool e) { // onEnd
+			if(shouldSqueeze) {
+				m_Extraction.Set(ControlMode::PercentOutput, EXTRACTION_MOTOR_HOLD_POWER);
+				shouldSqueeze = false;
+				DebugOutF("Ended squeeze");
+			} else {
+				m_Extraction.Set(ControlMode::PercentOutput, 0);
+				SlipBrakes(true);
+				shouldSqueeze = true;
+				DebugOutF("Ended unsqueeze");
+			}
 		},
 		[&] { // isFinished
-			return m_Extraction.GetSelectedSensorVelocity() == 0;
-		});
-	}
+			return (m_Extraction.GetSupplyCurrent() > SQUEEZE_AMP_THRESHOLD && shouldSqueeze) || (m_Timer.Get() > 1.5_s && !shouldSqueeze);
+		}
+		// ,	&Robot::GetRobot()->GetArm()
+		) 
+	);
 }
 
 // sets arm to a set angle and radius based on element being places
@@ -604,17 +615,10 @@ frc2::SequentialCommandGroup* Arm::GroundPickupMode()
 // Arm positions to load cone from loading station
 frc2::SequentialCommandGroup* Arm::LoadingMode() //untested
 {
-		if(isOnFrontSide) {
-			return new frc2::SequentialCommandGroup(
-				frc2::InstantCommand([&] {PivotToPosition(FRONT_LOADING_ANGLE);}),
-				*Telescope(FRONT_LOADING_RADIUS)
-			);
-		} else {
-			return new frc2::SequentialCommandGroup(
-				frc2::InstantCommand([&] { PivotToPosition(BACK_LOADING_ANGLE);}),
-				*Telescope(BACK_LOADING_RADIUS)
-			);
-		}
+	return new frc2::SequentialCommandGroup(
+		frc2::InstantCommand([&] { PivotToPosition(BACK_LOADING_ANGLE);}),
+		*Telescope(BACK_LOADING_RADIUS)
+	);
 }
 								
 		

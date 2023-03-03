@@ -96,10 +96,10 @@ void Robot::AutonomousInit() {
   // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
   
-  frc2::CommandScheduler::GetInstance().Schedule(new frc2::SequentialCommandGroup(
-    TrajectoryCommand(traj),
-    AutoBalance()
-  ));
+  // frc2::CommandScheduler::GetInstance().Schedule(new frc2::SequentialCommandGroup(
+  //   TrajectoryCommand(traj),
+  //   AutoBalance()
+  // ));
 
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
   // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());

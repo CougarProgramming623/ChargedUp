@@ -44,7 +44,7 @@ void DriveTrain::DriveInit(){
   SetDefaultCommand(DriveWithJoystick());
   m_TestJoystickButton.WhenPressed(new frc2::ParallelCommandGroup(
     DriveToPosCommand(),
-    Robot::GetRobot()->GetArm().PlaceElement(
+    *Robot::GetRobot()->GetArm().PlaceElement(
       Robot::GetRobot()->GetArm().SelectedRow, 
       Robot::GetRobot()->GetArm().SelectedColumn
     )  

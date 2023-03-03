@@ -21,11 +21,14 @@
 
 #include "Constants.h"
 #include "Util.h"
+#include <frc/Timer.h>
+#include <frc2/command/SubsystemBase.h>
+
 
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
 
-class Arm {
+class Arm : public frc2::SubsystemBase {
 
 	public:
 
@@ -43,7 +46,7 @@ class Arm {
 	void ArmBrakes(bool shouldBreak);
 	void SlipBrakes(bool shouldBreak);
 	frc2::FunctionalCommand* Telescope(double setpoint); 
-	frc2::FunctionalCommand* Squeeze(bool shouldSqueeze);
+	frc2::SequentialCommandGroup* Squeeze();
 	//Automation
 	frc2::FunctionalCommand* PlaceElement(int row, int column);
 	frc2::SequentialCommandGroup* TransitMode();
@@ -123,4 +126,6 @@ class Arm {
 
 	frc2::Button m_ManualArmBrake;
 	frc2::Button m_ManualSlipBrake;
+
+	frc::Timer m_Timer;
 };
