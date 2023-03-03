@@ -123,21 +123,23 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 //motor and sensor IDs
 #define EXTRACTION_MOTOR 39
 #define PIVOT_MOTOR 30
-#define LEFT_BRAKE 1
-#define RIGHT_BRAKE 0
+#define LEFT_BRAKE 0
+#define RIGHT_BRAKE 1
+#define SLIP_BRAKE 2
 #define STRINGPOT_ANALOG_INPUT_ID 4
 
 //Math constants
 #define PIVOT_GEAR_RATIO 160
-#define PIVOT_TICKS_PER_ARM_DEGREE PIVOT_GEAR_RATIO*2048/360
-#define SQUEEZE_AMP_THRESHOLD -1 //UPDATE
+#define PIVOT_TICKS_PER_ARM_DEGREE (PIVOT_GEAR_RATIO*2048/360)
+#define SQUEEZE_AMP_THRESHOLD .5
 #define STRING_POT_INCHES_PER_TICK 0.01499326
-#define STRING_POT_MINIMUM 138
+#define STRING_POT_MINIMUM 138  
 #define STRING_POT_MAXIMUM 1622
+#define EXTRACTION_MOTOR_HOLD_POWER .075
 
 //PID constants
 #define PIVOT_ERROR 10
-#define PIVOT_KP 0.01 //0.41928
+#define PIVOT_KP 0.005 //0.41928
 #define PIVOT_KI 0 //DO NOT TOUCH AT ALL (.25 and .01 have broken bot)
 #define PIVOT_KD 0.2
 
