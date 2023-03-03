@@ -40,9 +40,9 @@ class Arm {
 	inline double InchesToStringPotUnits(double inches) {return inches / STRING_POT_INCHES_PER_TICK;}
 	//basic commands
 	void PivotToPosition(double angle); 
-	frc2::InstantCommand ToggleBrakes(bool isBraked); 
-	void Brake(bool brake);
-	frc2::FunctionalCommand Telescope(double setpoint); 
+	void ArmBrakes(bool shouldBreak);
+	void SlipBrakes(bool shouldBreak);
+	frc2::FunctionalCommand* Telescope(double setpoint); 
 	frc2::FunctionalCommand Squeeze(bool shouldSqueeze);
 	//Automation
 	frc2::InstantCommand PlaceElement(int type, int row, int column);
@@ -84,6 +84,7 @@ class Arm {
 	//Servos
 	frc::Servo m_LeftBrake;
 	frc::Servo m_RightBrake;
+	frc::Servo m_SlipBrake;
 
 	//Pot
 	frc::AnalogInput m_StringPot{STRINGPOT_ANALOG_INPUT_ID};

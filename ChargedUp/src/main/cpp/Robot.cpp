@@ -53,6 +53,7 @@ void Robot::RobotPeriodic() {
  */
 void Robot::DisabledInit() {
   GetDriveTrain().BreakMode(false);
+  
 }
 
 void Robot::DisabledPeriodic() {}
@@ -89,10 +90,10 @@ void Robot::AutonomousInit() {
   // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
   
-  frc2::CommandScheduler::GetInstance().Schedule(new frc2::SequentialCommandGroup(
-    TrajectoryCommand(traj),
-    AutoBalance()
-  ));
+  // frc2::CommandScheduler::GetInstance().Schedule(new frc2::SequentialCommandGroup(
+  //   TrajectoryCommand(traj),
+  //   AutoBalance()
+  // ));
 
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
   // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
@@ -117,16 +118,17 @@ void Robot::TeleopInit() {
         wpi::array<frc::SwerveModulePosition, 4>
             (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
         startingPose);
-  
-  m_Arm.GetPivot().Set(ControlMode::Position, m_Arm.GetPivot().GetSelectedSensorPosition() + 80000);
+
+  m_Arm.Telescope(50)->Schedule();
+      
 }
 
 /**
  * This function is called periodically during operator control.  
  */
 void Robot::TeleopPeriodic() {
-  
-  frc2::CommandScheduler::GetInstance().Run();
+  // frc2::CommandScheduler::GetInstance().Run();
+  // frc2::CommandScheduler::GetInstance().Schedule(m_Arm.Telescope(50));  
 
   // DebugOutF("OdoX: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
   // DebugOutF("OdoY: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));

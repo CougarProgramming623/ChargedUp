@@ -10,9 +10,13 @@ Test ManualControls()
 
 DONE|| test ToggleBrakes() 
 
-PID tune
+DONE || PID tune pivot
 
-Test PivotToPosition(), Telescope(), Squeeze() 
+PID tune extraction
+
+DONE|| Test PivotToPosition()
+
+Test Telescope(), Squeeze() 
 
 Test TransitMode(), GroundPickupMode(), LoadingMode()
 
