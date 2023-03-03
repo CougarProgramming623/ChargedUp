@@ -79,7 +79,7 @@ void Robot::AutonomousInit() {
   
 
   //Load trajectory
-  PathPlannerTrajectory traj = PathPlanner::loadPath("TestVision", PathConstraints(4_mps, 1_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalance", PathConstraints(4_mps, 1_mps_sq));
 
   //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
 
@@ -125,8 +125,7 @@ void Robot::TeleopInit() {
             (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
         startingPose);
 
-  m_Arm.Telescope(50)->Schedule();
-      
+  // m_Arm.PlaceElement(0,0);
 }
 
 /**
@@ -143,6 +142,11 @@ void Robot::TeleopPeriodic() {
   // DebugOutF("LLX: " + std::to_string(m_Vision.GetPoseBlue().X().value()));
   // DebugOutF("LLY: " + std::to_string(m_Vision.GetPoseBlue().Y().value()));
   // DebugOutF("LLZ: " + std::to_string(m_Vision.GetPoseBlue().Rotation().Degrees().value()));
+
+  // DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
+  // DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
+  // DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
+  // DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
 }
 
 /**

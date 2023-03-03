@@ -101,6 +101,15 @@ class DriveTrain : public frc2::SubsystemBase {
   const units::radians_per_second_t kMAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = units::radians_per_second_t(6380.0 / 60.0 * DRIVE_REDUCTION * WHEEL_DIAMETER * M_PI / std::sqrt(Pow((DRIVETRAIN_TRACKWIDTH_METERS / 2), 2) + Pow((DRIVETRAIN_WHEELBASE_METERS / 2), 2)));
 
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> m_EventMap;
+
+  int m_SelectedGrid;
+  frc::Pose2d m_TransformedPose;
+
+  frc::Pose2d m_PoseMatrix[3][3] = {
+    {TLPOSE, TCPOSE, TRPOSE},
+    {MLPOSE, MCPOSE, MRPOSE},
+    {BLPOSE, BCPOSE, BRPOSE},
+  };
   
   private:
 

@@ -5,7 +5,10 @@
 #pragma once
 #include <math.h>
 
+<<<<<<< HEAD
 //#define ROBOT_WHEELBASE
+=======
+>>>>>>> e05c373b2f5bb05f4664cd085abe46ecf64fedd7
 #define O12
 
 #define DRIVE_REDUCTION ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0))
@@ -72,22 +75,22 @@
 
     #define FRONT_LEFT_MODULE_DRIVE_MOTOR 54
     #define FRONT_LEFT_MODULE_STEER_MOTOR 58
-    #define FRONT_LEFT_MODULE_STEER_OFFSET -1
+    #define FRONT_LEFT_MODULE_STEER_OFFSET -19.42
     #define FRONT_LEFT_MODULE_ENCODER_PORT 2
 
     #define FRONT_RIGHT_MODULE_DRIVE_MOTOR 38
     #define FRONT_RIGHT_MODULE_STEER_MOTOR 61
-    #define FRONT_RIGHT_MODULE_STEER_OFFSET -1
+    #define FRONT_RIGHT_MODULE_STEER_OFFSET -156.31
     #define FRONT_RIGHT_MODULE_ENCODER_PORT 1
 
     #define BACK_LEFT_MODULE_DRIVE_MOTOR 52
     #define BACK_LEFT_MODULE_STEER_MOTOR 59
-    #define BACK_LEFT_MODULE_STEER_OFFSET -1
+    #define BACK_LEFT_MODULE_STEER_OFFSET -180.43
     #define BACK_LEFT_MODULE_ENCODER_PORT 3
 
     #define BACK_RIGHT_MODULE_DRIVE_MOTOR 51
     #define BACK_RIGHT_MODULE_STEER_MOTOR 60
-    #define BACK_RIGHT_MODULE_STEER_OFFSET -1
+    #define BACK_RIGHT_MODULE_STEER_OFFSET -298.66
     #define BACK_RIGHT_MODULE_ENCODER_PORT 0
 
 
@@ -143,11 +146,13 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 //Math constants
 #define PIVOT_GEAR_RATIO 160
 #define PIVOT_TICKS_PER_ARM_DEGREE (PIVOT_GEAR_RATIO*2048/360)
-#define SQUEEZE_AMP_THRESHOLD .5
+#define SQUEEZE_AMP_THRESHOLD 1
 #define STRING_POT_INCHES_PER_TICK 0.01499326
 #define STRING_POT_MINIMUM 138  
 #define STRING_POT_MAXIMUM 1622
-#define EXTRACTION_MOTOR_HOLD_POWER .075
+#define EXTRACTION_MOTOR_HOLD_POWER .09
+#define ARM_MINIMUM_LENGTH 42.5
+#define ARM_MAXIMUM_LENGTH 65
 
 //PID constants
 #define PIVOT_ERROR 10
@@ -156,13 +161,13 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define PIVOT_KD 0.2
 
 #define EXTRACTION_ERROR 0 //check
-#define EXTRACTION_KP 0 //check
+#define EXTRACTION_KP .01 //check
 #define EXTRACTION_KI 0 //check 
 #define EXTRACTION_KD 0 //check
 //setpoints
 #define FRONT_LOW_ANGLE GROUND_PICKUP_ANGLE
-#define FRONT_MIDDLE_CONE_ANGLE 24.34
-#define FRONT_MIDDLE_CUBE_ANGLE 13.30
+#define FRONT_MIDDLE_CONE_ANGLE -65.66
+#define FRONT_MIDDLE_CUBE_ANGLE -76.70
 #define FRONT_HIGH_CONE_ANGLE 0 //UNUSED
 #define FRONT_HIGH_CUBE_ANGLE 0 //UNUSED
 
@@ -172,61 +177,77 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define FRONT_HIGH_CONE_RADIUS 0 //UNUSED
 #define FRONT_HIGH_CUBE_RADIUS 0 //UNUSED
 
-#define BACK_LOW_ANGLE 0
+#define BACK_LOW_ANGLE 0 //UNUSED
 #define BACK_MIDDLE_CONE_ANGLE 0 //UNUSED
 #define BACK_MIDDLE_CUBE_ANGLE 0 //UNUSED
-#define BACK_HIGH_CONE_ANGLE 141.90
-#define BACK_HIGH_CUBE_ANGLE 132.70
+#define BACK_HIGH_CONE_ANGLE 51.90
+#define BACK_HIGH_CUBE_ANGLE 42.70
 
-#define BACK_LOW_RADIUS 0
+#define BACK_LOW_RADIUS 0 //UNUSED
 #define BACK_MIDDLE_CONE_RADIUS 0 //UNUSED
 #define BACK_MIDDLE_CUBE_RADIUS 0 //UNUSED
 #define BACK_HIGH_CONE_RADIUS 55.10
 #define BACK_HIGH_CUBE_RADIUS 63.95
 
-#define TRANSIT_ANGLE 0 //should be zero
-#define TRANSIT_RADIUS 42.5
+#define TRANSIT_ANGLE -45
+#define TRANSIT_RADIUS ARM_MINIMUM_LENGTH
 
-#define FRONT_LOADING_ANGLE 45.62
-#define FRONT_LOADING_RADIUS 42.5
-#define BACK_LOADING_ANGLE 134.38
-#define BACK_LOADING_RADIUS 42.5
+#define FRONT_LOADING_ANGLE -62.14
+#define FRONT_LOADING_RADIUS ARM_MAXIMUM_LENGTH 
+#define BACK_LOADING_ANGLE 44.38
+#define BACK_LOADING_RADIUS ARM_MINIMUM_LENGTH
 
-#define GROUND_PICKUP_ANGLE -9.57
-#define GROUND_PICKUP_RADIUS 42.09
+#define GROUND_PICKUP_ANGLE (-99.57-4)
+#define GROUND_PICKUP_RADIUS ARM_MINIMUM_LENGTH
 
 //keywords
 #define CONE 0
 #define CUBE 1
 
 //button IDs
-#define GRID_TL 1 //check
-#define GRID_TC 1 //check
-#define GRID_TR 1 //check
-#define GRID_ML 1 //check
-#define GRID_MC 1 //check
-#define GRID_MR 1 //check
-#define GRID_BL 1 //check
-#define GRID_BC 1 //check
-#define GRID_BR 1 //check
-
-#define LEFT_GRID 1 //check
-#define CENTER_GRID 1 //check
-#define RIGHT_GRID 1 //check
-
-#define CONE_MODE 1 //check
-#define CUBE_MODE 1 //check
+//BUTTONBOARD 0
+#define CONE_MODE 16 
+#define CUBE_MODE 15 
 
 #define FRONT_MODE 1 //check
-#define BACK_MODE 1 //check
-
-#define TRANSIT_MODE 1 //check
-#define GROUND_PICKUP_MODE 1 //check
-#define LOADING_MODE 1 //check
+#define BACK_MODE 20 
 
 #define PIVOT_CONTROL 1 //check
 #define EXTRACTION_CONTROL 1 //check
+#define MANUAL_ARM_BRAKE 22
+#define MANUAL_SLIP_BRAKE 7
 
-#define ARM_OVERRIDE 1 //check
+#define ARM_OVERRIDE 1 
+
+//BUTTONBOARD 2
+#define GRID_TL 2
+#define GRID_TC 7 
+#define GRID_TR 12
+#define GRID_ML 3 
+#define GRID_MC 8 
+#define GRID_MR 10
+#define GRID_BL 4
+#define GRID_BC 9
+#define GRID_BR 14
+
+#define TRANSIT_MODE 13 
+#define GROUND_PICKUP_MODE 5
+#define LOADING_MODE 15 
+
+#define LEFT_GRID 1 
+#define CENTER_GRID 6 
+#define RIGHT_GRID 11
 
 #endif
+
+#define TLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
+#define TCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
+#define TRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
+
+#define MLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
+#define MCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
+#define MRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
+
+#define BLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
+#define BCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
+#define BRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))

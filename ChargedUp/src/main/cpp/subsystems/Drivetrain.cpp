@@ -6,6 +6,8 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc2/command/SwerveControllerCommand.h>
 #include <frc/Timer.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/ParallelCommandGroup.h>
 
 //Constructor
 DriveTrain::DriveTrain()
@@ -40,8 +42,16 @@ DriveTrain::DriveTrain()
 void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
-  m_TestJoystickButton.WhenPressed(AutoBalance());
+  m_TestJoystickButton.WhenPressed(new frc2::ParallelCommandGroup(
+    DriveToPosCommand(),
+    *Robot::GetRobot()->GetArm().PlaceElement(
+      Robot::GetRobot()->GetArm().SelectedRow, 
+      Robot::GetRobot()->GetArm().SelectedColumn
+    )  
+  ));
+
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.15, 0.15, .261799});
+  m_FrontLeftModule.m_DriveController.motor.SetInverted(true);
   //m_ThetaController.EnableContinuousInput(-M_PI, M_PI);
   //m_EventMap.emplace(std::string("Mark 1"), std::make_shared< frc2::PrintCommand>(std::string("Mark 1")));
 
@@ -106,9 +116,17 @@ void DriveTrain::Periodic(){
         // DebugOutF("Botpose array");
         // if(COB_GET_ENTRY("COB_KEY_BOT_POSE").GetDoubleArray(std::span<double>()).at(1) <= 3 || COB_GET_ENTRY("COB_KEY_BOT_POSE").GetDoubleArray(std::span<double>()).at(1) >= 13){
         //   DebugOutF("Δx check");
+<<<<<<< HEAD
           m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
           - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("tl")).GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("cl")).GetDouble(0))/1000.0)
           );
+=======
+
+          // m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
+          // - units::second_t((COB_GET_ENTRY("/limelight/tl").GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY("/limelight/cl").GetDouble(0))/1000.0)
+          // );
+
+>>>>>>> e05c373b2f5bb05f4664cd085abe46ecf64fedd7
         //DebugOutF("Inner Adjusted");
         // }
       }
