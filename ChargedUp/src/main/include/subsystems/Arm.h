@@ -59,6 +59,7 @@ class Arm : public frc2::SubsystemBase {
 	inline frc::AnalogInput& GetPot() { return m_StringPot; }
 	inline void PrintPot() {DebugOutF(std::to_string(m_StringPot.GetValue()));}
 	inline TalonFX& GetPivot() {return m_Pivot; }
+	frc2::SequentialCommandGroup* PlaceElementAuto();
 
 	int SelectedRow;
 	int SelectedColumn;
@@ -133,4 +134,6 @@ class Arm : public frc2::SubsystemBase {
 	frc2::SequentialCommandGroup* m_Top;
 	frc2::SequentialCommandGroup* m_Mid;
 	frc2::SequentialCommandGroup* m_Bot;
+
+
 };

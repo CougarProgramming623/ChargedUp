@@ -150,6 +150,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define EXTRACTION_MOTOR_HOLD_POWER .09
 #define ARM_MINIMUM_LENGTH 42.5
 #define ARM_MAXIMUM_LENGTH 65
+#define OFFSET_FROM_VERTICAL -20
 
 //PID constants
 #define PIVOT_ERROR 10
@@ -164,13 +165,18 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 //setpoints
 #define FRONT_LOW_ANGLE GROUND_PICKUP_ANGLE
 #define FRONT_MIDDLE_CONE_ANGLE -65.66
-#define FRONT_MIDDLE_CUBE_ANGLE -76.70
+// #define FRONT_MIDDLE_CUBE_ANGLE -76.70
+#define FRONT_MIDDLE_CUBE_ANGLE -65.66
+
+
 #define FRONT_HIGH_CONE_ANGLE 0 //UNUSED
 #define FRONT_HIGH_CUBE_ANGLE 0 //UNUSED
 
 #define FRONT_LOW_RADIUS GROUND_PICKUP_RADIUS
 #define FRONT_MIDDLE_CONE_RADIUS 53.38
-#define FRONT_MIDDLE_CUBE_RADIUS 49.98
+//#define FRONT_MIDDLE_CUBE_RADIUS 49.98
+#define FRONT_MIDDLE_CUBE_RADIUS 53.38
+
 #define FRONT_HIGH_CONE_RADIUS 0 //UNUSED
 #define FRONT_HIGH_CUBE_RADIUS 0 //UNUSED
 
@@ -178,13 +184,18 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define BACK_MIDDLE_CONE_ANGLE 0 //UNUSED
 #define BACK_MIDDLE_CUBE_ANGLE 0 //UNUSED
 #define BACK_HIGH_CONE_ANGLE 51.90
-#define BACK_HIGH_CUBE_ANGLE 42.70
+//#define BACK_HIGH_CUBE_ANGLE 42.70
+#define BACK_HIGH_CUBE_ANGLE 51.90
+
 
 #define BACK_LOW_RADIUS 0 //UNUSED
 #define BACK_MIDDLE_CONE_RADIUS 0 //UNUSED
 #define BACK_MIDDLE_CUBE_RADIUS 0 //UNUSED
-#define BACK_HIGH_CONE_RADIUS 55.10
-#define BACK_HIGH_CUBE_RADIUS 63.95
+//#define BACK_HIGH_CONE_RADIUS 55.
+#define BACK_HIGH_CONE_RADIUS 64
+
+//#define BACK_HIGH_CUBE_RADIUS 63.95
+#define BACK_HIGH_CUBE_RADIUS 64
 
 #define TRANSIT_ANGLE -45
 #define TRANSIT_RADIUS ARM_MINIMUM_LENGTH
@@ -237,14 +248,14 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 
 #endif
 
-#define TLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
-#define TCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
-#define TRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
+#define TLPOSE frc::Pose2d(units::meter_t(1.83), units::meter_t(1.61), frc::Rotation2d(units::degree_t(0)))
+#define TCPOSE frc::Pose2d(units::meter_t(1.83), units::meter_t(1.05), frc::Rotation2d(units::degree_t(0)))
+#define TRPOSE frc::Pose2d(units::meter_t(1.83), units::meter_t(.49), frc::Rotation2d(units::degree_t(0)))
 
-#define MLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
-#define MCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
-#define MRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
+#define MLPOSE frc::Pose2d(units::meter_t(1.87), units::meter_t(1.61), frc::Rotation2d(units::degree_t(180)))
+#define MCPOSE frc::Pose2d(units::meter_t(1.87), units::meter_t(1.05), frc::Rotation2d(units::degree_t(180)))
+#define MRPOSE frc::Pose2d(units::meter_t(1.87), units::meter_t(.49), frc::Rotation2d(units::degree_t(180)))
 
-#define BLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
-#define BCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
-#define BRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(2), frc::Rotation2d(units::radian_t(0)))
+#define BLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.61), frc::Rotation2d(units::degree_t(180)))
+#define BCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.05), frc::Rotation2d(units::degree_t(180)))
+#define BRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(.49), frc::Rotation2d(units::degree_t(180)))
