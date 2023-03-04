@@ -44,8 +44,8 @@ void Robot::RobotInit() {
  */
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();          
-  Robot::GetCOB().GetTable().GetEntry("/COB/armValue").SetDouble(Robot::GetArm().GetPot());   
-  Robot::GetCOB().GetTable().GetEntry("/COB/armAngle").SetDouble(Robot::GetArm().PivotTicksToDeg(Robot::GetArm().GetPivot().GetSelectedSensorPosition()));                                                                                                                                   
+  // Robot::GetCOB().GetTable().GetEntry("/COB/armValue").SetDouble(Robot::GetArm().GetPot());   
+  // Robot::GetCOB().GetTable().GetEntry("/COB/armAngle").SetDouble(Robot::GetArm().PivotTicksToDeg(Robot::GetArm().GetPivot().GetSelectedSensorPosition()));                                                                                                                                   
 }
 
 /**
@@ -76,13 +76,16 @@ void Robot::AutonomousInit() {
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
+  //PathPlannerTrajectory traj;
 
   //Load trajectory
-  if(!COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+  //if(!COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+    DebugOutF("Blue");
     PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalance", PathConstraints(4_mps, 1_mps_sq));
-  } else {
-    PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalanceRed", PathConstraints(4_mps, 1_mps_sq));
-  }
+  //} else {
+  //   DebugOutF("Red");
+  //   PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalanceRed", PathConstraints(4_mps, 1_mps_sq));
+  // }
 
 
   //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
@@ -139,9 +142,9 @@ void Robot::TeleopPeriodic() {
   // frc2::CommandScheduler::GetInstance().Run();
   // frc2::CommandScheduler::GetInstance().Schedule(m_Arm.Telescope(50));  
 
-  // DebugOutF("OdoX: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
-  // DebugOutF("OdoY: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
-  // DebugOutF("OdoZ: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
+  DebugOutF("OdoX: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
+  DebugOutF("OdoY: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
+  DebugOutF("OdoZ: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
 
   // DebugOutF("LLX: " + std::to_string(m_Vision.GetPoseBlue().X().value()));
   // DebugOutF("LLY: " + std::to_string(m_Vision.GetPoseBlue().Y().value()));

@@ -91,10 +91,10 @@
     #define BACK_RIGHT_MODULE_ENCODER_PORT 0
 
 
-    #define LIMELIGHT_HEIGHT    -1   //cm
-    //#define LIMELIGHT_HEIGHT 44.846875 //cm on C
-    //#define TARGET_HEIGHT_SHORT 31.4   // Grid //cm
-    #define LIMELIGHT_ANGLE  -1     // degrees
+    // #define LIMELIGHT_HEIGHT    -1   //cm
+    // //#define LIMELIGHT_HEIGHT 44.846875 //cm on C
+    // //#define TARGET_HEIGHT_SHORT 31.4   // Grid //cm
+    // #define LIMELIGHT_ANGLE  -1     // degrees
 
 
 #endif
@@ -150,7 +150,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define EXTRACTION_MOTOR_HOLD_POWER .09
 #define ARM_MINIMUM_LENGTH 42.5
 #define ARM_MAXIMUM_LENGTH 65
-#define OFFSET_FROM_VERTICAL -20
+#define OFFSET_FROM_VERTICAL -29
 
 //PID constants
 #define PIVOT_ERROR 10
@@ -217,11 +217,11 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define CONE_MODE 16 
 #define CUBE_MODE 15 
 
-#define FRONT_MODE 1 //check
+#define FRONT_MODE 21 //check
 #define BACK_MODE 20 
 
 #define PIVOT_CONTROL 1 //check
-#define EXTRACTION_CONTROL 1 //check
+#define EXTRACTION_CONTROL 0 //check
 #define MANUAL_ARM_BRAKE 22
 #define MANUAL_SLIP_BRAKE 7
 

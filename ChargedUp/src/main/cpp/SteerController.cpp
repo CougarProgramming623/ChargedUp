@@ -16,7 +16,7 @@ double SteerController::GetReferenceAngle() {return referenceAngleRadians;}
 
 //Returns the angle of the module in radians
 double SteerController::GetStateAngle(){ //gets the current angle of the motor
-    double motorAngleRadians = motor.GetSelectedSensorPosition() * STEER_ENCODER_POSITION_CONSTANT;
+    double motorAngleRadians = 0.0/*motor.GetSelectedSensorPosition()*/ * STEER_ENCODER_POSITION_CONSTANT;
     motorAngleRadians = fmod(motorAngleRadians, 2.0 * M_PI);
     if(motorAngleRadians < 0.0){
         motorAngleRadians += 2.0 * M_PI;
@@ -26,7 +26,7 @@ double SteerController::GetStateAngle(){ //gets the current angle of the motor
 
 //Moves the module to the correct angle
 void SteerController::SetReferenceAngle(double referenceAngleRadians){
-    double currentAngleRadians = motor.GetSelectedSensorPosition() * STEER_ENCODER_POSITION_CONSTANT;
+    double currentAngleRadians = 0.0/*motor.GetSelectedSensorPosition()*/ * STEER_ENCODER_POSITION_CONSTANT;
 
     // if(motor.GetSelectedSensorVelocity() * STEER_ENCODER_VELOCITY_CONSTANT < ENCODER_RESET_MAX_ANGULAR_VELOCITY) {
     //     if(++resetIteration >= ENCODER_RESET_ITERATIONS) {

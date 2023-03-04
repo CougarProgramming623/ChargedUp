@@ -34,10 +34,10 @@ DriveTrain::DriveTrain()
       m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);}),
       m_Timer(),
       m_EventMap(),
-      m_NavXReset(BUTTON_L_TWO(-1))
+      m_NavXReset(BUTTON_L_TWO(8))
 {
-  m_EventMap.emplace(std::string("Mark 1"), std::make_shared<AutoBalance>(AutoBalance()));
-  DebugOutF("Emplaced");
+  // m_EventMap.emplace(std::string("Mark 1"), std::make_shared<AutoBalance>(AutoBalance()));
+  // DebugOutF("Emplaced");
 }
 
 void DriveTrain::DriveInit(){

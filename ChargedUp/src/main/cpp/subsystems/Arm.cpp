@@ -19,6 +19,7 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 
 			 //BUTTONBOARD 1
 			 m_Override(BUTTON_L(ARM_OVERRIDE)),
+			 m_Override2(BUTTON_L(2)),
 
 			 m_ConeMode(BUTTON_L(CONE_MODE)),
 			 m_CubeMode(BUTTON_L(CUBE_MODE)),
@@ -83,13 +84,22 @@ void Arm::Init()
 
 void Arm::SetButtons()
 {
-	m_BR.WhenPressed(m_Top);
+	//m_Override.WhenPressed(frc2::InstantCommand([&] {frc2::CommandScheduler::GetInstance().CancelAll()};));
+	m_Override2.WhenPressed(ManualControls());
 
-	m_BC.WhenPressed(m_Mid);
+	m_ManualArmBrake.WhenPressed(ManualArmBrake());
+	m_ManualSlipBrake.WhenPressed(ManualSlipBrake());
 
-	m_BL.WhenPressed(m_Bot);
+	
+	m_TR.WhenPressed(m_Top);
 
-	m_TL.WhenPressed(frc2::InstantCommand([&]{
+	m_TC.WhenPressed(m_Mid);
+
+	m_GroundPickupMode.WhenPressed(m_Bot);
+	m_TransitMode.WhenPressed(TransitMode());
+	m_LoadingMode.WhenPressed(LoadingMode());
+
+	m_ML.WhenPressed(frc2::InstantCommand([&]{
 		DebugOutF("m_TL");
 		SelectedRow = 0;
 		SelectedColumn = 0; 
@@ -121,7 +131,7 @@ void Arm::SetButtons()
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
 	}));
 
-	m_TC.WhenPressed(frc2::InstantCommand([&]{
+	m_MC.WhenPressed(frc2::InstantCommand([&]{
 		DebugOutF("m_TC");
 		SelectedRow = 0;
 		SelectedColumn = 1;
@@ -153,7 +163,7 @@ void Arm::SetButtons()
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;	
 		}));
 
-	m_TR.WhenPressed(frc2::InstantCommand([&]{
+	m_MR.WhenPressed(frc2::InstantCommand([&]{
 		DebugOutF("m_TR");
 		SelectedRow = 0;
 		SelectedColumn = 2;
@@ -185,7 +195,7 @@ void Arm::SetButtons()
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;	
 		}));
 
-	m_ML.WhenPressed(frc2::InstantCommand([&]{
+	m_BL.WhenPressed(frc2::InstantCommand([&]{
 		DebugOutF("m_ML");
 		SelectedRow = 1;
 		SelectedColumn = 0;
@@ -217,7 +227,7 @@ void Arm::SetButtons()
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
 		}));
 
-	m_MC.WhenPressed(frc2::InstantCommand([&]{
+	m_BC.WhenPressed(frc2::InstantCommand([&]{
 		DebugOutF("m_MC");
 		SelectedRow = 1;
 		SelectedColumn = 1;
@@ -249,7 +259,7 @@ void Arm::SetButtons()
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
 		}));
 
-	m_MR.WhenPressed(frc2::InstantCommand([&]{
+	m_BR.WhenPressed(frc2::InstantCommand([&]{
 		DebugOutF("m_MR");
 		SelectedRow = 1;
 		SelectedColumn = 2;
@@ -280,6 +290,14 @@ void Arm::SetButtons()
 		}
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
 		}));
+
+
+
+
+
+
+
+
 
 	// m_BL.WhenPressed(frc2::InstantCommand([&]{
 	// 	DebugOutF("m_BL");
@@ -375,29 +393,35 @@ void Arm::SetButtons()
 	// 			);
 	// 	}
 	// 	Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;		
-	// }));
+	// // }));
 
-	// m_LeftGrid.WhenPressed(frc2::InstantCommand([&]{
-	// 	DebugOutF("m_LeftGrid");
-	// 	if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
-	// 		Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
-	// 	} else{
-	// 		Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 2;
-	// 	}
-	// }));
 
-	// m_CenterGrid.WhenPressed(frc2::InstantCommand([&]{
-	// 	DebugOutF("m_CenterGrid");
-	// 	Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 1;
-	// }));
 
-	// m_RightGrid.WhenPressed(frc2::InstantCommand([&]{
-	// 	DebugOutF("m_RightGrid");
-	// 	if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
-	// 		Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 2;
-	// 	} else{
-	// 		Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
-	// 	}	}));
+
+
+
+
+	m_LeftGrid.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_LeftGrid");
+		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
+		} else{
+			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 2;
+		}
+	}));
+
+	m_CenterGrid.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_CenterGrid");
+		Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 1;
+	}));
+
+	m_RightGrid.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("m_RightGrid");
+		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 2;
+		} else{
+			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
+		}	}));
 
 	// m_Override.WhenPressed(frc2::InstantCommand([&]{WaitBrakeTelescope(60)->Schedule();}));
 	// m_Override.WhenPressed(frc2::InstantCommand([&]{DebugOutF("pushed");}));
@@ -436,14 +460,14 @@ void Arm::SlipBrakes(bool shouldBrake)
 frc2::InstantCommand* Arm::PivotToPosition(double angleSetpoint)
 {
 	return new frc2::InstantCommand([&]{
-		StartingTicks = m_Pivot.GetSelectedSensorPosition();
+		StartingTicks = 0.0/*m_Pivot.GetSelectedSensorPosition()*/;
 		double currentAngle = PivotTicksToDeg(StartingTicks); // current angle of the arm
 		double degToMove = angleSetpoint - currentAngle;	  // how many degrees the arm needs to move in the correct direction
 		TicksToMove = PivotDegToTicks(degToMove);			  // how many ticks the pivot motor needs to move in the correct direction
 		Setpoint = StartingTicks + TicksToMove;
 
 		m_Pivot.Set(ControlMode::Position, Setpoint);
-		DebugOutF(std::to_string(PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition())));
+		//DebugOutF(std::to_string(PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition())));
 	}
 	);
 }
@@ -502,13 +526,13 @@ frc2::SequentialCommandGroup* Arm::Squeeze()
 			m_Timer.Start();
 			SlipBrakes(false);
 			ArmBrakes(true);
-			a = m_Extraction.GetSelectedSensorPosition();
-			m_Extraction.Set(ControlMode::Position, m_Extraction.GetSelectedSensorPosition() - 20000);
+			a = 0.0/*m_Extraction.GetSelectedSensorPosition()*/;
+			m_Extraction.Set(ControlMode::Position, 0.0/*m_Extraction.GetSelectedSensorPosition()*/ - 20000);
 		}
 		},
 		[&] { // onExecute
-			if (shouldSqueeze) DebugOutF(std::to_string(m_Extraction.GetSupplyCurrent()));
-			else DebugOutF(std::to_string(m_Extraction.GetSelectedSensorVelocity()));
+			//if (shouldSqueeze) DebugOutF(std::to_string(m_Extraction.GetSupplyCurrent()));
+			//else DebugOutF(std::to_string(m_Extraction.GetSelectedSensorVelocity()));
 
 		},
 		[&](bool e) { // onEnd
@@ -670,10 +694,11 @@ frc2::SequentialCommandGroup* Arm::LoadingMode() //untested
 		
 
 // while override is active, gives manual joysticks control over the two arm motors
-frc2::FunctionalCommand Arm::ManualControls()
+frc2::FunctionalCommand* Arm::ManualControls()
 {
-	return frc2::FunctionalCommand([&] { // onInit
+	return new frc2::FunctionalCommand([&] { // onInit
 		SlipBrakes(false);
+		ArmBrakes(false);
 	},
 	[&] { // onExecute
 		m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(PIVOT_CONTROL) / 5);
@@ -683,8 +708,29 @@ frc2::FunctionalCommand Arm::ManualControls()
 		m_Pivot.Set(ControlMode::PercentOutput, 0);
 		m_Extraction.Set(ControlMode::PercentOutput, 0);
 		SlipBrakes(true);
+		ArmBrakes(true);
 	},
 	[&] { // isFinished
 		return !Robot::GetRobot()->GetButtonBoard().GetRawButton(ARM_OVERRIDE);
+	});
+}
+
+frc2::InstantCommand* Arm::ManualArmBrake() {
+	return new frc2::InstantCommand([&] {
+		if (m_RightBrake.Get() < .1) { //engaged
+			ArmBrakes(false);
+		} else { //disengaged
+			ArmBrakes(true);
+		}
+	});
+}
+
+frc2::InstantCommand* Arm::ManualSlipBrake() {
+	return new frc2::InstantCommand([&] {
+		if (m_SlipBrake.Get() > .5 ) { //engaged
+			SlipBrakes(false);
+		} else { //disengaged
+			SlipBrakes(true);
+		}
 	});
 }

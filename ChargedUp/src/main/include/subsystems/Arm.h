@@ -54,7 +54,9 @@ class Arm : public frc2::SubsystemBase {
 	frc2::SequentialCommandGroup* GroundPickupMode();
 	frc2::SequentialCommandGroup* LoadingMode();
 	//misc
-	frc2::FunctionalCommand ManualControls();
+	frc2::FunctionalCommand* ManualControls();
+	frc2::InstantCommand* ManualArmBrake();
+	frc2::InstantCommand* ManualSlipBrake();
 
 	inline frc::AnalogInput& GetPot() { return m_StringPot; }
 	inline void PrintPot() {DebugOutF(std::to_string(m_StringPot.GetValue()));}
@@ -119,6 +121,7 @@ class Arm : public frc2::SubsystemBase {
 	frc2::Button m_LoadingMode;
 
 	frc2::Button m_Override;
+	frc2::Button m_Override2;
 
 	frc2::Button m_ConeMode;
 	frc2::Button m_CubeMode;
