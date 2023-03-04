@@ -23,7 +23,7 @@
 #include "Util.h"
 #include <frc/Timer.h>
 #include <frc2/command/SubsystemBase.h>
-
+#include <frc2/command/ParallelCommandGroup.h>
 
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
@@ -42,14 +42,14 @@ class Arm : public frc2::SubsystemBase {
 	inline double StringPotUnitsToInches(double units) {return (units - STRING_POT_MINIMUM) * STRING_POT_INCHES_PER_TICK;} //166 = length of slider
 	inline double InchesToStringPotUnits(double inches) {return inches / STRING_POT_INCHES_PER_TICK;}
 	//basic commands
-	void PivotToPosition(double angle); 
+	frc2::InstantCommand* PivotToPosition(double angle); 
 	void ArmBrakes(bool shouldBreak);
 	void SlipBrakes(bool shouldBreak);
 	frc2::SequentialCommandGroup* WaitBrakeTelescope(double setpoint);
 	frc2::FunctionalCommand* Telescope(double setpoint); 
 	frc2::SequentialCommandGroup* Squeeze();
 	//Automation
-	void PlaceElement(int row, int column);
+	frc2::SequentialCommandGroup* PlaceElement(int row, int column);
 	frc2::SequentialCommandGroup* TransitMode();
 	frc2::SequentialCommandGroup* GroundPickupMode();
 	frc2::SequentialCommandGroup* LoadingMode();
@@ -129,4 +129,8 @@ class Arm : public frc2::SubsystemBase {
 	frc2::Button m_ManualSlipBrake;
 
 	frc::Timer m_Timer;
+
+	frc2::SequentialCommandGroup* m_Top;
+	frc2::SequentialCommandGroup* m_Mid;
+	frc2::SequentialCommandGroup* m_Bot;
 };

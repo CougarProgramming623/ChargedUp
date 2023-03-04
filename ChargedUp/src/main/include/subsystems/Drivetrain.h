@@ -119,6 +119,8 @@ class DriveTrain : public frc2::SubsystemBase {
 
   bool m_IsBalancing;
 
+  frc2::Button m_NavXReset;
+
   frc::SwerveDriveKinematics<4> m_Kinematics;
   frc::SwerveDrivePoseEstimator<4> m_Odometry;
   

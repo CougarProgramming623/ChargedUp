@@ -48,7 +48,13 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 m_GroundPickupMode(BUTTON_L_TWO(GROUND_PICKUP_MODE)),
 			 m_LoadingMode(BUTTON_L_TWO(LOADING_MODE)),
 
-			 m_Timer()
+			m_Timer(),
+
+			m_Top(PlaceElement(0, 2)),
+
+			m_Mid(PlaceElement(1, 2)),
+
+			m_Bot(PlaceElement(2, 2))
 			{}
 
 void Arm::Init()
@@ -76,33 +82,11 @@ void Arm::Init()
 
 void Arm::SetButtons()
 {
+	m_TR.WhenPressed(m_Top);
 
+	m_MR.WhenPressed(m_Mid);
 
-	m_TR.WhenPressed(frc2::SequentialCommandGroup(
-		new frc2::InstantCommand([&]{DebugOutF("m_TR");}),
-		new frc2::InstantCommand([&]{isOnFrontSide = false;}),
-		*PlaceElement(0, 2)
-		));
-
-	m_MR.WhenPressed(frc2::InstantCommand([&]{
-		DebugOutF("m_MR");
-		}));
-
-	m_MR.WhenPressed(frc2::SequentialCommandGroup(
-		frc2::InstantCommand([&]{DebugOutF("m_MR");}),
-		frc2::InstantCommand([&]{isOnFrontSide = true;}),
-		*PlaceElement(1, 2)
-		));
-
-	m_BR.WhenPressed(frc2::InstantCommand([&]{
-		DebugOutF("m_BR");
-		}));
-
-	m_BR.WhenPressed(frc2::SequentialCommandGroup(
-		frc2::InstantCommand([&]{DebugOutF("m_BR");}),
-		frc2::InstantCommand([&]{isOnFrontSide = true;}),
-		*PlaceElement(2, 2)
-		));
+	m_BR.WhenPressed(m_Bot);
 
 	// m_Override.WhenPressed(frc2::InstantCommand([&]{WaitBrakeTelescope(60)->Schedule();}));
 	// m_Override.WhenPressed(frc2::InstantCommand([&]{DebugOutF("pushed");}));
@@ -138,16 +122,19 @@ void Arm::SlipBrakes(bool shouldBrake)
 	}
 }
 
-void Arm::PivotToPosition(double angleSetpoint)
+frc2::InstantCommand* Arm::PivotToPosition(double angleSetpoint)
 {
-	StartingTicks = m_Pivot.GetSelectedSensorPosition();
-	double currentAngle = PivotTicksToDeg(StartingTicks); // current angle of the arm
-	double degToMove = angleSetpoint - currentAngle;	  // how many degrees the arm needs to move in the correct direction
-	TicksToMove = PivotDegToTicks(degToMove);			  // how many ticks the pivot motor needs to move in the correct direction
-	Setpoint = StartingTicks + TicksToMove;
+	return new frc2::InstantCommand([&]{
+		StartingTicks = m_Pivot.GetSelectedSensorPosition();
+		double currentAngle = PivotTicksToDeg(StartingTicks); // current angle of the arm
+		double degToMove = angleSetpoint - currentAngle;	  // how many degrees the arm needs to move in the correct direction
+		TicksToMove = PivotDegToTicks(degToMove);			  // how many ticks the pivot motor needs to move in the correct direction
+		Setpoint = StartingTicks + TicksToMove;
 
-	m_Pivot.Set(ControlMode::Position, Setpoint);
-	DebugOutF(std::to_string(PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition())));
+		m_Pivot.Set(ControlMode::Position, Setpoint);
+		DebugOutF(std::to_string(PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition())));
+	}
+	);
 }
 
 frc2::SequentialCommandGroup* Arm::WaitBrakeTelescope(double Setpoint) {
@@ -235,7 +222,7 @@ frc2::SequentialCommandGroup* Arm::Squeeze()
 
 // sets arm to a set angle and radius based on element being places
 // type can be either CONE or CUBE
-void Arm::PlaceElement(/*int type,*/ int row, int column)
+frc2::SequentialCommandGroup* Arm::PlaceElement(/*int type,*/ int row, int column)
 {
 	//index 0 is TL; index 8 is BR (read like a book)
 	double FrontRadiiValues[9] = {
@@ -264,14 +251,27 @@ void Arm::PlaceElement(/*int type,*/ int row, int column)
 	int ArrayValueNeeded = (row*3) + column;
 
 
-	if (isOnFrontSide) {
-		PivotToPosition(FrontAngleValues[ArrayValueNeeded]);
-		WaitBrakeTelescope(FrontRadiiValues[ArrayValueNeeded])->Schedule();
+	if (row != 0) {
+		return new frc2::SequentialCommandGroup(
+			*PivotToPosition(FrontAngleValues[ArrayValueNeeded]),
+			frc2::InstantCommand([&]{
+				ArmBrakes(false);
+				SlipBrakes(false);
+				}),
+			frc2::WaitCommand(0.25_s),
+			*Telescope(FrontRadiiValues[ArrayValueNeeded])
+	);
 	} else {
-		PivotToPosition(BackAngleValues[ArrayValueNeeded]);
-		WaitBrakeTelescope(BackRadiiValues[ArrayValueNeeded])->Schedule();
+		return new frc2::SequentialCommandGroup(
+			*PivotToPosition(BackAngleValues[ArrayValueNeeded]),
+			frc2::InstantCommand([&]{
+				ArmBrakes(false);
+				SlipBrakes(false);
+				}),
+			frc2::WaitCommand(0.25_s),
+			*Telescope(BackRadiiValues[ArrayValueNeeded])
+		);
 	}
-	//Squeeze(false); 
 }
 
 // Arm positions for transit

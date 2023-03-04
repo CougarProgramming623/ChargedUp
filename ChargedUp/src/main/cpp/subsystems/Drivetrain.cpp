@@ -33,7 +33,8 @@ DriveTrain::DriveTrain()
       m_HolonomicController(m_xController, m_yController, m_ThetaController),
       m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);}),
       m_Timer(),
-      m_EventMap()
+      m_EventMap(),
+      m_NavXReset(BUTTON_L_TWO(-1))
 {
   m_EventMap.emplace(std::string("Mark 1"), std::make_shared<AutoBalance>(AutoBalance()));
   DebugOutF("Emplaced");
@@ -42,6 +43,8 @@ DriveTrain::DriveTrain()
 void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
+  m_NavXReset.WhenPressed(new frc2::InstantCommand([&]{Robot::GetRobot()->GetNavX().ZeroYaw();}));
+
   // m_TestJoystickButton.WhenPressed(new frc2::ParallelCommandGroup(
   //   DriveToPosCommand(),
   //   *Robot::GetRobot()->GetArm().PlaceElement(
