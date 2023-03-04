@@ -460,7 +460,7 @@ void Arm::SlipBrakes(bool shouldBrake)
 frc2::InstantCommand* Arm::PivotToPosition(double angleSetpoint)
 {
 	return new frc2::InstantCommand([&]{
-		StartingTicks = 0.0/*m_Pivot.GetSelectedSensorPosition()*/;
+		StartingTicks = m_Pivot.GetSelectedSensorPosition();
 		double currentAngle = PivotTicksToDeg(StartingTicks); // current angle of the arm
 		double degToMove = angleSetpoint - currentAngle;	  // how many degrees the arm needs to move in the correct direction
 		TicksToMove = PivotDegToTicks(degToMove);			  // how many ticks the pivot motor needs to move in the correct direction
@@ -526,8 +526,8 @@ frc2::SequentialCommandGroup* Arm::Squeeze()
 			m_Timer.Start();
 			SlipBrakes(false);
 			ArmBrakes(true);
-			a = 0.0/*m_Extraction.GetSelectedSensorPosition()*/;
-			m_Extraction.Set(ControlMode::Position, 0.0/*m_Extraction.GetSelectedSensorPosition()*/ - 20000);
+			a = m_Extraction.GetSelectedSensorPosition();
+			m_Extraction.Set(ControlMode::Position, m_Extraction.GetSelectedSensorPosition() - 20000);
 		}
 		},
 		[&] { // onExecute

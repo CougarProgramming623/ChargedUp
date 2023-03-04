@@ -20,7 +20,7 @@ void  DriveController::SetReferenceVoltage(double voltage){
 
 //Get module velocity in meters per second
 double DriveController::GetStateVelocity(){
-    return 0.0/*motor.GetSelectedSensorVelocity()*/ * DRIVE_ENCODER_VELOCITY_CONSTANT;
+    return motor.GetSelectedSensorVelocity() * DRIVE_ENCODER_VELOCITY_CONSTANT;
 }
 
 //Set break mode
