@@ -10,7 +10,7 @@
 
 
 Robot::Robot():
-  m_LED()
+m_LED()
 {}
 
 void Robot::RobotInit() {
@@ -18,7 +18,7 @@ void Robot::RobotInit() {
   //m_LEDYellow.WhenPressed(LED::EyesSolid(frc::Color::kPurple));
 
   m_LED.Init();
-  m_LED.SponsorBoardAlianceColor();
+  m_LED.LowBatery();
 
 }
 
