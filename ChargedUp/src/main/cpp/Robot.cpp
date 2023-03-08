@@ -4,9 +4,35 @@
 
 #include "Robot.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
+#include <frc/kinematics/SwerveModuleState.h>
+#include <frc/geometry/Pose2d.h>
+#include "Util.h"
+#include "commands/TrajectoryCommand.h"
+#include <frc/kinematics/SwerveModulePosition.h>
+#include <frc/RobotController.h>
+#include <frc2/command/SequentialCommandGroup.h>
 
-void Robot::RobotInit() {}
+using ctre::phoenix::motorcontrol::ControlMode;
+using namespace pathplanner;
+
+Robot* Robot::s_Instance = nullptr;
+
+Robot::Robot()
+{
+  s_Instance = this;
+}
+
+void Robot::RobotInit() {
+
+  GetNavX().ZeroYaw();
+  GetNavX().SetAngleAdjustment(0);
+  s_Instance = this;
+  m_DriveTrain.DriveInit();
+  m_Vision.VisionInit(); //Make one
+  m_Arm.Init();
+}
 
 /**
  * This function is called every 20 ms, no matter the mode. Use
@@ -17,7 +43,9 @@ void Robot::RobotInit() {}
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
-  frc2::CommandScheduler::GetInstance().Run();
+  frc2::CommandScheduler::GetInstance().Run();          
+  Robot::GetCOB().GetTable().GetEntry("/COB/armValue").SetDouble(Robot::GetArm().GetPot());   
+  Robot::GetCOB().GetTable().GetEntry("/COB/armAngle").SetDouble(Robot::GetArm().PivotTicksToDeg(Robot::GetArm().GetPivot().GetSelectedSensorPosition()));                                                                                                                                   
 }
 
 /**
@@ -25,7 +53,15 @@ void Robot::RobotPeriodic() {
  * can use it to reset any subsystem information you want to clear when the
  * robot is disabled.
  */
-void Robot::DisabledInit() {}
+void Robot::DisabledInit() {
+  GetDriveTrain().BreakMode(false);
+  GetDriveTrain().m_BackLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+  GetDriveTrain().m_BackRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+  GetDriveTrain().m_FrontLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+  GetDriveTrain().m_FrontRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+
+  
+}
 
 void Robot::DisabledPeriodic() {}
 
@@ -33,45 +69,94 @@ void Robot::DisabledPeriodic() {}
  * This autonomous runs the autonomous command selected by your {@link
  * RobotContainer} class.
  */
-void Robot::AutonomousInit() {
-  m_autonomousCommand = m_container.GetAutonomousCommand();
+void Robot::AutonomousInit() {  
+  DebugOutF("Auto init");
 
-  if (m_autonomousCommand) {
-    m_autonomousCommand->Schedule();
+  frc2::CommandScheduler::GetInstance().CancelAll();
+  GetNavX().ZeroYaw();
+  GetNavX().SetAngleAdjustment(0);
+  GetDriveTrain().BreakMode(true);
+
+  //Load trajectory
+  if(!COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+    PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalance", PathConstraints(4_mps, 1_mps_sq));
+  } else {
+    PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalanceRed", PathConstraints(4_mps, 1_mps_sq));
   }
+
+
+  //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
+
+  //frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.3), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
+  frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), frc::Rotation2d(units::degree_t(0)));
+
+  GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
+    wpi::array<frc::SwerveModulePosition, 4>
+         (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
+    startingPose);
+  
+  
+  // DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
+  // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
+  // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
+  
+  frc2::CommandScheduler::GetInstance().Schedule(new frc2::SequentialCommandGroup(
+    TrajectoryCommand(traj),
+    AutoBalance()
+  ));
+
+  //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
+  // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
 }
 
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic() {
+
+    DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
+    DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
+    DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
+  
+}
 
 void Robot::TeleopInit() {
-  // This makes sure that the autonomous stops running when
-  // teleop starts running. If you want the autonomous to
-  // continue until interrupted by another command, remove
-  // this line or comment it out.
-  if (m_autonomousCommand) {
-    m_autonomousCommand->Cancel();
-  }
+
+  GetNavX().ZeroYaw();
+  GetNavX().SetAngleAdjustment(0);
+  GetDriveTrain().BreakMode(true);
+   
+  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.54), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
+    GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
+        wpi::array<frc::SwerveModulePosition, 4>
+            (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
+        startingPose);
+
+  // m_Arm.PlaceElement(0,0);
 }
 
 /**
- * This function is called periodically during operator control.
+ * This function is called periodically during operator control.  
  */
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  // frc2::CommandScheduler::GetInstance().Run();
+  // frc2::CommandScheduler::GetInstance().Schedule(m_Arm.Telescope(50));  
+
+  // DebugOutF("OdoX: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
+  // DebugOutF("OdoY: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
+  // DebugOutF("OdoZ: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
+
+  // DebugOutF("LLX: " + std::to_string(m_Vision.GetPoseBlue().X().value()));
+  // DebugOutF("LLY: " + std::to_string(m_Vision.GetPoseBlue().Y().value()));
+  // DebugOutF("LLZ: " + std::to_string(m_Vision.GetPoseBlue().Rotation().Degrees().value()));
+
+  // DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
+  // DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
+  // DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
+  // DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
+}
 
 /**
  * This function is called periodically during test mode.
  */
 void Robot::TestPeriodic() {}
-
-/**
- * This function is called once when the robot is first started up.
- */
-void Robot::SimulationInit() {}
-
-/**
- * This function is called periodically whilst in simulation.
- */
-void Robot::SimulationPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {

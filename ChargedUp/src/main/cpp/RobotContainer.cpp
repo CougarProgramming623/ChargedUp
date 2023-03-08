@@ -4,32 +4,18 @@
 
 #include "RobotContainer.h"
 
-#include <frc2/command/button/Trigger.h>
-
-#include "commands/Autos.h"
-#include "commands/ExampleCommand.h"
-
-RobotContainer::RobotContainer() {
+RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
 
   // Configure the button bindings
-  ConfigureBindings();
+  ConfigureButtonBindings();
 }
 
-void RobotContainer::ConfigureBindings() {
-  // Configure your trigger bindings here
-
-  // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-  frc2::Trigger([this] {
-    return m_subsystem.ExampleCondition();
-  }).OnTrue(ExampleCommand(&m_subsystem).ToPtr());
-
-  // Schedule `ExampleMethodCommand` when the Xbox controller's B button is
-  // pressed, cancelling on release.
-  m_driverController.B().WhileTrue(m_subsystem.ExampleMethodCommand());
+void RobotContainer::ConfigureButtonBindings() {
+  // Configure your button bindings here
 }
 
-frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
+frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
-  return autos::ExampleAuto(&m_subsystem);
+  return &m_autonomousCommand;
 }
