@@ -13,28 +13,33 @@ const int kEND_EYE_2    = 0;
 
 const int kNUM_LED = -1;
 
-frc::AddressableLED m_LED{9};
-std::array<frc::AddressableLED::LEDData, 280> m_LEDBuffer; //FIX Length
+LED::LED(){}
+
+void LED::Init(){
+    m_AddressableLED.Start();
+}
 
 void LED::LowBatery(){}
 
-void LED::SponsorBoardAlianceColor(){}
+void LED::SponsorBoardAlianceColor(){
+    for(int i = 0; i < 280; i++){
+        m_LEDBuffer[i].SetLED(frc::Color::kBlue);
+    }
+    m_AddressableLED.SetData(m_LEDBuffer);
+}
 void LED::SponsorBoardSolid(frc::Color color){}
 void LED::SponsorBoardSolid(int R, int G, int B){}
 
 void LED::SponsorBoardFlash(frc::Color color){}     
 void LED::SponsorBoardFlash(int R, int G, int B){}
 
-void LED::EyesAlianceColor(){
+void LED::EyesAlianceColor(){}
 
-}
-frc2::InstantCommand LED::EyesSolid(frc::Color color){
-
+void LED::EyesSolid(frc::Color color){
     for(int i = kSTART_EYE_1; i < kEND_EYE_1; i++)
         m_LEDBuffer[i].SetLED(color);
     for(int i = kSTART_EYE_2; i < kEND_EYE_2; i++)
         m_LEDBuffer[i].SetLED(color);
-    return frc2::InstantCommand();
 }
 void LED::EyesSolid(int R, int G, int B){}
 

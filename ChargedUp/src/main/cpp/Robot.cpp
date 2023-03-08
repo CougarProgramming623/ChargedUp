@@ -8,9 +8,17 @@
 
 #include "LED.h"
 
+
+Robot::Robot():
+  m_LED()
+{}
+
 void Robot::RobotInit() {
-  m_LEDYellow.WhenPressed(LED::EyesSolid(frc::Color::kYellow));
-  m_LEDYellow.WhenPressed(LED::EyesSolid(frc::Color::kPurple));
+  //m_LEDYellow.WhenPressed(LED::EyesSolid(frc::Color::kYellow));
+  //m_LEDYellow.WhenPressed(LED::EyesSolid(frc::Color::kPurple));
+
+  m_LED.Init();
+  m_LED.SponsorBoardAlianceColor();
 
 }
 

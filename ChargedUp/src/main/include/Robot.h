@@ -12,9 +12,11 @@
 
 
 #include "RobotContainer.h"
+#include "LED.h"
 
 class Robot : public frc::TimedRobot {
  public:
+  Robot();
   void RobotInit() override;
   void RobotPeriodic() override;
   void DisabledInit() override;
@@ -35,6 +37,7 @@ class Robot : public frc::TimedRobot {
 
   frc2::Button m_LEDYellow;
   frc2::Button m_LEDPurple;
+  LED m_LED;
 
   RobotContainer m_container;
 };
