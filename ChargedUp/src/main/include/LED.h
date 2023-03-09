@@ -20,6 +20,8 @@ class LED{
         void SponsorBoardSolid(frc::Color allianceColor);
         void SponsorBoardSolid(int R, int G, int B);
 
+        void SponsorBoardRainbow();
+
         void SponsorBoardFlash(frc::Color allianceColor);     
         void SponsorBoardFlash(int R, int G, int B);     
 
@@ -37,4 +39,5 @@ class LED{
 
         frc::AddressableLED m_AddressableLED{9};
         std::array<frc::AddressableLED::LEDData, 280> m_LEDBuffer; //FIX Length
+        int m_IterationTracker;
 };

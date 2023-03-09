@@ -11,14 +11,22 @@ const int kEND_EYE_1    = 0;
 const int kSTART_EYE_2  = 0;
 const int kEND_EYE_2    = 0;
 const int kNUM_LED = -1;
-using frc::Color;
+
+
+const int kNum_LED = 280;
 
 frc::Color colorArray[] = {frc::Color::kRed,frc::Color::kOrange, frc::Color::kYellow, frc::Color::kGreen, frc::Color::kBlue, frc::Color::kViolet, frc::Color::kPink };
+
+
+
 LED::LED(){}
 
 void LED::Init(){
-    m_AddressableLED.SetLength(280);
+    m_AddressableLED.SetLength(kNum_LED);
     m_AddressableLED.Start();
+    m_IterationTracker = 0;
+    SponsorBoardAlianceColor();
+    EyesAlianceColor();
 }
 
 void LED::LowBatery(){
@@ -30,17 +38,64 @@ void LED::LowBatery(){
     m_AddressableLED.SetData(m_LEDBuffer);
 }
 
+
+
 void LED::SponsorBoardAlianceColor(){
+    if(/*COB_GET_ENTRY(COB_KEY_IS_RED).getBoolean(false)*/ true){
+        SponsorBoardSolid(frc::Color::kRed);
+    } else {
+        SponsorBoardSolid(frc::Color::kBlue);
+    }
+}
+
+void LED::SponsorBoardSolid(frc::Color color){
     for(int i = 0; i < 280; i++){
-        m_LEDBuffer[i].SetLED(frc::Color::kBlue);
+            m_LEDBuffer[i].SetLED(color);
     }
     m_AddressableLED.SetData(m_LEDBuffer);
 }
-void LED::SponsorBoardSolid(frc::Color color){}
-void LED::SponsorBoardSolid(int R, int G, int B){}
 
-void LED::SponsorBoardFlash(frc::Color color){}     
-void LED::SponsorBoardFlash(int R, int G, int B){}
+void LED::SponsorBoardSolid(int R, int G, int B){
+    for(int i = 0; i < 280; i++){
+        m_LEDBuffer[i].SetRGB(R, G, B);
+    }
+    m_AddressableLED.SetData(m_LEDBuffer);
+}
+
+
+/*
+Start from 255 0 0, then count up g to 255 255 0, then count down red to 0 255 0,
+then count up blue to 0 255 255, then count down green to 0 0 255,
+then count up red to 255 0 255, then count down blue to 255 0 0.
+*/
+void LED::SponsorBoardRainbow(){
+    for(int j = 0 + m_IterationTracker; j < (kNum_LED / 7); j++){
+        m_LEDBuffer[j].SetRGB(255, j, 0);
+        m_LEDBuffer[(kNum_LED / 7) * (2) + j].SetRGB(255-j, 255, 0);
+        m_LEDBuffer[(kNum_LED / 7) * (3) + j].SetRGB(0, 255, j);
+        m_LEDBuffer[(kNum_LED / 7) * (4) + j].SetRGB(0, 255 - j, 255);
+        m_LEDBuffer[(kNum_LED / 7) * (5) + j].SetRGB(j, 0, 255);
+        m_LEDBuffer[(kNum_LED / 7) * (6) + j].SetRGB(255, 0, 255 - j);
+    }
+    m_IterationTracker++;
+    m_AddressableLED.SetData(m_LEDBuffer);
+}
+
+void LED::SponsorBoardFlash(frc::Color color){
+    if(m_IterationTracker % 2 == 0){
+        SponsorBoardSolid(color);
+    } else {
+        SponsorBoardSolid(0, 0, 0);
+    }
+
+}     
+void LED::SponsorBoardFlash(int R, int G, int B){
+    if(m_IterationTracker % 2 == 0){
+        SponsorBoardSolid(R, G, B);
+    } else {
+        SponsorBoardSolid(0, 0, 0);
+    }
+}
 
 void LED::EyesAlianceColor(){}
 

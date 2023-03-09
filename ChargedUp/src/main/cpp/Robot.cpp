@@ -18,7 +18,7 @@ void Robot::RobotInit() {
   //m_LEDYellow.WhenPressed(LED::EyesSolid(frc::Color::kPurple));
 
   m_LED.Init();
-  m_LED.LowBatery();
+  //m_LED.LowBatery();
 
 }
 
@@ -70,7 +70,9 @@ void Robot::TeleopInit() {
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  m_LED.SponsorBoardRainbow();
+}
 
 /**
  * This function is called periodically during test mode.
