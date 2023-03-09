@@ -15,7 +15,7 @@ const int kNUM_LED = -1;
 
 const int kNum_LED = 280;
 
-frc::Color colorArray[] = {frc::Color::kRed,frc::Color::kOrange, frc::Color::kYellow, frc::Color::kGreen, frc::Color::kBlue, frc::Color::kViolet, frc::Color::kPink };
+frc::Color colorArray[] = {frc::Color::kRed, frc::Color::kOrange, frc::Color::kYellow, frc::Color::kGreen, frc::Color::kBlue, frc::Color::kViolet, frc::Color::kPink};
 
 
 
@@ -25,13 +25,13 @@ void LED::Init(){
     m_AddressableLED.SetLength(kNum_LED);
     m_AddressableLED.Start();
     m_IterationTracker = 0;
-    SponsorBoardAlianceColor();
-    EyesAlianceColor();
+    //SponsorBoardAllianceColor();
+    EyesAllianceColor();
 }
 
-void LED::LowBatery(){
-    for(int i = 0; i < 7; i++){
-        for(int j = i*40; j < (i+1)*40; j++){
+void LED::LowBattery(){
+    for(int i = 0; i < 6; i++){
+        for(int j = (i*40); j < ((i+1)*40); j++){
             m_LEDBuffer[j].SetLED(colorArray[i]);
         }
     }
@@ -40,7 +40,7 @@ void LED::LowBatery(){
 
 
 
-void LED::SponsorBoardAlianceColor(){
+void LED::SponsorBoardAllianceColor(){
     if(/*COB_GET_ENTRY(COB_KEY_IS_RED).getBoolean(false)*/ true){
         SponsorBoardSolid(frc::Color::kRed);
     } else {
@@ -97,7 +97,7 @@ void LED::SponsorBoardFlash(int R, int G, int B){
     }
 }
 
-void LED::EyesAlianceColor(){}
+void LED::EyesAllianceColor(){}
 
 void LED::EyesSolid(frc::Color color){
     for(int i = kSTART_EYE_1; i < kEND_EYE_1; i++)
