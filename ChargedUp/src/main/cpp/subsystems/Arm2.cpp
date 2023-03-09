@@ -12,6 +12,7 @@ using ctre::phoenix::motorcontrol::can::TalonSRX;
 
 Arm2::Arm2() 
 : 
+m_EverybotIntakeMotor(0), //uhhh FIX
 m_EverybotIntakeButton(BUTTON_L_TWO(6))
 {}
 
@@ -20,11 +21,10 @@ void Arm2::Init(){}
 
 void Arm2::SetButtons(){
 
-    m_EverybotIntake.WhenHeld(frc2::InstantCommand([&]{
+    m_EverybotIntakeButton.WhenHeld(frc2::InstantCommand([&]{
         DebugOutF("intake button yay");
 
-        m_EverybotIntake.Set(ControlMode::PercentOutput, 1);
-    }))
+        m_EverybotIntakeMotor.Set(ControlMode::PercentOutput, 1);
+    }));
 
-}
-
+};

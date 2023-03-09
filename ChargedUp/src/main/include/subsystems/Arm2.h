@@ -26,7 +26,7 @@
 
 using ctre::phoenix::motorcontrol::can::TalonSRX;
 
-class Arm : public frc2::SubsystemBase {
+class Arm2 : public frc2::SubsystemBase {
 
 	public:
 
@@ -37,6 +37,6 @@ class Arm : public frc2::SubsystemBase {
 
     private:
 
-    frc::Button m_EverybotIntakeButton;
-    ctre::phoenix::motorcontrol::can::TalonSRX m_EverybotIntake;
-}
+    frc2::Button m_EverybotIntakeButton;
+    ctre::phoenix::motorcontrol::can::TalonSRX m_EverybotIntakeMotor;
+};

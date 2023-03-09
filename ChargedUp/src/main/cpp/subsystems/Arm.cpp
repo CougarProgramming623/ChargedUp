@@ -39,7 +39,6 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 m_BC(BUTTON_L_TWO(GRID_BC)),
 			 m_BR(BUTTON_L_TWO(GRID_BR)),
 			 //m_Squeeze(BUTTON_L_TWO(6)),
-			 m_EverybotIntakeButton(BUTTON_L_TWO(6))
 
 			 m_LeftGrid(BUTTON_L_TWO(LEFT_GRID)),
 			 m_CenterGrid(BUTTON_L_TWO(CENTER_GRID)),
