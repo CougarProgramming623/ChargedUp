@@ -56,10 +56,6 @@ class DriveTrain : public frc2::SubsystemBase {
   void BaseDrive(frc::ChassisSpeeds chassisSpeeds);
   void DriveInit();
   void BreakMode(bool on);
-  // void TrajectoryFollow(frc::Trajectory trajectory);
-  // void TrajectoryDrive(std::array<frc::SwerveModuleState, 4> states);
-  // void PathPlannerFollow(pathplanner::PathPlannerTrajectory trajectory);
-
   void Periodic() override;
 
   frc::Translation2d m_FrontLeftLocation;

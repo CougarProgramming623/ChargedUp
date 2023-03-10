@@ -79,13 +79,13 @@ void Robot::AutonomousInit() {
   //PathPlannerTrajectory traj;
 
   //Load trajectory
-  //if(!COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
-    DebugOutF("Blue");
+  // if(!COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+    // DebugOutF("Blue");
     PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalance", PathConstraints(4_mps, 1_mps_sq));
-  //} else {
-  //   DebugOutF("Red");
-  //   PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalanceRed", PathConstraints(4_mps, 1_mps_sq));
-  // }
+  // } else {
+  // //   DebugOutF("Red");
+  // //   PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalanceRed", PathConstraints(4_mps, 1_mps_sq));
+  // // }
 
 
   //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
