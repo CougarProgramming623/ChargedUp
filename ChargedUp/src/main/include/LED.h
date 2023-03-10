@@ -26,7 +26,8 @@ class LED{
         void SponsorBoardFlash(int R, int G, int B);     
 
         void EyesAllianceColor();
-        void EyesSolid(frc::Color allianceColor);
+        void EyesSolidYellow(frc::Color);
+        void EyesSolidPurple(frc::Color);
         void EyesSolid(int R, int G, int B);
 
         void EyesAngry();

@@ -91,11 +91,17 @@ void LED::SponsorBoardFlash(int R, int G, int B){
 
 void LED::EyesAllianceColor(){}
 
-void LED::EyesSolid(frc::Color color){
+void LED::EyesSolidYellow(frc::Color){
     for(int i = kSTART_EYE_1; i < kEND_EYE_1; i++)
-        m_LEDBuffer[i].SetLED(color);
+        m_LEDBuffer[i].SetLED(frc::Color::kYellow);
     for(int i = kSTART_EYE_2; i < kEND_EYE_2; i++)
-        m_LEDBuffer[i].SetLED(color);
+        m_LEDBuffer[i].SetLED(frc::Color::kYellow);
+}
+void LED::EyesSolidPurple(frc::Color){
+    for(int i = kSTART_EYE_1; i < kEND_EYE_1; i++)
+        m_LEDBuffer[i].SetLED(frc::Color::kPurple);
+    for(int i = kSTART_EYE_2; i < kEND_EYE_2; i++)
+        m_LEDBuffer[i].SetLED(frc::Color::kPurple);
 }
 void LED::EyesSolid(int R, int G, int B){}
 
