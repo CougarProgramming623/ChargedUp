@@ -24,9 +24,13 @@
 #include <frc/Timer.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc2/command/ParallelCommandGroup.h>
+#include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
+
 
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
+using ctre::phoenix::motorcontrol::can::TalonSRX;
+
 
 class Arm : public frc2::SubsystemBase {
 
@@ -90,6 +94,7 @@ class Arm : public frc2::SubsystemBase {
 	//motors
 	TalonFX m_Pivot; //Positive drives towards back; negative drives towards front || Start at 0.1-0.2 power and scale from there while testing
 	TalonFX m_Extraction; //Positive drives arm together and in; negative drives arm apart and out || start at 0.1 power and scale from there while testing
+	TalonSRX m_Intake;
 
 	//Servos
 	frc::Servo m_LeftBrake;

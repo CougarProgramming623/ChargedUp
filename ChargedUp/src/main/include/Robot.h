@@ -12,7 +12,6 @@
 #include <frc2/command/Command.h>
 
 #include <pathplanner/lib/PathPlanner.h>
-#include "RobotContainer.h"
 #include "subsystems/DriveTrain.h"
 #include <AHRS.h>
 #include <frc/Joystick.h>
@@ -76,7 +75,6 @@ class Robot : public frc::TimedRobot {
   // doesn't have undefined behavior and potentially crash.
   frc2::Command* m_autonomousCommand = nullptr;
 
-  RobotContainer m_container;
   Arm m_Arm;
 
   frc::Timer m_AutoTimer;

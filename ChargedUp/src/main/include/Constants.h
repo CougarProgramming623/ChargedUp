@@ -5,8 +5,8 @@
 #pragma once
 #include <math.h>
 
-//#define ROBOT_WHEELBASE
-#define O12
+#define ROBOT_WHEELBASE
+// #define O12
 
 #define DRIVE_REDUCTION ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0))
 #define STEER_REDUCTION ((14.0 /50.0) * (10.0 / 60.0))

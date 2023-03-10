@@ -10,9 +10,12 @@
 
 using ctre::phoenix::motorcontrol::ControlMode;
 using ctre::phoenix::motorcontrol::can::TalonFX;
+using ctre::phoenix::motorcontrol::can::TalonSRX;
+
 
 Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 m_Extraction(EXTRACTION_MOTOR),
+			 m_Intake(6),
 			 m_LeftBrake(LEFT_BRAKE),
 			 m_RightBrake(RIGHT_BRAKE),
 			 m_SlipBrake(SLIP_BRAKE),
@@ -50,21 +53,21 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 m_GroundPickupMode(BUTTON_L_TWO(GROUND_PICKUP_MODE)),
 			 m_LoadingMode(BUTTON_L_TWO(LOADING_MODE)),
 
-			m_Timer(),
+			m_Timer()
 
-			m_Top(PlaceElement(0, 2)),
+			// m_Top(PlaceElement(0, 2)),
 
-			m_Mid(PlaceElement(1, 2)),
+			// m_Mid(PlaceElement(1, 2)),
 
-			m_Bot(PlaceElement(2, 2))
+			// m_Bot(PlaceElement(2, 2))
 			{}
 
 void Arm::Init()
 {
 	shouldSqueeze = true;
 	m_Pivot.SetSelectedSensorPosition(PivotDegToTicks(OFFSET_FROM_VERTICAL));
-	ArmBrakes(true);
-	SlipBrakes(true);
+	//ArmBrakes(true);
+	//SlipBrakes(true);
 
 	SetButtons();
 	// Brake(false);
@@ -85,19 +88,19 @@ void Arm::Init()
 void Arm::SetButtons()
 {
 	//m_Override.WhenPressed(frc2::InstantCommand([&] {frc2::CommandScheduler::GetInstance().CancelAll()};));
-	m_Override2.WhenPressed(ManualControls());
+	// m_Override2.WhenPressed(ManualControls());
 
-	m_ManualArmBrake.WhenPressed(ManualArmBrake());
-	m_ManualSlipBrake.WhenPressed(ManualSlipBrake());
+	// m_ManualArmBrake.WhenPressed(ManualArmBrake());
+	// m_ManualSlipBrake.WhenPressed(ManualSlipBrake());
 
 	
-	m_TR.WhenPressed(m_Top);
+	// m_TR.WhenPressed(m_Top);
 
-	m_TC.WhenPressed(m_Mid);
+	// m_TC.WhenPressed(m_Mid);
 
-	m_GroundPickupMode.WhenPressed(m_Bot);
-	m_TransitMode.WhenPressed(TransitMode());
-	m_LoadingMode.WhenPressed(LoadingMode());
+	// m_GroundPickupMode.WhenPressed(m_Bot);
+	// m_TransitMode.WhenPressed(TransitMode());
+	// m_LoadingMode.WhenPressed(LoadingMode());
 
 	m_ML.WhenPressed(frc2::InstantCommand([&]{
 		DebugOutF("m_TL");
@@ -290,9 +293,35 @@ void Arm::SetButtons()
 		}
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
 		}));
+
+	m_TL.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("TL");
+		m_Intake.EnableCurrentLimit(false);
+		m_Intake.EnableCurrentLimit(true);
+		m_Intake.Set(ControlMode::PercentOutput, .55);
+	}));
+
+	m_TC.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("TC");
+		m_Intake.EnableCurrentLimit(false);
+		m_Intake.EnableCurrentLimit(true);
+		m_Intake.Set(ControlMode::PercentOutput, 0);
+	}));
+
+	m_TR.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF("TR");
+		m_Intake.EnableCurrentLimit(false);
+		m_Intake.EnableCurrentLimit(true);
+
+		m_Intake.Set(ControlMode::PercentOutput, -.55);
+	}));
+
+	m_Intake.ConfigPeakCurrentDuration(1750);
+	m_Intake.ConfigPeakCurrentLimit(6);
+	m_Intake.ConfigContinuousCurrentLimit(2);
+	m_Intake.EnableCurrentLimit(true);
+
 }
-
-
 
 
 
