@@ -14,7 +14,7 @@ const int kEND_EYE_2    = 0;
 const int kNUM_LED = -1;
 
 
-const int kNum_LED = 280;
+const int kNum_LED = 110;
 
 frc::Color colorArray[] = {frc::Color::kBlue, frc::Color::kGreen, frc::Color::kYellow,frc::Color::kOrangeRed, frc::Color::kRed, frc::Color::kBlue, frc::Color::kGreen, frc::Color::kYellow,frc::Color::kOrangeRed, frc::Color::kRed};
 
