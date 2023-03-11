@@ -16,8 +16,8 @@ const int kNUM_LED = -1;
 
 const int kNum_LED = 110;
 
-frc::Color colorArray[] = {frc::Color::kRed, frc::Color::kOrangeRed, frc::Color::kYellow,frc::Color::kGreen, frc::Color::kBlue, frc::Color::kViolet};
-
+frc::Color colorArray[] = {frc::Color::kRed, frc::Color::kOrangeRed, frc::Color::kYellow, frc::Color::kGreen, frc::Color::kBlue, frc::Color::kViolet, frc::Color::kWhite};
+frc::Color redWhiteArray[] = {frc::Color::kWhite, frc::Color::kRed};
 
 LED::LED(){}
 
@@ -30,24 +30,25 @@ void LED::Init(){
 } 
 
 void LED::LowBattery(){
-    for(int i = 0; i < 110; i++){
-        m_LEDBuffer[i].SetLED(frc::Color::kWhite);
+    for(int i = 0; i <= 11; i++){
+        m_LEDBuffer[i * 10 - 1].SetLED(frc::Color::kRed);
     }
-
-    for (int a = 0; a < 7; a++){
-        m_LEDBuffer[(a + m_IterationTracker) % 35].SetLED(frc::Color::kRed);
-    }
-
-    // for (int a = 0; a < 7; a++){
-    //     for (int b = a + m_IterationTracker; b < 35; b++){
-    //         m_LEDBuffer[b % a].SetLED(frc::Color::kRed);
-    //         // m_LEDBuffer[i-1].SetLED(frc::Color::kWhite); 
+    
+    // for (int j = m_IterationTracker; j < 11 + m_IterationTracker; j++){
+    //     m_LEDBuffer[j % kNum_LED].SetLED(colorArray[0]);
+    // }
+    
+    // for(int i = 0; i < 2; i++){
+    //     // DebugOutF(std::to_string(i));
+    //     for(int j = (i*11) + m_IterationTracker; j < ((i+1)*11) + m_IterationTracker; j++){
+    //         m_LEDBuffer[j % kNum_LED].SetLED(redWhiteArray[i]);
     //     }
     // }
-    m_IterationTracker++;
-    if (m_IterationTracker == 35){
-        m_IterationTracker = 0;
-    }
+
+    // m_IterationTracker++;
+    // if (m_IterationTracker == 110){
+    //     m_IterationTracker = 0;
+    // }
 
     m_AddressableLED.SetData(m_LEDBuffer);
 }
@@ -63,14 +64,14 @@ void LED::SponsorBoardAllianceColor(){
 }
 
 void LED::SponsorBoardSolid(frc::Color color){
-    for(int i = 0; i < 280; i++){
+    for(int i = 0; i < kNum_LED; i++){
             m_LEDBuffer[i].SetLED(color);
     }
     m_AddressableLED.SetData(m_LEDBuffer);
 }
 
 void LED::SponsorBoardSolid(int R, int G, int B){
-    for(int i = 0; i < 280; i++){
+    for(int i = 0; i < kNum_LED; i++){
         m_LEDBuffer[i].SetRGB(R, G, B);
     }
     m_AddressableLED.SetData(m_LEDBuffer);
@@ -115,18 +116,18 @@ void LED::SponsorBoardFlash(int R, int G, int B){
 
 void LED::EyesAllianceColor(){}
 
-void LED::EyesSolidYellow(frc::Color){
-    for(int i = kSTART_EYE_1; i < kEND_EYE_1; i++)
-        m_LEDBuffer[i].SetLED(frc::Color::kYellow);
-    for(int i = kSTART_EYE_2; i < kEND_EYE_2; i++)
-        m_LEDBuffer[i].SetLED(frc::Color::kYellow);
-}
-void LED::EyesSolidPurple(frc::Color){
-    for(int i = kSTART_EYE_1; i < kEND_EYE_1; i++)
-        m_LEDBuffer[i].SetLED(frc::Color::kPurple);
-    for(int i = kSTART_EYE_2; i < kEND_EYE_2; i++)
-        m_LEDBuffer[i].SetLED(frc::Color::kPurple);
-}
+// void LED::EyesSolid(frc::Color){
+//     for(int i = kSTART_EYE_1; i < kEND_EYE_1; i++)
+//         m_LEDBuffer[i].SetLED(frc::Color::kYellow);
+//     for(int i = kSTART_EYE_2; i < kEND_EYE_2; i++)
+//         m_LEDBuffer[i].SetLED(frc::Color::kYellow);
+// }
+// void LED::EyesSolidPurple(frc::Color){
+//     for(int i = kSTART_EYE_1; i < kEND_EYE_1; i++)
+//         m_LEDBuffer[i].SetLED(frc::Color::kPurple);
+//     for(int i = kSTART_EYE_2; i < kEND_EYE_2; i++)
+//         m_LEDBuffer[i].SetLED(frc::Color::kPurple);
+// }
 void LED::EyesSolid(int R, int G, int B){}
 
 void LED::EyesAngry(){}

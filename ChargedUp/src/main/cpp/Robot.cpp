@@ -35,6 +35,7 @@ void Robot::RobotInit() {
   m_Vision.VisionInit(); //Make one
   m_Arm.Init();
   m_LED.Init();
+  
 }
 
 /**
@@ -46,7 +47,8 @@ void Robot::RobotInit() {
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
-  frc2::CommandScheduler::GetInstance().Run();                                                                                
+  frc2::CommandScheduler::GetInstance().Run();        
+  m_LED.LowBattery();                                                                        
 }
 
 /**
@@ -118,7 +120,7 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
     //m_LED.SponsorBoardRainbow();
-    m_LED.LowBattery();
+  m_LED.SponsorBoardSolid(0,0,0);
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
@@ -133,7 +135,7 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
   //m_LED.SponsorBoardRainbow();
-  m_LED.LowBattery();
+  //m_LED.LowBattery();
 }
 
   // DebugOutF("OdoX: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
