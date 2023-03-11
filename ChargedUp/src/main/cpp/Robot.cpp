@@ -33,6 +33,7 @@ void Robot::RobotInit() {
   m_Vision.VisionInit(); //Make one
   m_Arm.Init();
   m_COBTicks = 0;
+  m_AutoPath = "";
 }
 
 /**
@@ -50,6 +51,9 @@ void Robot::RobotPeriodic() {
   Robot::GetCOB().GetTable().GetEntry("/COB/ticks").SetDouble(m_COBTicks);
   m_COBTicks++;
   Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/pitchAngle").SetDouble(Robot::GetRobot()->GetNavX().GetPitch() + 0.05);
+  m_AutoPath = std::string(Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/auto").GetString(""));
+  DebugOutF(m_AutoPath);
+
   // Robot::GetCOB().GetTable().GetEntry("/COB/armValue").SetDouble(Robot::GetArm().GetPot());   
   // Robot::GetCOB().GetTable().GetEntry("/COB/armAngle").SetDouble(Robot::GetArm().PivotTicksToDeg(Robot::GetArm().GetPivot().GetSelectedSensorPosition()));                                                                                                                                   
 }
@@ -87,7 +91,7 @@ void Robot::AutonomousInit() {
   //Load trajectory
   // if(!COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
     // DebugOutF("Blue");
-  PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalance", PathConstraints(4_mps, 1_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath(m_AutoPath, PathConstraints(4_mps, 1_mps_sq));
   // } else {
   // //   DebugOutF("Red");
   // //   PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalanceRed", PathConstraints(4_mps, 1_mps_sq));

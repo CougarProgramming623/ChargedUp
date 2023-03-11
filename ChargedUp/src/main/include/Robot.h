@@ -53,6 +53,7 @@ class Robot : public frc::TimedRobot {
   inline COB& GetCOB() { return m_COB; }
   inline Vision& GetVision() { return m_Vision; }
 
+
   double previousErrorX = 0;
   double previousErrorY = 0;
   double dErrorY = 0;
@@ -87,4 +88,5 @@ class Robot : public frc::TimedRobot {
   frc::Joystick m_ButtonBoardTwo = frc::Joystick(2);
 
   int m_COBTicks;
+  std::string m_AutoPath;
 };
