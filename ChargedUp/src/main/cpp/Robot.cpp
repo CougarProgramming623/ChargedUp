@@ -117,8 +117,8 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-    m_LED.SponsorBoardRainbow();
-    //m_LED.LowBattery();
+    //m_LED.SponsorBoardRainbow();
+    m_LED.LowBattery();
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
@@ -132,8 +132,8 @@ void Robot::TeleopInit() {
  * This function is called periodically during operator control.  
  */
 void Robot::TeleopPeriodic() {
-  m_LED.SponsorBoardRainbow();
-  //m_LED.LowBattery();
+  //m_LED.SponsorBoardRainbow();
+  m_LED.LowBattery();
 }
 
   // DebugOutF("OdoX: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
