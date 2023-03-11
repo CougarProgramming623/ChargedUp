@@ -62,6 +62,8 @@ class Arm : public frc2::SubsystemBase {
 	frc2::InstantCommand* ManualArmBrake();
 	frc2::InstantCommand* ManualSlipBrake();
 
+	frc::Pose2d TransformPose();
+
 	inline frc::AnalogInput& GetPot() { return m_StringPot; }
 	inline void PrintPot() {DebugOutF(std::to_string(m_StringPot.GetValue()));}
 	inline TalonFX& GetPivot() {return m_Pivot; }
