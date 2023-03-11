@@ -20,7 +20,7 @@ using namespace pathplanner;
 Robot* Robot::s_Instance = nullptr;
 
 Robot::Robot() :
-m_LED();
+m_LED()
 {
 
   s_Instance = this;
@@ -118,6 +118,7 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
     m_LED.SponsorBoardRainbow();
+    //m_LED.LowBattery();
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
@@ -131,6 +132,8 @@ void Robot::TeleopInit() {
  * This function is called periodically during operator control.  
  */
 void Robot::TeleopPeriodic() {
+  m_LED.SponsorBoardRainbow();
+  //m_LED.LowBattery();
 }
 
   // DebugOutF("OdoX: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
@@ -145,7 +148,6 @@ void Robot::TeleopPeriodic() {
   // DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
   // DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
   // DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
-}
 
 /**
  * This function is called periodically during test mode.

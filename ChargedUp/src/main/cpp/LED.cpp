@@ -16,7 +16,7 @@ const int kNUM_LED = -1;
 
 const int kNum_LED = 110;
 
-frc::Color colorArray[] = {frc::Color::kBlue, frc::Color::kGreen, frc::Color::kYellow,frc::Color::kOrangeRed, frc::Color::kRed, frc::Color::kBlue, frc::Color::kGreen, frc::Color::kYellow,frc::Color::kOrangeRed, frc::Color::kRed};
+frc::Color colorArray[] = {frc::Color::kRed, frc::Color::kOrangeRed, frc::Color::kYellow,frc::Color::kGreen, frc::Color::kBlue, frc::Color::kViolet};
 
 
 LED::LED(){}
@@ -30,6 +30,26 @@ void LED::Init(){
 } 
 
 void LED::LowBattery(){
+    for(int i = 0; i < 110; i++){
+        m_LEDBuffer[i].SetLED(frc::Color::kWhite);
+    }
+
+    for (int a = 0; a < 7; a++){
+        m_LEDBuffer[(a + m_IterationTracker) % 35].SetLED(frc::Color::kRed);
+    }
+
+    // for (int a = 0; a < 7; a++){
+    //     for (int b = a + m_IterationTracker; b < 35; b++){
+    //         m_LEDBuffer[b % a].SetLED(frc::Color::kRed);
+    //         // m_LEDBuffer[i-1].SetLED(frc::Color::kWhite); 
+    //     }
+    // }
+    m_IterationTracker++;
+    if (m_IterationTracker == 35){
+        m_IterationTracker = 0;
+    }
+
+    m_AddressableLED.SetData(m_LEDBuffer);
 }
 
 
@@ -63,12 +83,16 @@ then count up blue to 0 255 255, then count down green to 0 0 255,
 then count up red to 255 0 255, then count down blue to 255 0 0.
 */
 void LED::SponsorBoardRainbow(){
-    for(int i = 0; i < 8; i++){
-        DebugOutF(std::to_string(i));
-        for(int j = (i*7); j < (i+1)*7; j++){
-            DebugOutF(std::to_string(j));
-            m_LEDBuffer[j].SetLED(colorArray[i]);
+    for(int i = 0; i < 6; i++){
+        // DebugOutF(std::to_string(i));
+        for(int j = (i*18) + m_IterationTracker; j < ((i+1)*18) + m_IterationTracker; j++){
+            m_LEDBuffer[j % kNum_LED].SetLED(colorArray[i]);
         }
+    }
+    // DebugOutF(std::to_string(m_IterationTracker));
+    m_IterationTracker++;
+    if (m_IterationTracker == 110){
+        m_IterationTracker = 0;
     }
     m_AddressableLED.SetData(m_LEDBuffer);
 }
