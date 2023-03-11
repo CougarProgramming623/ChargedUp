@@ -3,7 +3,7 @@
 #include <frc/AddressableLED.h>
 #include <frc/util/Color.h>
 #include <frc2/command/InstantCommand.h>
-
+#include <frc2/command/button/Button.h>
 
 //#include "Util.h"
 
@@ -42,4 +42,6 @@ class LED{
         std::array <frc::AddressableLED::LEDData, 110> m_LEDBuffer; //FIX Length
         int m_IterationTracker;
 
+        frc2::Button m_YellowButton;
+        frc2::Button m_PurpleButton;
 };

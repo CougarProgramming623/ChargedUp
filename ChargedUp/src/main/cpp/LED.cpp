@@ -1,5 +1,7 @@
 #include "LED.h"
 #include "Util.h"
+#include "Constants.h"
+#include "Robot.h"
 
 //set values
 const int kSTART_BL = 0;
@@ -19,7 +21,10 @@ const int kNum_LED = 110;
 frc::Color colorArray[] = {frc::Color::kRed, frc::Color::kOrangeRed, frc::Color::kYellow, frc::Color::kGreen, frc::Color::kBlue, frc::Color::kViolet, frc::Color::kWhite};
 frc::Color redWhiteArray[] = {frc::Color::kWhite, frc::Color::kRed};
 
-LED::LED(){}
+LED::LED()  :
+    m_YellowButton(BUTTON_L_TWO(LED_YELLOW)),
+    m_PurpleButton(BUTTON_L_TWO(LED_PURPLE))
+{}
 
 void LED::Init(){
     m_AddressableLED.SetLength(kNum_LED);
