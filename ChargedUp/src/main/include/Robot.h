@@ -85,4 +85,6 @@ class Robot : public frc::TimedRobot {
   COB m_COB;
   frc::Joystick m_ButtonBoard = frc::Joystick(0);
   frc::Joystick m_ButtonBoardTwo = frc::Joystick(2);
+
+  int m_COBTicks;
 };
