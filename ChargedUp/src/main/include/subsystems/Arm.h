@@ -62,15 +62,10 @@ class Arm : public frc2::SubsystemBase {
 	frc2::InstantCommand* ManualArmBrake();
 	frc2::InstantCommand* ManualSlipBrake();
 
-	frc::Pose2d TransformPose();
-
 	inline frc::AnalogInput& GetPot() { return m_StringPot; }
 	inline void PrintPot() {DebugOutF(std::to_string(m_StringPot.GetValue()));}
 	inline TalonFX& GetPivot() {return m_Pivot; }
 	frc2::SequentialCommandGroup* PlaceElementAuto();
-
-	int SelectedRow;
-	int SelectedColumn;
 
 	bool shouldSqueeze;
 
@@ -108,20 +103,7 @@ class Arm : public frc2::SubsystemBase {
 
 	//buttons
 	frc2::Button m_Squeeze;
-	
-	frc2::Button m_TL;
-	frc2::Button m_TC;
-	frc2::Button m_TR;
-	frc2::Button m_ML;
-	frc2::Button m_MC;
-	frc2::Button m_MR;
-	frc2::Button m_BL;
-	frc2::Button m_BC;
-	frc2::Button m_BR;
 
-	frc2::Button m_LeftGrid;
-	frc2::Button m_CenterGrid;
-	frc2::Button m_RightGrid;
 
 	frc2::Button m_TransitMode;
 	frc2::Button m_GroundPickupMode;
