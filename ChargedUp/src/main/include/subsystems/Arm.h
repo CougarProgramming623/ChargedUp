@@ -45,19 +45,7 @@ class Arm : public frc2::SubsystemBase {
 	inline double PivotTicksToDeg(double ticks) {return ticks / PIVOT_TICKS_PER_ARM_DEGREE;} //converts ticks to degrees of arm rotation
 	inline double StringPotUnitsToInches(double units) {return (units - STRING_POT_MINIMUM) * STRING_POT_INCHES_PER_TICK;} //166 = length of slider
 	inline double InchesToStringPotUnits(double inches) {return inches / STRING_POT_INCHES_PER_TICK;}
-	//basic commands
-	frc2::InstantCommand* PivotToPosition(double angle); 
-	void ArmBrakes(bool shouldBreak);
-	void SlipBrakes(bool shouldBreak);
-	frc2::SequentialCommandGroup* WaitBrakeTelescope(double setpoint);
-	frc2::FunctionalCommand* Telescope(double setpoint); 
-	frc2::SequentialCommandGroup* Squeeze();
-	//Automation
-	frc2::SequentialCommandGroup* PlaceElement(int row, int column);
-	frc2::SequentialCommandGroup* TransitMode();
-	frc2::SequentialCommandGroup* GroundPickupMode();
-	frc2::SequentialCommandGroup* LoadingMode();
-	//misc
+
 	frc2::FunctionalCommand* ManualControls();
 	frc2::InstantCommand* ManualArmBrake();
 	frc2::InstantCommand* ManualSlipBrake();
@@ -65,28 +53,10 @@ class Arm : public frc2::SubsystemBase {
 	inline frc::AnalogInput& GetPot() { return m_StringPot; }
 	inline void PrintPot() {DebugOutF(std::to_string(m_StringPot.GetValue()));}
 	inline TalonFX& GetPivot() {return m_Pivot; }
-	frc2::SequentialCommandGroup* PlaceElementAuto();
 
 	bool shouldSqueeze;
 
 	private:
-	
-	//class constants
-	bool isOnFrontSide = false; //switch will flip this boolean to change method behaviour
-	
-	
-	//PivotToPosition()
-	double StartingTicks; //current ticks of encoder after movement
-	double Setpoint;
-	double TicksToMove;
-	double Angle;
-
-	//Telescope()
-	double SetpointLength;
-	double ArmLength;
-
-	//Squeeze()
-	double TicksToUndoSqueeze = 0;
 
 	//motors
 	TalonFX m_Pivot; //Positive drives towards back; negative drives towards front || Start at 0.1-0.2 power and scale from there while testing
@@ -94,9 +64,6 @@ class Arm : public frc2::SubsystemBase {
 	TalonSRX m_Intake;
 
 	//Servos
-	frc::Servo m_LeftBrake;
-	frc::Servo m_RightBrake;
-	frc::Servo m_SlipBrake;
 
 	//Pot
 	frc::AnalogInput m_StringPot{STRINGPOT_ANALOG_INPUT_ID};
