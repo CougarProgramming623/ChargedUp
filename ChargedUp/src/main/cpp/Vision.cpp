@@ -48,9 +48,16 @@ void Vision::CalcPose(){
 }
 
 Pose2d Vision::GetPoseBlue(){
-  m_AbsolutePose = GetFieldPose();
-  m_AbsolutePose = m_AbsolutePose.RelativeTo(kBlueOrigin);
+  // m_AbsolutePose = GetFieldPose();
+  // m_AbsolutePose = m_AbsolutePose.RelativeTo(kBlueOrigin);
 
+    if(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE).GetDoubleArray(std::span<double>()).size() != 0){
+      m_TempPose = Pose2d(  units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE).GetDoubleArray(std::span<double>()).at(0)),
+                            units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE).GetDoubleArray(std::span<double>()).at(1)),
+                            Rotation2d(units::radian_t(Deg2Rad(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE).GetDoubleArray(std::span<double>()).at(5))))
+                            );
+      m_AbsolutePose = m_TempPose;
+    }            
   return m_AbsolutePose;
 }
 

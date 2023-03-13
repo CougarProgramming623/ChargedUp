@@ -31,6 +31,7 @@ DriveTrain::DriveTrain()
       m_ThetaController(14, 25, 0.02, frc::TrapezoidProfile<units::radian>::Constraints{3.14_rad_per_s, (1/2) * 3.14_rad_per_s / 1_s}),
       m_HolonomicController(m_xController, m_yController, m_ThetaController),
       m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);}),
+      m_JoystickButtonTwo([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(2);}),
       m_Timer(),
       m_EventMap(),
       m_NavXReset(BUTTON_L_TWO(8))
@@ -42,9 +43,14 @@ void DriveTrain::DriveInit(){
   m_NavXReset.WhenPressed(new frc2::InstantCommand([&]{Robot::GetRobot()->GetNavX().ZeroYaw();}));
 
   m_TestJoystickButton.WhenPressed(new AutoBalance());
+  m_JoystickButtonTwo.WhenPressed(new DriveToPosCommand());
 
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.15, 0.15, .261799});
-  m_FrontLeftModule.m_DriveController.motor.SetInverted(true);
+  m_FrontRightModule.m_DriveController.motor.SetInverted(false); //true for O12
+  m_BackRightModule.m_DriveController.motor.SetInverted(false); //true for O12
+  m_FrontRightModule.m_SteerController.motor.SetInverted(false); 
+  m_BackRightModule.m_SteerController.motor.SetInverted(false);
+
 }
 
 /*
@@ -86,6 +92,13 @@ void DriveTrain::Periodic(){
   m_ModulePositions = wpi::array<frc::SwerveModulePosition, 4>(m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition());
 
   frc::Pose2d visionRelative = Robot::GetRobot()->GetVision().GetPoseBlue().RelativeTo(m_Odometry.GetEstimatedPosition());
+  DebugOutF("OdoX: " + std::to_string(GetOdometry()->GetEstimatedPosition().X().value()));
+  DebugOutF("OdoY: " + std::to_string(GetOdometry()->GetEstimatedPosition().Y().value()));
+  DebugOutF("OdoZ: " + std::to_string(GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
+
+  DebugOutF("visionX: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().X().value()));
+  DebugOutF("visionY: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().Y().value()));
+  DebugOutF("visionTheta: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().Rotation().Degrees().value()));
   if(COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){
     if(
       std::abs(visionRelative.X().value()) < 1 &&

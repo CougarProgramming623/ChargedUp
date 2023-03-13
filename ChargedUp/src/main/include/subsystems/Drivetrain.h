@@ -112,6 +112,7 @@ class DriveTrain : public frc2::SubsystemBase {
   frc::Timer m_Timer;
 
   frc2::Button m_TestJoystickButton;
+  frc2::Button m_JoystickButtonTwo;
 
   bool m_IsBalancing;
 

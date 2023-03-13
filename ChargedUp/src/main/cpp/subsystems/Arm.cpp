@@ -62,21 +62,21 @@ void Arm::Init()
 void Arm::SetButtons()
 {
 
-	Robot::GetRobot()->m_TL.WhenPressed(frc2::InstantCommand([&]{
+	Robot::GetRobot()->m_TL.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("TL");
 		m_Intake.EnableCurrentLimit(false);
 		m_Intake.EnableCurrentLimit(true);
 		m_Intake.Set(ControlMode::PercentOutput, .55);
 	}));
 
-	Robot::GetRobot()->m_TC.WhenPressed(frc2::InstantCommand([&]{
+	Robot::GetRobot()->m_TC.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("TC");
 		m_Intake.EnableCurrentLimit(false);
 		m_Intake.EnableCurrentLimit(true);
 		m_Intake.Set(ControlMode::PercentOutput, 0);
 	}));
 
-	Robot::GetRobot()->m_TR.WhenPressed(frc2::InstantCommand([&]{
+	Robot::GetRobot()->m_TR.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("TR");
 		m_Intake.EnableCurrentLimit(false);
 		m_Intake.EnableCurrentLimit(true);

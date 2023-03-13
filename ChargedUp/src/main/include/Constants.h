@@ -35,9 +35,9 @@
     #define FRONT_LEFT_MODULE_STEER_OFFSET -137
     #define FRONT_LEFT_MODULE_ENCODER_PORT 3
 
-    #define FRONT_RIGHT_MODULE_DRIVE_MOTOR 37
-    #define FRONT_RIGHT_MODULE_STEER_MOTOR 33
-    #define FRONT_RIGHT_MODULE_STEER_OFFSET -287
+    #define FRONT_RIGHT_MODULE_DRIVE_MOTOR 42
+    #define FRONT_RIGHT_MODULE_STEER_MOTOR 34
+    #define FRONT_RIGHT_MODULE_STEER_OFFSET -84.67
     #define FRONT_RIGHT_MODULE_ENCODER_PORT 1
 
     #define BACK_LEFT_MODULE_DRIVE_MOTOR 41
@@ -45,9 +45,9 @@
     #define BACK_LEFT_MODULE_STEER_OFFSET -140.6
     #define BACK_LEFT_MODULE_ENCODER_PORT 2
 
-    #define BACK_RIGHT_MODULE_DRIVE_MOTOR 42
-    #define BACK_RIGHT_MODULE_STEER_MOTOR 34
-    #define BACK_RIGHT_MODULE_STEER_OFFSET -2
+    #define BACK_RIGHT_MODULE_DRIVE_MOTOR 37
+    #define BACK_RIGHT_MODULE_STEER_MOTOR 33
+    #define BACK_RIGHT_MODULE_STEER_OFFSET -194.98
     #define BACK_RIGHT_MODULE_ENCODER_PORT 0
 
 
@@ -114,8 +114,10 @@
 
 #define COB_KEY_DISTANCE "/COB/distance"
 
-#define COB_KEY_BOT_POSE_FRONT "/limelight-front/botpose"
+#define COB_KEY_BOT_POSE_FRONT "/limelight/botpose" //FIX
 #define COB_KEY_BOT_POSE_BACK "/limelight-back/botpose"
+
+#define COB_KEY_BOT_POSE_BLUE "/limelight/botpose_wpiblue"
 
 #define COB_KEY_TV_FRONT "/limelight-front/tv"
 #define COB_KEY_TV_BACK "/limelight-back/tv"

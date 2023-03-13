@@ -54,7 +54,7 @@ void Robot::AutoButtons(){
   m_CenterGrid = frc2::Button(BUTTON_L_TWO(CENTER_GRID));
   m_RightGrid = frc2::Button(BUTTON_L_TWO(RIGHT_GRID));
   
-  m_ML.WhenPressed(frc2::InstantCommand([&]{
+  m_ML.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_TL");
 		SelectedRow = 0;
 		SelectedColumn = 0; 
@@ -63,7 +63,7 @@ void Robot::AutoButtons(){
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
 	}));
 
-	m_MC.WhenPressed(frc2::InstantCommand([&]{
+	m_MC.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_TC");
 		SelectedRow = 0;
 		SelectedColumn = 1;
@@ -72,7 +72,7 @@ void Robot::AutoButtons(){
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);	
 		}));
 
-	m_MR.WhenPressed(frc2::InstantCommand([&]{
+	m_MR.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_TR");
 		SelectedRow = 0;
 		SelectedColumn = 2;
@@ -81,7 +81,7 @@ void Robot::AutoButtons(){
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);	
 		}));
 
-	m_BL.WhenPressed(frc2::InstantCommand([&]{
+	m_BL.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_ML");
 		SelectedRow = 1;
 		SelectedColumn = 0;
@@ -90,7 +90,7 @@ void Robot::AutoButtons(){
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
 		}));
 
-	m_BC.WhenPressed(frc2::InstantCommand([&]{
+	m_BC.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_MC");
 		SelectedRow = 1;
 		SelectedColumn = 1;
@@ -99,7 +99,7 @@ void Robot::AutoButtons(){
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
 		}));
 
-	m_BR.WhenPressed(frc2::InstantCommand([&]{
+	m_BR.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_MR");
 		SelectedRow = 1;
 		SelectedColumn = 2;
@@ -108,7 +108,7 @@ void Robot::AutoButtons(){
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
 		}));
 
-  m_LeftGrid.WhenPressed(frc2::InstantCommand([&]{
+  m_LeftGrid.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_LeftGrid");
 		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
 			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
@@ -117,12 +117,12 @@ void Robot::AutoButtons(){
 		}
 	}));
 
-	m_CenterGrid.WhenPressed(frc2::InstantCommand([&]{
+	m_CenterGrid.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_CenterGrid");
 		Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 1;
 	}));
 
-	m_RightGrid.WhenPressed(frc2::InstantCommand([&]{
+	m_RightGrid.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_RightGrid");
 		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
 			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 2;
@@ -213,7 +213,10 @@ void Robot::AutonomousInit() {
   //Load trajectory
   // if(!COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
     // DebugOutF("Blue");
-  PathPlannerTrajectory traj = PathPlanner::loadPath(m_AutoPath, PathConstraints(4_mps, 1_mps_sq));
+  //PathPlannerTrajectory traj = PathPlanner::loadPath(m_AutoPath, PathConstraints(4_mps, 1_mps_sq));
+
+  PathPlannerTrajectory traj = PathPlanner::loadPath("Odo Test", PathConstraints(4_mps, 1_mps_sq));
+
   // } else {
   // //   DebugOutF("Red");
   // //   PathPlannerTrajectory traj = PathPlanner::loadPath("TestBalanceRed", PathConstraints(4_mps, 1_mps_sq));
@@ -236,8 +239,8 @@ void Robot::AutonomousInit() {
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
   
   frc2::CommandScheduler::GetInstance().Schedule(new frc2::SequentialCommandGroup(
-    TrajectoryCommand(traj),
-    AutoBalance()
+    TrajectoryCommand(traj)//,
+    //AutoBalance()
   ));
 
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
@@ -254,15 +257,15 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
 
-  GetNavX().ZeroYaw();
+  //GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
    
-  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.54), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
-    GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
-        wpi::array<frc::SwerveModulePosition, 4>
-            (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
-        startingPose);
+  // frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.54), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
+  //   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
+  //       wpi::array<frc::SwerveModulePosition, 4>
+  //           (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
+  //       startingPose);
 
   // m_Arm.PlaceElement(0,0);
 }
@@ -274,17 +277,14 @@ void Robot::TeleopPeriodic() {
   // frc2::CommandScheduler::GetInstance().Run();
   // frc2::CommandScheduler::GetInstance().Schedule(m_Arm.Telescope(50));  
 
-  // DebugOutF("OdoX: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
-  // DebugOutF("OdoY: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
-  // DebugOutF("OdoZ: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
-
+  
   // DebugOutF("LLX: " + std::to_string(m_Vision.GetPoseBlue().X().value()));
   // DebugOutF("LLY: " + std::to_string(m_Vision.GetPoseBlue().Y().value()));
   // DebugOutF("LLZ: " + std::to_string(m_Vision.GetPoseBlue().Rotation().Degrees().value()));
 
   // DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
   // DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
-  // DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
+  // // DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
   // DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
 }
 
