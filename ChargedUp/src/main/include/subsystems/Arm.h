@@ -7,9 +7,8 @@
 #include <frc/Joystick.h>
 #include <frc2/command/button/Button.h>
 #include <frc/AnalogInput.h>
-
-
 #include <math.h>
+#include <ctre/phoenix/sensors/CANCoder.h>
 
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/CommandScheduler.h>
@@ -25,6 +24,8 @@
 #include <frc2/command/SubsystemBase.h>
 #include <frc2/command/ParallelCommandGroup.h>
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
+
+#include "./commands/PivotToPos.h"
 
 
 
@@ -47,20 +48,23 @@ class Arm : public frc2::SubsystemBase {
 	inline double InchesToStringPotUnits(double inches) {return inches / STRING_POT_INCHES_PER_TICK;}
 
 	frc2::FunctionalCommand* ManualControls();
-	frc2::InstantCommand* ManualArmBrake();
-	frc2::InstantCommand* ManualSlipBrake();
 
 	inline frc::AnalogInput& GetPot() { return m_StringPot; }
 	inline void PrintPot() {DebugOutF(std::to_string(m_StringPot.GetValue()));}
-	inline TalonFX& GetPivot() {return m_Pivot; }
-
-	bool shouldSqueeze;
+	
+	inline TalonSRX& GetPivotMotor() {return m_Pivot;}
+	inline TalonSRX& GetWristMotor() {return m_Wrist;} 
+	inline TalonSRX& GetIntakeMotor() {return m_Intake;}
+	inline ctre::phoenix::sensors::CANCoder& GetPivotCANCoder() {return m_PivotCANCoder;}
 
 	private:
 
 	//motors
-	TalonFX m_Pivot; //Positive drives towards back; negative drives towards front || Start at 0.1-0.2 power and scale from there while testing
-	TalonFX m_Extraction; //Positive drives arm together and in; negative drives arm apart and out || start at 0.1 power and scale from there while testing
+	TalonSRX m_Pivot; 
+	ctre::phoenix::sensors::CANCoder m_PivotCANCoder{PIVOT_CAN_ID};
+
+	TalonSRX m_Wrist; 
+
 	TalonSRX m_Intake;
 
 	//Servos
@@ -69,9 +73,6 @@ class Arm : public frc2::SubsystemBase {
 	frc::AnalogInput m_StringPot{STRINGPOT_ANALOG_INPUT_ID};
 
 	//buttons
-	frc2::Button m_Squeeze;
-
-
 	frc2::Button m_TransitMode;
 	frc2::Button m_GroundPickupMode;
 	frc2::Button m_LoadingMode;
@@ -82,17 +83,9 @@ class Arm : public frc2::SubsystemBase {
 	frc2::Button m_ConeMode;
 	frc2::Button m_CubeMode;
 
-	frc2::Button m_FrontMode;
-	frc2::Button m_BackMode;
-
-	frc2::Button m_ManualArmBrake;
-	frc2::Button m_ManualSlipBrake;
-
 	frc::Timer m_Timer;
 
 	frc2::SequentialCommandGroup* m_Top;
 	frc2::SequentialCommandGroup* m_Mid;
 	frc2::SequentialCommandGroup* m_Bot;
-
-
 };

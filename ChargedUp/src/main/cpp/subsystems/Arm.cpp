@@ -14,8 +14,8 @@ using ctre::phoenix::motorcontrol::can::TalonSRX;
 
 
 Arm::Arm() : m_Pivot(PIVOT_MOTOR),
-			 m_Extraction(EXTRACTION_MOTOR),
-			 m_Intake(6),
+			 m_Wrist(WRIST_MOTOR),
+			 m_Intake(INTAKE_MOTOR),
 
 			 //BUTTONBOARD 1
 			 m_Override(BUTTON_L(ARM_OVERRIDE)),
@@ -24,43 +24,50 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 m_ConeMode(BUTTON_L(CONE_MODE)),
 			 m_CubeMode(BUTTON_L(CUBE_MODE)),
 
-			 m_FrontMode(BUTTON_L(FRONT_MODE)),
-			 m_BackMode(BUTTON_L(BACK_MODE)),
-
-			 m_ManualArmBrake(BUTTON_L(MANUAL_ARM_BRAKE)),
-			 m_ManualSlipBrake(BUTTON_L(MANUAL_SLIP_BRAKE)),
-
-			m_Squeeze(BUTTON_L_TWO(6)),
-
 			 m_TransitMode(BUTTON_L_TWO(TRANSIT_MODE)),
 			 m_GroundPickupMode(BUTTON_L_TWO(GROUND_PICKUP_MODE)),
 			 m_LoadingMode(BUTTON_L_TWO(LOADING_MODE)),
 
 			m_Timer()
+
+			// m_Top(PlaceElement(0, 2)),
+
+			// m_Mid(PlaceElement(1, 2)),
+
+			// m_Bot(PlaceElement(2, 2))
 			{}
 
 void Arm::Init()
 {
-	shouldSqueeze = true;
-	m_Pivot.SetSelectedSensorPosition(PivotDegToTicks(OFFSET_FROM_VERTICAL));
-
 	SetButtons();
 	m_Pivot.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
-	m_Extraction.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	m_Wrist.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	m_Intake.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
 	// set PID values
 	m_Pivot.ConfigAllowableClosedloopError(0, PIVOT_ERROR);
 	m_Pivot.Config_kP(0, PIVOT_KP);
 	m_Pivot.Config_kI(0, PIVOT_KI);
 	m_Pivot.Config_kD(0, PIVOT_KD);
-	m_Extraction.ConfigAllowableClosedloopError(0, EXTRACTION_ERROR);
-	m_Extraction.Config_kP(0, EXTRACTION_KP);
-	m_Extraction.Config_kI(0, EXTRACTION_KI);
-	m_Extraction.Config_kD(0, EXTRACTION_KD);
+	
 }
 
 void Arm::SetButtons()
 {
+	//m_Override.WhenPressed(frc2::InstantCommand([&] {frc2::CommandScheduler::GetInstance().CancelAll()};));
+	// m_Override2.WhenPressed(ManualControls());
+
+	// m_ManualArmBrake.WhenPressed(ManualArmBrake());
+	// m_ManualSlipBrake.WhenPressed(ManualSlipBrake());
+
+	
+	// m_TR.WhenPressed(m_Top);
+
+	// m_TC.WhenPressed(m_Mid);
+
+	// m_GroundPickupMode.WhenPressed(m_Bot);
+	// m_TransitMode.WhenPressed(TransitMode());
+	// m_LoadingMode.WhenPressed(LoadingMode());
 
 	Robot::GetRobot()->m_TL.WhenPressed(frc2::InstantCommand([&]{
 		DebugOutF("TL");
@@ -94,7 +101,9 @@ void Arm::SetButtons()
 // while override is active, gives manual joysticks control over the two arm motors
 frc2::FunctionalCommand* Arm::ManualControls()
 {
-	return new frc2::FunctionalCommand([&] {},
+	return new frc2::FunctionalCommand([&] { // onInit
+		//empty
+	},
 	[&] { // onExecute
 		m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(PIVOT_CONTROL) / 5);
 	},

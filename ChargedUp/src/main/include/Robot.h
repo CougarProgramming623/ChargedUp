@@ -95,10 +95,9 @@ class Robot : public frc::TimedRobot {
   // doesn't have undefined behavior and potentially crash.
   frc2::Command* m_autonomousCommand = nullptr;
 
-  Arm m_Arm;
-
   frc::Timer m_AutoTimer;
   DriveTrain m_DriveTrain;
+  Arm m_Arm;
 
   Vision m_Vision;
 

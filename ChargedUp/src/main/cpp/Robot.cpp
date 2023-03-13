@@ -29,10 +29,10 @@ void Robot::RobotInit() {
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
   s_Instance = this;
+  m_Arm.Init();
   m_DriveTrain.DriveInit();
   m_Vision.VisionInit(); //Make one
   AutoButtons();
-  m_Arm.Init();
   m_COBTicks = 0;
   m_AutoPath = "";
 }
