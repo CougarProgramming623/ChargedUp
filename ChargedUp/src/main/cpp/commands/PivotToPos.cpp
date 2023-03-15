@@ -8,10 +8,14 @@ PivotToPos::PivotToPos(double angle) {
 void PivotToPos::Initialize() {
 	Robot::GetRobot()->GetArm().GetPivotMotor().SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
-	degreesToMove = angleToGoTo - Robot::GetRobot()->GetArm().GetPivotCANCoder().GetAbsolutePosition() + PIVOT_CAN_OFFSET;
+	degreesToMove = angleToGoTo - (Robot::GetRobot()->GetArm().GetPivotCANCoder().GetAbsolutePosition() + PIVOT_CAN_OFFSET);
 	ticksToMove = Robot::GetRobot()->GetArm().PivotDegToTicks(degreesToMove);
 
-	Robot::GetRobot()->GetArm().GetPivotMotor().Set(ControlMode::Position, ticksToMove);
+	// Robot::GetRobot()->GetArm().GetPivotMotor().Set(ControlMode::Position, ticksToMove);
+}
+
+void PivotToPos::Execute() {
+	DebugOutF(std::to_string(Robot::GetRobot()->GetArm().GetPivotCANCoder().GetAbsolutePosition()));
 }
 
 void PivotToPos::End(bool interrupted) {
@@ -19,5 +23,5 @@ void PivotToPos::End(bool interrupted) {
 }
 
 bool PivotToPos::IsFinished() {
-	return abs(Robot::GetRobot()->GetArm().PivotDegToTicks(Robot::GetRobot()->GetArm().GetPivotCANCoder().GetAbsolutePosition()) - Robot::GetRobot()->GetArm().GetPivotMotor().GetSelectedSensorPosition()) < 2;
+	return abs(Robot::GetRobot()->GetArm().PivotDegToTicks(Robot::GetRobot()->GetArm().GetPivotCANCoder().GetAbsolutePosition() + PIVOT_CAN_OFFSET) - Robot::GetRobot()->GetArm().GetPivotMotor().GetSelectedSensorPosition()) < 2;
 }

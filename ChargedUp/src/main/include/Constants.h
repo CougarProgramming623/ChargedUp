@@ -133,9 +133,9 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #ifdef ARM_SUBSYSTEM
 
 //motor and sensor IDs
-#define WRIST_MOTOR -1 //check
+#define WRIST_MOTOR 39
 #define PIVOT_MOTOR 30
-#define INTAKE_MOTOR 6
+#define INTAKE_MOTOR 15 //check
 #define STRINGPOT_ANALOG_INPUT_ID 4
 
 #define PIVOT_CAN_ID -1 //check
@@ -158,19 +158,17 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 
 //button IDs
 //BUTTONBOARD 0
-#define CONE_MODE 16 
-#define CUBE_MODE 15 
+#define CONE_MODE 15 //left
+#define CUBE_MODE 16 //right
 
-#define FRONT_MODE 21 //check
-#define BACK_MODE 20 
+#define PIVOT_CONTROL 1 
+#define WRIST_CONTROL 0 
 
-#define PIVOT_CONTROL 1 //check
-
-#define EXTRACTION_CONTROL 0 //check
-#define MANUAL_ARM_BRAKE 22
-#define MANUAL_SLIP_BRAKE 7
+#define INTAKE_BUTTON 20
+#define OUTTAKE_BUTTON 21
 
 #define ARM_OVERRIDE 1 
+#define ARM_OVERRIDE_2 2
 
 //BUTTONBOARD 2
 #define GRID_TL 2
@@ -183,9 +181,9 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define GRID_BC 9
 #define GRID_BR 14
 
-#define TRANSIT_MODE 13 
 #define GROUND_PICKUP_MODE 5
-#define LOADING_MODE 15 
+#define TRANSIT_MODE 13 
+#define PLACING_MODE 15 
 
 #define LEFT_GRID 1 
 #define CENTER_GRID 6 

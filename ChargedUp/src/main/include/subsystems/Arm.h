@@ -26,6 +26,7 @@
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
 
 #include "./commands/PivotToPos.h"
+#include "./commands/DynamicIntake.h"
 
 
 
@@ -44,8 +45,8 @@ class Arm : public frc2::SubsystemBase {
 	//conversions
 	inline double PivotDegToTicks(double degree) {return degree * PIVOT_TICKS_PER_ARM_DEGREE;} //converts degrees to ticks of Pivot motor
 	inline double PivotTicksToDeg(double ticks) {return ticks / PIVOT_TICKS_PER_ARM_DEGREE;} //converts ticks to degrees of arm rotation
-	inline double StringPotUnitsToInches(double units) {return (units - STRING_POT_MINIMUM) * STRING_POT_INCHES_PER_TICK;} //166 = length of slider
-	inline double InchesToStringPotUnits(double inches) {return inches / STRING_POT_INCHES_PER_TICK;}
+	inline double StringPotUnitsToDeg(double units) {return 0;/*do something here*/}
+	inline double DegToStringPotUnits(double degree) {return 0;/*do something here*/}
 
 	frc2::FunctionalCommand* ManualControls();
 
@@ -57,17 +58,19 @@ class Arm : public frc2::SubsystemBase {
 	inline TalonSRX& GetIntakeMotor() {return m_Intake;}
 	inline ctre::phoenix::sensors::CANCoder& GetPivotCANCoder() {return m_PivotCANCoder;}
 
-	private:
+	inline frc2::Button& GetCubeModeButton() {return m_CubeMode; }
+	inline frc2::Button& GetConeModeButton() {return m_ConeMode; }
+	inline frc2::Button& GetIntakeButton() {return m_IntakeButton; }
+	inline frc2::Button& GetOuttakeButton() {return m_OuttakeButton; }
 
+	private:
+	
 	//motors
 	TalonSRX m_Pivot; 
 	ctre::phoenix::sensors::CANCoder m_PivotCANCoder{PIVOT_CAN_ID};
-
 	TalonSRX m_Wrist; 
-
 	TalonSRX m_Intake;
 
-	//Servos
 
 	//Pot
 	frc::AnalogInput m_StringPot{STRINGPOT_ANALOG_INPUT_ID};
@@ -75,13 +78,16 @@ class Arm : public frc2::SubsystemBase {
 	//buttons
 	frc2::Button m_TransitMode;
 	frc2::Button m_GroundPickupMode;
-	frc2::Button m_LoadingMode;
+	frc2::Button m_PlacingMode;
 
 	frc2::Button m_Override;
 	frc2::Button m_Override2;
 
 	frc2::Button m_ConeMode;
 	frc2::Button m_CubeMode;
+
+	frc2::Button m_IntakeButton;
+	frc2::Button m_OuttakeButton;
 
 	frc::Timer m_Timer;
 
