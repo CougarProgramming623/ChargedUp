@@ -3,7 +3,7 @@
 
 
 #define ARM Robot::GetRobot()->GetArm()
-#define CURRENT_DEGREE ARM.StringPotUnitsToDeg(ARM.GetPot().GetValue())
+#define STRINGPOT Robot::GetRobot()->GetArm().GetPot()
 
 WristToPos::WristToPos(double degPos) {
 	targetDegree = degPos;
@@ -11,13 +11,12 @@ WristToPos::WristToPos(double degPos) {
 
 void WristToPos::Initialize() {
 	ARM.GetWristMotor().SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
+	targetDegree = WristTicksToDeg(targetDegree);
+	ARM.GetWristMotor().Set(ControlMode::Position, targetDegree);
 }
 
 void WristToPos::Execute() {
-	double power = .2;
-	if(targetDegree < CURRENT_DEGREE) power *= -1;
-
-	ARM.GetWristMotor().Set(ControlMode::PercentOutput, power);
+	
 }
 
 void WristToPos::End(bool interrupted){
@@ -25,5 +24,5 @@ void WristToPos::End(bool interrupted){
 }
 
 bool WristToPos::IsFinished() {
-	return true; //abs(CURRENT_DEGREE - targetDegree) < 5; //ADD THE STRING POT UNITS TO DEGREES METHODS!!! THIS WILL BREAK SHITS
+	return abs(WristTicksToDeg(ARM.GetWristMotor().GetSelectedSensorPosition()) - targetDegree) < 2;
 }

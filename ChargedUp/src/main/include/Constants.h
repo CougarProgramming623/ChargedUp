@@ -135,20 +135,27 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 //motor and sensor IDs
 #define WRIST_MOTOR 39
 #define PIVOT_MOTOR 30
-#define INTAKE_MOTOR 15 //check
+#define TOP_INTAKE_MOTOR -1 //check
+#define BOTTOM_INTAKE_MOTOR 15
 #define STRINGPOT_ANALOG_INPUT_ID 4
 
-#define PIVOT_CAN_ID -1 //check
-#define WRIST_CAN_ID -1 //check
-#define INTAKE_CAN_ID -1 //check
+#define PIVOT_CAN_ID 0
+
+//setpoints
+#define WRIST_GROUND_ANGLE -1 //check
+#define WRIST_TRANSIT_ANGLE -1 //check
+#define WRIST_PLACING_ANGLE -1 //check
+#define WRIST_OFFSET -1 //check
+
+#define PIVOT_CAN_OFFSET -1 //check
 
 //Math constants
 #define PIVOT_GEAR_RATIO 160
 #define PIVOT_TICKS_PER_ARM_DEGREE (PIVOT_GEAR_RATIO*2048/360)
-#define STRING_POT_INCHES_PER_TICK -1 //check
-#define STRING_POT_MINIMUM -1 //check
-#define STRING_POT_MAXIMUM -1 //check
-#define PIVOT_CAN_OFFSET -1 //check
+
+#define WRIST_GEAR_RATIO 150
+#define WRIST_TICKS_PER_ARM_DEGREE (WRIST_GEAR_RATIO*2048/360)
+
 
 //PID constants
 #define PIVOT_ERROR 10
@@ -170,6 +177,8 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define ARM_OVERRIDE 1 
 #define ARM_OVERRIDE_2 2
 
+#define BIG_RED 22
+
 //BUTTONBOARD 2
 #define GRID_TL 2
 #define GRID_TC 7 
@@ -181,9 +190,9 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define GRID_BC 9
 #define GRID_BR 14
 
-#define GROUND_PICKUP_MODE 5
-#define TRANSIT_MODE 13 
-#define PLACING_MODE 15 
+#define GROUND_PICKUP_MODE 5 //red
+#define TRANSIT_MODE 13 //green
+#define PLACING_MODE 15 //yellow
 
 #define LEFT_GRID 1 
 #define CENTER_GRID 6 

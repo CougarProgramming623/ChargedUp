@@ -41,21 +41,15 @@ class Arm : public frc2::SubsystemBase {
 	Arm();
 	void Init();
 	void SetButtons();
-
-	//conversions
-	inline double PivotDegToTicks(double degree) {return degree * PIVOT_TICKS_PER_ARM_DEGREE;} //converts degrees to ticks of Pivot motor
-	inline double PivotTicksToDeg(double ticks) {return ticks / PIVOT_TICKS_PER_ARM_DEGREE;} //converts ticks to degrees of arm rotation
-	inline double StringPotUnitsToDeg(double units) {return 0;/*do something here*/}
-	inline double DegToStringPotUnits(double degree) {return 0;/*do something here*/}
+	void WristInit();
+	
 
 	frc2::FunctionalCommand* ManualControls();
-
-	inline frc::AnalogInput& GetPot() { return m_StringPot; }
-	inline void PrintPot() {DebugOutF(std::to_string(m_StringPot.GetValue()));}
 	
 	inline TalonSRX& GetPivotMotor() {return m_Pivot;}
 	inline TalonSRX& GetWristMotor() {return m_Wrist;} 
-	inline TalonSRX& GetIntakeMotor() {return m_Intake;}
+	// inline TalonSRX& GetTopIntakeMotor() {return m_TopIntake;}
+	inline TalonSRX& GetBottomIntakeMotor() {return m_BottomIntake;}
 	inline ctre::phoenix::sensors::CANCoder& GetPivotCANCoder() {return m_PivotCANCoder;}
 
 	inline frc2::Button& GetCubeModeButton() {return m_CubeMode; }
@@ -69,11 +63,8 @@ class Arm : public frc2::SubsystemBase {
 	TalonSRX m_Pivot; 
 	ctre::phoenix::sensors::CANCoder m_PivotCANCoder{PIVOT_CAN_ID};
 	TalonSRX m_Wrist; 
-	TalonSRX m_Intake;
-
-
-	//Pot
-	frc::AnalogInput m_StringPot{STRINGPOT_ANALOG_INPUT_ID};
+	// TalonSRX m_TopIntake;
+	TalonSRX m_BottomIntake;
 
 	//buttons
 	frc2::Button m_TransitMode;
