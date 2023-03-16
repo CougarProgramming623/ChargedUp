@@ -133,19 +133,17 @@ void Robot::AutoButtons(){
 
 frc::Pose2d Robot::TransformPose(frc::Pose2d SelectedPose){
 	if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
-		SelectedPose = SelectedPose.TransformBy(
+		SelectedPose = SelectedPose +
 			frc::Transform2d(
-				frc::Translation2d(units::meter_t(0), units::meter_t(1.6764)),
+				frc::Translation2d(units::meter_t(0), units::meter_t(1.68)),
 				frc::Rotation2d(units::radian_t(0))
-			)
-		);
+		).Inverse();
 	} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
-		SelectedPose = SelectedPose.TransformBy(
+		SelectedPose = SelectedPose + 
 			frc::Transform2d(
-				frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.6764)),
+				frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.68)),
 				frc::Rotation2d(units::radian_t(0))
-			)
-		);		
+		).Inverse();		
 	}
 	if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
 		SelectedPose = 

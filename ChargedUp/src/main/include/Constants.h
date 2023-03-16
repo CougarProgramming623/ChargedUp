@@ -250,13 +250,13 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 
 #endif
 
-#define TLPOSE frc::Pose2d(units::meter_t(1.83), units::meter_t(1.61), frc::Rotation2d(units::degree_t(0)))
-#define TCPOSE frc::Pose2d(units::meter_t(1.83), units::meter_t(1.05), frc::Rotation2d(units::degree_t(0)))
-#define TRPOSE frc::Pose2d(units::meter_t(1.83), units::meter_t(.49), frc::Rotation2d(units::degree_t(0)))
+#define TLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.61), frc::Rotation2d(units::degree_t(0)))
+#define TCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.05), frc::Rotation2d(units::degree_t(0)))
+#define TRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(.49), frc::Rotation2d(units::degree_t(0)))
 
-#define MLPOSE frc::Pose2d(units::meter_t(1.87), units::meter_t(1.61), frc::Rotation2d(units::degree_t(180)))
-#define MCPOSE frc::Pose2d(units::meter_t(1.87), units::meter_t(1.05), frc::Rotation2d(units::degree_t(180)))
-#define MRPOSE frc::Pose2d(units::meter_t(1.87), units::meter_t(.49), frc::Rotation2d(units::degree_t(180)))
+#define MLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.61), frc::Rotation2d(units::degree_t(180)))
+#define MCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.05), frc::Rotation2d(units::degree_t(180)))
+#define MRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(.49), frc::Rotation2d(units::degree_t(180)))
 
 #define BLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.61), frc::Rotation2d(units::degree_t(180)))
 #define BCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.05), frc::Rotation2d(units::degree_t(180)))

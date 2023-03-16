@@ -99,15 +99,18 @@ class DriveTrain : public frc2::SubsystemBase {
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> m_EventMap;
 
   int m_SelectedGrid;
-  frc::Pose2d m_TransformedPose;
 
   frc::Pose2d m_PoseMatrix[3][3] = {
     {TLPOSE, TCPOSE, TRPOSE},
     {MLPOSE, MCPOSE, MRPOSE},
     {BLPOSE, BCPOSE, BRPOSE},
   };
+
+  frc::Pose2d m_TransformedPose;
   
   private:
+
+
 
   frc::Timer m_Timer;
 
