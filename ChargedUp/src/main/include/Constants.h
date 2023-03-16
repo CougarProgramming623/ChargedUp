@@ -135,24 +135,29 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #ifdef ARM_SUBSYSTEM
 
 //motor and sensor IDs
-#define EXTRACTION_MOTOR 39
+#define WRIST_MOTOR 39
 #define PIVOT_MOTOR 30
-#define LEFT_BRAKE 0
-#define RIGHT_BRAKE 1
-#define SLIP_BRAKE 2
+#define TOP_INTAKE_MOTOR -1 //check
+#define BOTTOM_INTAKE_MOTOR 15
 #define STRINGPOT_ANALOG_INPUT_ID 4
+
+#define PIVOT_CAN_ID 0
+
+//setpoints
+#define WRIST_GROUND_ANGLE -1 //check
+#define WRIST_TRANSIT_ANGLE -1 //check
+#define WRIST_PLACING_ANGLE -1 //check
+#define WRIST_OFFSET -1 //check
+
+#define PIVOT_CAN_OFFSET -1 //check
 
 //Math constants
 #define PIVOT_GEAR_RATIO 160
 #define PIVOT_TICKS_PER_ARM_DEGREE (PIVOT_GEAR_RATIO*2048/360)
-#define SQUEEZE_AMP_THRESHOLD 1
-#define STRING_POT_INCHES_PER_TICK 0.01499326
-#define STRING_POT_MINIMUM 138  
-#define STRING_POT_MAXIMUM 1622
-#define EXTRACTION_MOTOR_HOLD_POWER .09
-#define ARM_MINIMUM_LENGTH 42.5
-#define ARM_MAXIMUM_LENGTH 65
-#define OFFSET_FROM_VERTICAL -29
+
+#define WRIST_GEAR_RATIO 150
+#define WRIST_TICKS_PER_ARM_DEGREE (WRIST_GEAR_RATIO*2048/360)
+
 
 //PID constants
 #define PIVOT_ERROR 10
@@ -160,74 +165,21 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define PIVOT_KI 0 //DO NOT TOUCH AT ALL (.25 and .01 have broken bot)
 #define PIVOT_KD 0.2
 
-#define EXTRACTION_ERROR 0 //check
-#define EXTRACTION_KP .01 //check
-#define EXTRACTION_KI 0 //check 
-#define EXTRACTION_KD 0 //check
-//setpoints
-#define FRONT_LOW_ANGLE GROUND_PICKUP_ANGLE
-#define FRONT_MIDDLE_CONE_ANGLE -65.66
-// #define FRONT_MIDDLE_CUBE_ANGLE -76.70
-#define FRONT_MIDDLE_CUBE_ANGLE -65.66
-
-
-#define FRONT_HIGH_CONE_ANGLE 0 //UNUSED
-#define FRONT_HIGH_CUBE_ANGLE 0 //UNUSED
-
-#define FRONT_LOW_RADIUS GROUND_PICKUP_RADIUS
-#define FRONT_MIDDLE_CONE_RADIUS 53.38
-//#define FRONT_MIDDLE_CUBE_RADIUS 49.98
-#define FRONT_MIDDLE_CUBE_RADIUS 53.38
-
-#define FRONT_HIGH_CONE_RADIUS 0 //UNUSED
-#define FRONT_HIGH_CUBE_RADIUS 0 //UNUSED
-
-#define BACK_LOW_ANGLE 0 //UNUSED
-#define BACK_MIDDLE_CONE_ANGLE 0 //UNUSED
-#define BACK_MIDDLE_CUBE_ANGLE 0 //UNUSED
-#define BACK_HIGH_CONE_ANGLE 51.90
-//#define BACK_HIGH_CUBE_ANGLE 42.70
-#define BACK_HIGH_CUBE_ANGLE 51.90
-
-
-#define BACK_LOW_RADIUS 0 //UNUSED
-#define BACK_MIDDLE_CONE_RADIUS 0 //UNUSED
-#define BACK_MIDDLE_CUBE_RADIUS 0 //UNUSED
-//#define BACK_HIGH_CONE_RADIUS 55.
-#define BACK_HIGH_CONE_RADIUS 64
-
-//#define BACK_HIGH_CUBE_RADIUS 63.95
-#define BACK_HIGH_CUBE_RADIUS 64
-
-#define TRANSIT_ANGLE -45
-#define TRANSIT_RADIUS ARM_MINIMUM_LENGTH
-
-#define FRONT_LOADING_ANGLE -62.14
-#define FRONT_LOADING_RADIUS ARM_MAXIMUM_LENGTH 
-#define BACK_LOADING_ANGLE 44.38
-#define BACK_LOADING_RADIUS ARM_MINIMUM_LENGTH
-
-#define GROUND_PICKUP_ANGLE (-99.57-4)
-#define GROUND_PICKUP_RADIUS ARM_MINIMUM_LENGTH
-
-//keywords
-#define CONE 0
-#define CUBE 1
-
 //button IDs
 //BUTTONBOARD 0
-#define CONE_MODE 16 
-#define CUBE_MODE 15 
+#define CONE_MODE 15 //left
+#define CUBE_MODE 16 //right
 
-#define FRONT_MODE 21 //check
-#define BACK_MODE 20 
+#define PIVOT_CONTROL 1 
+#define WRIST_CONTROL 0 
 
-#define PIVOT_CONTROL 1 //check
-#define EXTRACTION_CONTROL 0 //check
-#define MANUAL_ARM_BRAKE 22
-#define MANUAL_SLIP_BRAKE 7
+#define INTAKE_BUTTON 20
+#define OUTTAKE_BUTTON 21
 
 #define ARM_OVERRIDE 1 
+#define ARM_OVERRIDE_2 2
+
+#define BIG_RED 22
 
 //BUTTONBOARD 2
 #define GRID_TL 2
@@ -240,9 +192,9 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define GRID_BC 9
 #define GRID_BR 14
 
-#define TRANSIT_MODE 13 
-#define GROUND_PICKUP_MODE 5
-#define LOADING_MODE 15 
+#define GROUND_PICKUP_MODE 5 //red
+#define TRANSIT_MODE 13 //green
+#define PLACING_MODE 15 //yellow
 
 #define LEFT_GRID 1 
 #define CENTER_GRID 6 

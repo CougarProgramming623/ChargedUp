@@ -7,9 +7,8 @@
 #include <frc/Joystick.h>
 #include <frc2/command/button/Button.h>
 #include <frc/AnalogInput.h>
-
-
 #include <math.h>
+#include <ctre/phoenix/sensors/CANCoder.h>
 
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/CommandScheduler.h>
@@ -26,6 +25,9 @@
 #include <frc2/command/ParallelCommandGroup.h>
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
 
+#include "./commands/PivotToPos.h"
+#include "./commands/DynamicIntake.h"
+
 
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
@@ -39,42 +41,35 @@ class Arm : public frc2::SubsystemBase {
 	Arm();
 	void Init();
 	void SetButtons();
-
-	//conversions
-	inline double PivotDegToTicks(double degree) {return degree * PIVOT_TICKS_PER_ARM_DEGREE;} //converts degrees to ticks of Pivot motor
-	inline double PivotTicksToDeg(double ticks) {return ticks / PIVOT_TICKS_PER_ARM_DEGREE;} //converts ticks to degrees of arm rotation
-	inline double StringPotUnitsToInches(double units) {return (units - STRING_POT_MINIMUM) * STRING_POT_INCHES_PER_TICK;} //166 = length of slider
-	inline double InchesToStringPotUnits(double inches) {return inches / STRING_POT_INCHES_PER_TICK;}
+	void WristInit();
+	
 
 	frc2::FunctionalCommand* ManualControls();
-	frc2::InstantCommand* ManualArmBrake();
-	frc2::InstantCommand* ManualSlipBrake();
+	
+	inline TalonSRX& GetPivotMotor() {return m_Pivot;}
+	inline TalonSRX& GetWristMotor() {return m_Wrist;} 
+	// inline TalonSRX& GetTopIntakeMotor() {return m_TopIntake;}
+	inline TalonSRX& GetBottomIntakeMotor() {return m_BottomIntake;}
+	inline ctre::phoenix::sensors::CANCoder& GetPivotCANCoder() {return m_PivotCANCoder;}
 
-	inline frc::AnalogInput& GetPot() { return m_StringPot; }
-	inline void PrintPot() {DebugOutF(std::to_string(m_StringPot.GetValue()));}
-	inline TalonFX& GetPivot() {return m_Pivot; }
-
-	bool shouldSqueeze;
+	inline frc2::Button& GetCubeModeButton() {return m_CubeMode; }
+	inline frc2::Button& GetConeModeButton() {return m_ConeMode; }
+	inline frc2::Button& GetIntakeButton() {return m_IntakeButton; }
+	inline frc2::Button& GetOuttakeButton() {return m_OuttakeButton; }
 
 	private:
-
+	
 	//motors
-	TalonFX m_Pivot; //Positive drives towards back; negative drives towards front || Start at 0.1-0.2 power and scale from there while testing
-	TalonFX m_Extraction; //Positive drives arm together and in; negative drives arm apart and out || start at 0.1 power and scale from there while testing
-	TalonSRX m_Intake;
-
-	//Servos
-
-	//Pot
-	frc::AnalogInput m_StringPot{STRINGPOT_ANALOG_INPUT_ID};
+	TalonSRX m_Pivot; 
+	ctre::phoenix::sensors::CANCoder m_PivotCANCoder{PIVOT_CAN_ID};
+	TalonSRX m_Wrist; 
+	// TalonSRX m_TopIntake;
+	TalonSRX m_BottomIntake;
 
 	//buttons
-	frc2::Button m_Squeeze;
-
-
 	frc2::Button m_TransitMode;
 	frc2::Button m_GroundPickupMode;
-	frc2::Button m_LoadingMode;
+	frc2::Button m_PlacingMode;
 
 	frc2::Button m_Override;
 	frc2::Button m_Override2;
@@ -82,17 +77,12 @@ class Arm : public frc2::SubsystemBase {
 	frc2::Button m_ConeMode;
 	frc2::Button m_CubeMode;
 
-	frc2::Button m_FrontMode;
-	frc2::Button m_BackMode;
-
-	frc2::Button m_ManualArmBrake;
-	frc2::Button m_ManualSlipBrake;
+	frc2::Button m_IntakeButton;
+	frc2::Button m_OuttakeButton;
 
 	frc::Timer m_Timer;
 
 	frc2::SequentialCommandGroup* m_Top;
 	frc2::SequentialCommandGroup* m_Mid;
 	frc2::SequentialCommandGroup* m_Bot;
-
-
 };
