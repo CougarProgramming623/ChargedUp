@@ -1,27 +1,30 @@
 #include "./commands/PivotToPos.h"
 #include "Robot.h"
 
-PivotToPos::PivotToPos(double angle) {
-	angleToGoTo = angle;
+
+#define ARM Robot::GetRobot()->GetArm()
+
+PivotToPos::PivotToPos(double degPos) {
+	targetDegrees = degPos;
 }
 
 void PivotToPos::Initialize() {
-	Robot::GetRobot()->GetArm().GetPivotMotor().SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	ARM.GetPivotMotor().SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
 
-	degreesToMove = angleToGoTo - Robot::GetRobot()->GetArm().GetPivotCANCoder().GetAbsolutePosition();
-	ticksToMove = PivotDegToTicks(degreesToMove);
+	DebugOutF("starting at: " + std::to_string((ARM.GetPivotCANCoder().GetAbsolutePosition() - CANCODER_ZERO)) + " degrees");
+	DebugOutF("Going to: " + std::to_string(ARM.PivotTicksToDegrees(-ARM.PivotDegreesToTicks(targetDegrees))) + " degrees");
 
-	// Robot::GetRobot()->GetArm().GetPivotMotor().Set(ControlMode::Position, ticksToMove);
 }
 
 void PivotToPos::Execute() {
-	DebugOutF(std::to_string(Robot::GetRobot()->GetArm().GetPivotCANCoder().GetAbsolutePosition()));
+	ARM.GetPivotMotor().Set(ControlMode::Position, -ARM.PivotDegreesToTicks(targetDegrees));
+	// DebugOutF("NOT YET FINISHED.");
 }
 
-void PivotToPos::End(bool interrupted) {
-	Robot::GetRobot()->GetArm().GetPivotMotor().Set(ControlMode::PercentOutput, 0);
+void PivotToPos::End(bool interrupted){
+	ARM.GetPivotMotor().Set(ControlMode::PercentOutput, 0);
 }
 
 bool PivotToPos::IsFinished() {
-	return false;//abs(PivotDegToTicks(Robot::GetRobot()->GetArm().GetPivotCANCoder().GetAbsolutePosition()) - Robot::GetRobot()->GetArm().GetPivotMotor().GetSelectedSensorPosition()) < 2;
+	return abs(ARM.PivotDegreesToTicks(targetDegrees) - ARM.GetPivotMotor().GetSelectedSensorPosition()) < 4000;
 }

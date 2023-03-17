@@ -27,8 +27,7 @@
 
 #include "./commands/PivotToPos.h"
 #include "./commands/DynamicIntake.h"
-
-
+#include "./commands/WristToPos.h"
 
 using ctre::phoenix::motorcontrol::can::TalonFX;
 using ctre::phoenix::motorcontrol::can::TalonSRX;
@@ -41,21 +40,32 @@ class Arm : public frc2::SubsystemBase {
 	Arm();
 	void Init();
 	void SetButtons();
-	void WristInit();
 	
 
 	frc2::FunctionalCommand* ManualControls();
+
+	inline double WristStringPotUnitsToDegrees(double units) {return -((units - STRINGPOT_ZERO) * WRIST_DEGREES_PER_STRINGPOT_UNITS); }
+	inline double WristDegreesToStringPotUnits(double degrees) {return -((degrees / WRIST_DEGREES_PER_STRINGPOT_UNITS) + STRINGPOT_ZERO); }
+	inline double WristStringPotUnitsToTicks(double units) {return WristDegreesToTicks(WristStringPotUnitsToDegrees(units));}
+	inline double WristTicksToStringPotUnits(double ticks) {return WristDegreesToStringPotUnits(WristTicksToDegrees(ticks));}
+	inline double WristDegreesToTicks(double degrees) {return degrees * WRIST_TICKS_PER_DEGREE;}
+	inline double WristTicksToDegrees(double ticks) {return ticks / WRIST_TICKS_PER_DEGREE;}
+
+	inline double PivotDegreesToTicks(double degrees) {return degrees * PIVOT_TICKS_PER_DEGREE;}
+	inline double PivotTicksToDegrees(double ticks) {return ticks / PIVOT_TICKS_PER_DEGREE;}
+
 	
+	//getters
 	inline TalonSRX& GetPivotMotor() {return m_Pivot;}
 	inline TalonSRX& GetWristMotor() {return m_Wrist;} 
 	// inline TalonSRX& GetTopIntakeMotor() {return m_TopIntake;}
 	inline TalonSRX& GetBottomIntakeMotor() {return m_BottomIntake;}
 	inline ctre::phoenix::sensors::CANCoder& GetPivotCANCoder() {return m_PivotCANCoder;}
-
 	inline frc2::Button& GetCubeModeButton() {return m_CubeMode; }
 	inline frc2::Button& GetConeModeButton() {return m_ConeMode; }
 	inline frc2::Button& GetIntakeButton() {return m_IntakeButton; }
 	inline frc2::Button& GetOuttakeButton() {return m_OuttakeButton; }
+	inline frc::AnalogInput& GetStringPot() {return m_StringPot;}
 
 	private:
 	
@@ -65,6 +75,9 @@ class Arm : public frc2::SubsystemBase {
 	TalonSRX m_Wrist; 
 	// TalonSRX m_TopIntake;
 	TalonSRX m_BottomIntake;
+
+	//pot
+	frc::AnalogInput m_StringPot{STRINGPOT};
 
 	//buttons
 	frc2::Button m_TransitMode;
@@ -79,6 +92,8 @@ class Arm : public frc2::SubsystemBase {
 
 	frc2::Button m_IntakeButton;
 	frc2::Button m_OuttakeButton;
+
+	frc2::Button m_BigRed;
 
 	frc::Timer m_Timer;
 

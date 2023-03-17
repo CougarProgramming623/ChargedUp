@@ -3,20 +3,21 @@
 
 
 #define ARM Robot::GetRobot()->GetArm()
-#define STRINGPOT Robot::GetRobot()->GetArm().GetPot()
 
 WristToPos::WristToPos(double degPos) {
-	targetDegree = degPos;
+	targetDegrees = degPos;
+	AddRequirements(&Robot::GetRobot()->GetArm());
 }
 
 void WristToPos::Initialize() {
 	ARM.GetWristMotor().SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
-	targetDegree = WristTicksToDeg(targetDegree);
-	ARM.GetWristMotor().Set(ControlMode::Position, targetDegree);
+
 }
 
 void WristToPos::Execute() {
-	
+	ARM.GetWristMotor().Set(ControlMode::Position, ARM.WristDegreesToTicks(targetDegrees));
+	DebugOutF("NOT YET FINISHED.");
+
 }
 
 void WristToPos::End(bool interrupted){
@@ -24,5 +25,6 @@ void WristToPos::End(bool interrupted){
 }
 
 bool WristToPos::IsFinished() {
-	return abs(WristTicksToDeg(ARM.GetWristMotor().GetSelectedSensorPosition()) - targetDegree) < 2;
+	//return abs(ARM.WristDegreesToTicks(targetDegrees) - ARM.GetWristMotor().GetSelectedSensorPosition()) < 20000;
+	return false;
 }

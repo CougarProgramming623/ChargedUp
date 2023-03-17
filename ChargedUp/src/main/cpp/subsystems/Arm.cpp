@@ -11,6 +11,7 @@
 using ctre::phoenix::motorcontrol::ControlMode;
 using ctre::phoenix::motorcontrol::can::TalonFX;
 using ctre::phoenix::motorcontrol::can::TalonSRX;
+using ctre::phoenix::sensors::AbsoluteSensorRange;
 
 
 Arm::Arm() : m_Pivot(PIVOT_MOTOR),
@@ -32,6 +33,8 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 m_GroundPickupMode(BUTTON_L_TWO(GROUND_PICKUP_MODE)),
 			 m_PlacingMode(BUTTON_L_TWO(PLACING_MODE)),
 
+			 m_BigRed(BUTTON_L(BIG_RED)),
+
 			m_Timer()
 
 
@@ -45,7 +48,6 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 void Arm::Init()
 {
 	SetButtons();
-	WristInit();
 
 	m_Pivot.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 	m_Wrist.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
@@ -57,31 +59,60 @@ void Arm::Init()
 	m_Pivot.Config_kI(0, PIVOT_KI);
 	m_Pivot.Config_kD(0, PIVOT_KD);
 
+	m_Wrist.ConfigAllowableClosedloopError(0, WRIST_ERROR);
+	m_Wrist.Config_kP(0, WRIST_KP);
+	m_Wrist.Config_kI(0, WRIST_KI);
+	m_Wrist.Config_kD(0, WRIST_KD);
+
 	// m_TopIntake.ConfigPeakCurrentDuration(1750);
 	// m_TopIntake.ConfigPeakCurrentLimit(6);
 	// m_TopIntake.ConfigContinuousCurrentLimit(2);
 	// m_TopIntake.EnableCurrentLimit(true);
 	m_BottomIntake.ConfigPeakCurrentDuration(1750);
 	m_BottomIntake.ConfigPeakCurrentLimit(6);
-	m_BottomIntake.ConfigContinuousCurrentLimit(2);
+	m_BottomIntake.ConfigContinuousCurrentLimit(2.5);
 	m_BottomIntake.EnableCurrentLimit(true);
+ 
+
+	m_PivotCANCoder.ConfigAbsoluteSensorRange(AbsoluteSensorRange::Unsigned_0_to_360);
+	m_Pivot.SetSelectedSensorPosition((CANCODER_ZERO - m_PivotCANCoder.GetAbsolutePosition()) * PIVOT_TICKS_PER_DEGREE);
+	m_Wrist.SetSelectedSensorPosition(WristStringPotUnitsToTicks(m_StringPot.GetValue()));
 }
 
 void Arm::SetButtons()
 {
-	//m_Override.WhenPressed(frc2::InstantCommand([&] {frc2::CommandScheduler::GetInstance().CancelAll()};));
 	m_Override.WhenPressed(ManualControls());
 
 	m_IntakeButton.WhenPressed(DynamicIntake());
 	m_OuttakeButton.WhenPressed(DynamicIntake());
-	m_GroundPickupMode.WhenPressed(PivotToPos(WRIST_GROUND_ANGLE)); //check
-	m_TransitMode.WhenPressed(PivotToPos(WRIST_TRANSIT_ANGLE)); //check
-	m_PlacingMode.WhenPressed(PivotToPos(WRIST_PLACING_ANGLE)); //check
-	
-}
 
-void Arm::WristInit(){
-	m_Wrist.SetSelectedSensorPosition(WRIST_OFFSET);
+	m_GroundPickupMode.WhenPressed(
+		new frc2::ParallelCommandGroup(
+			frc2::PrintCommand("-45"),
+			PivotToPos(-45)
+		)
+		// new WristToPos(WRIST_GROUND_ANGLE)
+	);
+
+	m_TransitMode.WhenPressed(
+		new frc2::ParallelCommandGroup(
+			frc2::PrintCommand("0"),
+			PivotToPos(0)
+		)		// new WristToPos(WRIST_TRANSIT_ANGLE)
+	);
+
+	m_PlacingMode.WhenPressed(
+		new frc2::ParallelCommandGroup(
+			frc2::PrintCommand("45"),
+			PivotToPos(45)
+		)		// new WristToPos(WRIST_PLACING_MID_CUBE_ANGLE)
+	);
+
+	m_BigRed.WhenPressed(frc2::InstantCommand([&]{
+		DebugOutF(std::to_string(m_PivotCANCoder.GetAbsolutePosition() - CANCODER_ZERO));
+	}));
+
+	
 }
 
 // while override is active, gives manual joysticks control over the two arm motors
@@ -91,7 +122,7 @@ frc2::FunctionalCommand* Arm::ManualControls()
 		//empty
 	},
 	[&] { // onExecute
-		m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetButtonBoard().GetRawAxis(PIVOT_CONTROL) / 3);
+		m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetButtonBoard().GetRawAxis(PIVOT_CONTROL) / 2);
 		m_Wrist.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetButtonBoard().GetRawAxis(WRIST_CONTROL) / 3);
 
 	// ---------------------------------------------------------------------------------------
