@@ -145,19 +145,19 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 
 //setpoints
 //DEGREES
-#define WRIST_GROUND_ANGLE 0.0+90
-#define WRIST_TRANSIT_ANGLE 132.0+90
-#define WRIST_PLACING_HIGH_CUBE_ANGLE 28.0+90
-#define WRIST_PLACING_MID_CUBE_ANGLE 87.0+90
-#define WRIST_PLACING_MID_CONE_ANGLE 25.0+90
-#define WRIST_SHELF_PICKUP_ANGLE 46.0+90
+#define WRIST_GROUND_ANGLE 6
+#define WRIST_TRANSIT_ANGLE 132.0
+#define WRIST_PLACING_HIGH_CUBE_ANGLE 28.0
+#define WRIST_PLACING_MID_CUBE_ANGLE 87.0
+#define WRIST_PLACING_MID_CONE_ANGLE 25.0
+#define WRIST_SHELF_PICKUP_ANGLE 46.0
 //DEGREES
-#define PIVOT_GROUND_ANGLE -96+90
+#define PIVOT_GROUND_ANGLE 99//-96+90
 #define PIVOT_TRANSIT_ANGLE PIVOT_GROUND_ANGLE
-#define PIVOT_PLACING_HIGH_CUBE_ANGLE -40.0+90
-#define PIVOT_PLACING_MID_CUBE_ANGLE -23.0+90
-#define PIVOT_PLACING_MID_CONE_ANGLE -22.0+90
-#define PIVOT_SHELF_PICKUP_ANGLE -8.0+90
+#define PIVOT_PLACING_HIGH_CUBE_ANGLE -40//-40.0+90
+#define PIVOT_PLACING_MID_CUBE_ANGLE -23//-23.0+90
+#define PIVOT_PLACING_MID_CONE_ANGLE -22//-22.0+90
+#define PIVOT_SHELF_PICKUP_ANGLE -8//-8.0+90
 
 #define PIVOT_CAN_MINIMUM 28.477
 #define PIVOT_CAN_PICKUP 29.619
@@ -188,12 +188,12 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 
 //PID constants
 #define PIVOT_ERROR 10
-#define PIVOT_KP 0.005 //0.41928
-#define PIVOT_KI 0 //DO NOT TOUCH AT ALL (.25 and .01 have broken bot)
-#define PIVOT_KD 0.25
+#define PIVOT_KP 0.008 //0.41928
+#define PIVOT_KI 0.00000//1 //DO NOT TOUCH AT ALL (.25 and .01 have broken bot)
+#define PIVOT_KD 0.27
 
 #define WRIST_ERROR 0 //check
-#define WRIST_KP 0.005 //check
+#define WRIST_KP 0.01 //check
 #define WRIST_KI 0 //check
 #define WRIST_KD 0 //check
 

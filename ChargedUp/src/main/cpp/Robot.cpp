@@ -54,14 +54,50 @@ void Robot::AutoButtons(){
   m_CenterGrid = frc2::Button(BUTTON_L_TWO(CENTER_GRID));
   m_RightGrid = frc2::Button(BUTTON_L_TWO(RIGHT_GRID));
   
-  m_ML.WhenPressed(new frc2::InstantCommand([&]{
-		DebugOutF("m_TL");
-		SelectedRow = 0;
-		SelectedColumn = 0; 
-		frc::Pose2d SelectedPose = 
-			Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
-	}));
+  m_BL.WhenPressed(
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("Ground Cube Pickup"),
+			PivotToPos(PIVOT_GROUND_ANGLE),
+      WristToPos(WRIST_GROUND_ANGLE)
+		)
+
+    // new frc2::InstantCommand([&]{
+		// DebugOutF("m_ML");
+		// SelectedRow = 1;
+		// SelectedColumn = 0;
+		// frc::Pose2d SelectedPose = 
+		// 	Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
+		// Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
+    // })
+  );
+
+
+
+  m_ML.WhenPressed(
+    new frc2::ParallelCommandGroup(
+			frc2::PrintCommand("Low Cube Placement"),
+			PivotToPos(PIVOT_GROUND_ANGLE), 
+      WristToPos(45)
+	  )
+  );
+
+  m_TL.WhenPressed(
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("Mid Cube Placement"),
+			PivotToPos(70), 
+      WristToPos(87)
+	  )
+  );
+
+  //   new frc2::InstantCommand([&]{
+	// 	DebugOutF("m_TL");
+	// 	SelectedRow = 0;
+	// 	SelectedColumn = 0; 
+	// 	frc::Pose2d SelectedPose = 
+	// 		Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
+	// 	Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
+	// })
+  
 
 	m_MC.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_TC");
@@ -81,15 +117,7 @@ void Robot::AutoButtons(){
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);	
 		}));
 
-	m_BL.WhenPressed(new frc2::InstantCommand([&]{
-		DebugOutF("m_ML");
-		SelectedRow = 1;
-		SelectedColumn = 0;
-		frc::Pose2d SelectedPose = 
-			Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
-		}));
-
+	
 	m_BC.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_MC");
 		SelectedRow = 1;
@@ -172,6 +200,11 @@ void Robot::RobotPeriodic() {
   m_COBTicks++;
   Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/pitchAngle").SetDouble(Robot::GetRobot()->GetNavX().GetPitch() + 0.05);
   m_AutoPath = std::string(Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/auto").GetString(""));
+
+  DebugOutF("PosDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().GetWristMotor().GetSelectedSensorPosition())));
+	DebugOutF("PosTicks: " + std::to_string(GetArm().GetWristMotor().GetSelectedSensorPosition()));
+  DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0)));
+
   //DebugOutF(m_AutoPath);
 
   // DebugOutF("CanCoder" + std::to_string(Robot::GetRobot()->GetArm().GetPivotCANCoder().GetAbsolutePosition()));

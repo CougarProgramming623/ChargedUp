@@ -76,7 +76,7 @@ void Arm::Init()
 
 	m_PivotCANCoder.ConfigAbsoluteSensorRange(AbsoluteSensorRange::Unsigned_0_to_360);
 	m_Pivot.SetSelectedSensorPosition((CANCODER_ZERO - m_PivotCANCoder.GetAbsolutePosition()) * PIVOT_TICKS_PER_DEGREE);
-	m_Wrist.SetSelectedSensorPosition(WristStringPotUnitsToTicks(m_StringPot.GetValue()));
+	m_Wrist.SetSelectedSensorPosition((WristStringPotUnitsToTicks(m_StringPot.GetValue()))-29000.0);
 }
 
 void Arm::SetButtons()
@@ -89,7 +89,7 @@ void Arm::SetButtons()
 	m_GroundPickupMode.WhenPressed(
 		new frc2::ParallelCommandGroup(
 			frc2::PrintCommand("-45"),
-			PivotToPos(-45)
+			PivotToPos(PIVOT_GROUND_ANGLE)
 		)
 		// new WristToPos(WRIST_GROUND_ANGLE)
 	);
@@ -108,9 +108,13 @@ void Arm::SetButtons()
 		)		// new WristToPos(WRIST_PLACING_MID_CUBE_ANGLE)
 	);
 
-	m_BigRed.WhenPressed(frc2::InstantCommand([&]{
-		DebugOutF(std::to_string(m_PivotCANCoder.GetAbsolutePosition() - CANCODER_ZERO));
-	}));
+	m_BigRed.WhenPressed(
+		new frc2::ParallelCommandGroup(
+			frc2::PrintCommand("Transit"),
+			PivotToPos(PIVOT_TRANSIT_ANGLE), 
+      		WristToPos(WRIST_TRANSIT_ANGLE)
+	  	)		
+	);
 
 	
 }
@@ -148,7 +152,7 @@ frc2::FunctionalCommand* Arm::ManualControls()
 
 	//---------------------------------------------------------------------------------------------
 	
-	double power = -.55; //default power for cone
+	double power = -.7; //default power for cone
 	
 	if(Robot::GetRobot()->GetButtonBoard().GetRawButton(INTAKE_BUTTON)) m_BottomIntake.Set(ControlMode::PercentOutput, power);
 	else if (Robot::GetRobot()->GetButtonBoard().GetRawButton(OUTTAKE_BUTTON)) m_BottomIntake.Set(ControlMode::PercentOutput, 1);

@@ -15,8 +15,12 @@ void WristToPos::Initialize() {
 }
 
 void WristToPos::Execute() {
+	ARM.GetWristMotor().SetSelectedSensorPosition((ARM.WristStringPotUnitsToTicks(ARM.GetStringPot().GetValue()))-29000.0);
 	ARM.GetWristMotor().Set(ControlMode::Position, ARM.WristDegreesToTicks(targetDegrees));
-	DebugOutF("NOT YET FINISHED.");
+	DebugOutF("TargetDeg: " + std::to_string(targetDegrees));
+	DebugOutF("TargetTicks: " + std::to_string(ARM.WristDegreesToTicks(targetDegrees)));
+	
+
 
 }
 
@@ -26,5 +30,6 @@ void WristToPos::End(bool interrupted){
 
 bool WristToPos::IsFinished() {
 	//return abs(ARM.WristDegreesToTicks(targetDegrees) - ARM.GetWristMotor().GetSelectedSensorPosition()) < 20000;
-	return false;
+	return Robot::GetRobot()->GetButtonBoard().GetRawButton(ARM_OVERRIDE);
+;
 }
