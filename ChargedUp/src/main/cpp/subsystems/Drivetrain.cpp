@@ -43,7 +43,7 @@ void DriveTrain::DriveInit(){
   m_NavXReset.WhenPressed(new frc2::InstantCommand([&]{Robot::GetRobot()->GetNavX().ZeroYaw();}));
  
   m_TestJoystickButton.WhenPressed(new AutoBalance());
-  m_JoystickButtonTwo.WhenPressed(new DriveToPosCommand());
+  //m_JoystickButtonTwo.WhenPressed(new DriveToPosCommand());
 
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.5, 0.5, .561799});
   m_FrontRightModule.m_DriveController.motor.SetInverted(false); //true for O12

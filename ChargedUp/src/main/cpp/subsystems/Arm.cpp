@@ -76,7 +76,7 @@ void Arm::Init()
 
 	m_PivotCANCoder.ConfigAbsoluteSensorRange(AbsoluteSensorRange::Unsigned_0_to_360);
 	m_Pivot.SetSelectedSensorPosition((CANCODER_ZERO - m_PivotCANCoder.GetAbsolutePosition()) * PIVOT_TICKS_PER_DEGREE);
-	m_Wrist.SetSelectedSensorPosition((WristStringPotUnitsToTicks(m_StringPot.GetValue()))-29000.0);
+	m_Wrist.SetSelectedSensorPosition((WristStringPotUnitsToTicks(m_StringPot.GetValue()))-29000.0 - WristDegreesToTicks(45));
 }
 
 void Arm::SetButtons()
@@ -88,31 +88,47 @@ void Arm::SetButtons()
 
 	m_GroundPickupMode.WhenPressed(
 		new frc2::ParallelCommandGroup(
-			frc2::PrintCommand("-45"),
-			PivotToPos(PIVOT_GROUND_ANGLE)
-		)
-		// new WristToPos(WRIST_GROUND_ANGLE)
+			frc2::PrintCommand("Back Mid Cube"),
+			PivotToPos(PIVOT_PLACING_MID_CUBE_ANGLE), 
+      		WristToPos(WRIST_PLACING_MID_CUBE_ANGLE)
+	  	)
 	);
 
 	m_TransitMode.WhenPressed(
 		new frc2::ParallelCommandGroup(
-			frc2::PrintCommand("0"),
-			PivotToPos(0)
-		)		// new WristToPos(WRIST_TRANSIT_ANGLE)
+			frc2::PrintCommand("Intermediate Cone"),
+			PivotToPos(66.6), 
+      		WristToPos(WRIST_TRANSIT_ANGLE)
+	  	)
 	);
 
-	m_PlacingMode.WhenPressed(
-		new frc2::ParallelCommandGroup(
-			frc2::PrintCommand("45"),
-			PivotToPos(45)
-		)		// new WristToPos(WRIST_PLACING_MID_CUBE_ANGLE)
-	);
+	// m_GroundPickupMode.WhenPressed(
+	// 	new frc2::ParallelCommandGroup(
+	// 		frc2::PrintCommand("-45"),
+	// 		PivotToPos(PIVOT_GROUND_ANGLE)
+	// 	)
+	// 	// new WristToPos(WRIST_GROUND_ANGLE)
+	// );
+
+	// m_TransitMode.WhenPressed(
+	// 	new frc2::ParallelCommandGroup(
+	// 		frc2::PrintCommand("0"),
+	// 		PivotToPos(0)
+	// 	)		// new WristToPos(WRIST_TRANSIT_ANGLE)
+	// );
+
+	// m_PlacingMode.WhenPressed(
+	// 	new frc2::ParallelCommandGroup(
+	// 		frc2::PrintCommand("45"),
+	// 		PivotToPos(45)
+	// 	)		// new WristToPos(WRIST_PLACING_MID_CUBE_ANGLE)
+	// );
 
 	m_BigRed.WhenPressed(
 		new frc2::ParallelCommandGroup(
 			frc2::PrintCommand("Transit"),
 			PivotToPos(PIVOT_TRANSIT_ANGLE), 
-      		WristToPos(WRIST_TRANSIT_ANGLE)
+      		WristToPos(120)
 	  	)		
 	);
 
