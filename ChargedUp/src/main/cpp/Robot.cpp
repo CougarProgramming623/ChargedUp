@@ -13,6 +13,7 @@
 #include <frc/kinematics/SwerveModulePosition.h>
 #include <frc/RobotController.h>
 #include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/ParallelRaceGroup.h>
 
 using ctre::phoenix::motorcontrol::ControlMode;
 using namespace pathplanner;
@@ -287,7 +288,7 @@ void Robot::AutonomousInit() {
     // DebugOutF("Blue");
   //PathPlannerTrajectory traj = PathPlanner::loadPath(m_AutoPath, PathConstraints(4_mps, 1_mps_sq));
 
-  PathPlannerTrajectory traj = PathPlanner::loadPath("Odo Test", PathConstraints(4_mps, 1_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("Phase1", PathConstraints(4_mps, 2_mps_sq));
 
   // } else {
   // //   DebugOutF("Red");
@@ -311,8 +312,62 @@ void Robot::AutonomousInit() {
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
   
   frc2::CommandScheduler::GetInstance().Schedule(new frc2::SequentialCommandGroup(
-    TrajectoryCommand(traj)//,
-    //AutoBalance()
+    frc2::ParallelRaceGroup(
+      frc2::WaitCommand(2_s),
+      PivotToPos(PIVOT_PLACING_MID_CONE_ANGLE), 
+      WristToPos(WRIST_PLACING_MID_CONE_ANGLE)
+    ),
+    frc2::ParallelRaceGroup(
+      frc2::FunctionalCommand(
+        [&] {
+          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 1);
+        },
+        [&] {},
+        [&](bool e) { // onEnd
+          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 0);
+        },
+        [&] { // isFinished
+        return false;
+        }
+      ),
+      frc2::WaitCommand(0.5_s)
+    ),
+    frc2::ParallelRaceGroup(
+      frc2::WaitCommand(1_s),
+      PivotToPos(PIVOT_TRANSIT_ANGLE), 
+      WristToPos(120)
+    ),
+    TrajectoryCommand(traj),
+    frc2::ParallelRaceGroup(
+      frc2::WaitCommand(1_s),
+      PivotToPos(PIVOT_GROUND_ANGLE), 
+      WristToPos(WRIST_GROUND_ANGLE)
+    ),
+    frc2::FunctionalCommand(
+        [&] {
+          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, -6);
+        },
+        [&] {},
+        [&](bool e) { // onEnd
+        },
+        [&] { // isFinished
+          return true;
+        }
+    ),
+    TrajectoryCommand(PathPlanner::loadPath("Phase2", PathConstraints(4_mps, 2_mps_sq))),
+    frc2::FunctionalCommand(
+        [&] {
+          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 0);
+        },
+        [&] {},
+        [&](bool e) { // onEnd
+        },
+        [&] { // isFinished
+          return true;
+        }
+    ),
+    TrajectoryCommand(PathPlanner::loadPath("Phase3", PathConstraints(4_mps, 2_mps_sq))),
+    AutoBalance()
   ));
 
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));

@@ -66,6 +66,8 @@ class Arm : public frc2::SubsystemBase {
 	inline frc2::Button& GetIntakeButton() {return m_IntakeButton; }
 	inline frc2::Button& GetOuttakeButton() {return m_OuttakeButton; }
 	inline frc::AnalogInput& GetStringPot() {return m_StringPot;}
+	TalonSRX m_BottomIntake;
+
 
 	private:
 	
@@ -74,7 +76,6 @@ class Arm : public frc2::SubsystemBase {
 	ctre::phoenix::sensors::CANCoder m_PivotCANCoder{PIVOT_CAN_ID};
 	TalonSRX m_Wrist; 
 	// TalonSRX m_TopIntake;
-	TalonSRX m_BottomIntake;
 
 	//pot
 	frc::AnalogInput m_StringPot{STRINGPOT};
