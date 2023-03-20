@@ -35,7 +35,7 @@ void DynamicIntake::Execute() {
 
 	// ---------------------------------------------------------------------
 
-	double power = .7; //default power for cone
+	double power = -.7; //default power for cone
 	if (Robot::GetRobot()->GetButtonBoard().GetRawButton(CUBE_MODE)) power *= -1; 
 
 	if(Robot::GetRobot()->GetButtonBoard().GetRawButton(INTAKE_BUTTON)){

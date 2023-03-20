@@ -69,8 +69,8 @@ void Arm::Init()
 	// m_TopIntake.ConfigContinuousCurrentLimit(2);
 	// m_TopIntake.EnableCurrentLimit(true);
 	m_BottomIntake.ConfigPeakCurrentDuration(1750);
-	m_BottomIntake.ConfigPeakCurrentLimit(6);
-	m_BottomIntake.ConfigContinuousCurrentLimit(2.5);
+	m_BottomIntake.ConfigPeakCurrentLimit(8.5);
+	m_BottomIntake.ConfigContinuousCurrentLimit(3.5);
 	m_BottomIntake.EnableCurrentLimit(true);
  
 
@@ -128,7 +128,7 @@ void Arm::SetButtons()
 		new frc2::ParallelCommandGroup(
 			frc2::PrintCommand("Transit"),
 			PivotToPos(PIVOT_TRANSIT_ANGLE), 
-      		WristToPos(120)
+      		WristToPos(127)
 	  	)		
 	);
 

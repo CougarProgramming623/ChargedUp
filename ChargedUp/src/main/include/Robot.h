@@ -80,6 +80,8 @@ class Robot : public frc::TimedRobot {
 	frc2::Button m_CenterGrid;
 	frc2::Button m_RightGrid;
 
+  frc2::Button m_NavXReset;
+
  private:
 
   int SelectedRow;

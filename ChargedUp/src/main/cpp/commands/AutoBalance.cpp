@@ -92,3 +92,7 @@ void AutoBalance::Execute() {
 void AutoBalance::End(bool interrupted){
     //DebugOutF("Finished");
 }
+
+bool AutoBalance::IsFinished(){
+    return Robot::GetRobot()->GetJoyStick().GetRawAxis(1) > 0.3 || Robot::GetRobot()->GetJoyStick().GetRawAxis(0) > 0.3 || Robot::GetRobot()->GetJoyStick().GetRawAxis(2) > 0.3;
+}

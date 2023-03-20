@@ -14,6 +14,7 @@
 #include <frc/RobotController.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/ParallelRaceGroup.h>
+#include <frc2/command/ParallelDeadlineGroup.h>
 
 using ctre::phoenix::motorcontrol::ControlMode;
 using namespace pathplanner;
@@ -55,8 +56,16 @@ void Robot::AutoButtons(){
   m_CenterGrid = frc2::Button(BUTTON_L_TWO(CENTER_GRID));
   m_RightGrid = frc2::Button(BUTTON_L_TWO(RIGHT_GRID));
 
+  m_NavXReset = frc2::Button(BUTTON_L(8)); //PUT Define
   
   
+  m_NavXReset.WhenPressed(
+    new frc2::InstantCommand([&]{
+      DebugOutF("NavX Zero");
+      zeroGyroscope();
+    })
+  );
+
   m_BL.WhenPressed(
     new frc2::ParallelCommandGroup(
 		  frc2::PrintCommand("Ground Cube Pickup"),
@@ -67,7 +76,7 @@ void Robot::AutoButtons(){
   m_ML.WhenPressed(
     new frc2::ParallelCommandGroup(
 			frc2::PrintCommand("Low Cube Placement"),
-			PivotToPos(PIVOT_GROUND_ANGLE), 
+			PivotToPos(86), 
       WristToPos(45)
 	  )
   );
@@ -75,8 +84,8 @@ void Robot::AutoButtons(){
   m_TL.WhenPressed(
     new frc2::ParallelCommandGroup(
 		  frc2::PrintCommand("Mid Cube Placement"),
-			PivotToPos(70), 
-      WristToPos(87)
+			PivotToPos(58.5), 
+      WristToPos(60)
 	  )
   );
 
@@ -100,7 +109,7 @@ void Robot::AutoButtons(){
     new frc2::ParallelCommandGroup(
 		  frc2::PrintCommand("Substation Cone Pickup"),
 			PivotToPos(PIVOT_SHELF_PICKUP_ANGLE), 
-      WristToPos(10)
+      WristToPos(28)
 	  )
   );
 
@@ -288,7 +297,7 @@ void Robot::AutonomousInit() {
     // DebugOutF("Blue");
   //PathPlannerTrajectory traj = PathPlanner::loadPath(m_AutoPath, PathConstraints(4_mps, 1_mps_sq));
 
-  PathPlannerTrajectory traj = PathPlanner::loadPath("Phase1", PathConstraints(4_mps, 2_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("AutoBalance", PathConstraints(4_mps, 1_mps_sq));
 
   // } else {
   // //   DebugOutF("Red");
@@ -315,12 +324,10 @@ void Robot::AutonomousInit() {
     frc2::ParallelRaceGroup(
       frc2::WaitCommand(2_s),
       PivotToPos(PIVOT_PLACING_MID_CONE_ANGLE), 
-      WristToPos(WRIST_PLACING_MID_CONE_ANGLE)
-    ),
-    frc2::ParallelRaceGroup(
       frc2::FunctionalCommand(
         [&] {
-          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 1);
+          GetArm().m_BottomIntake.EnableCurrentLimit(false);
+          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, -1);
         },
         [&] {},
         [&](bool e) { // onEnd
@@ -330,43 +337,70 @@ void Robot::AutonomousInit() {
         return false;
         }
       ),
+      WristToPos(WRIST_PLACING_MID_CONE_ANGLE)
+    ),
+
+    frc2::ParallelRaceGroup(
+      frc2::FunctionalCommand(
+        [&] {
+          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 1);
+        },
+        [&] {},
+        [&](bool e) { // onEnd
+          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 0);
+          GetArm().m_BottomIntake.EnableCurrentLimit(true);
+        },
+        [&] { // isFinished
+        return false;
+        }
+      ),
       frc2::WaitCommand(0.5_s)
     ),
+
     frc2::ParallelRaceGroup(
       frc2::WaitCommand(1_s),
       PivotToPos(PIVOT_TRANSIT_ANGLE), 
       WristToPos(120)
     ),
+
     TrajectoryCommand(traj),
-    frc2::ParallelRaceGroup(
-      frc2::WaitCommand(1_s),
-      PivotToPos(PIVOT_GROUND_ANGLE), 
-      WristToPos(WRIST_GROUND_ANGLE)
-    ),
-    frc2::FunctionalCommand(
-        [&] {
-          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, -6);
-        },
-        [&] {},
-        [&](bool e) { // onEnd
-        },
-        [&] { // isFinished
-          return true;
-        }
-    ),
-    TrajectoryCommand(PathPlanner::loadPath("Phase2", PathConstraints(4_mps, 2_mps_sq))),
-    frc2::FunctionalCommand(
-        [&] {
-          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 0);
-        },
-        [&] {},
-        [&](bool e) { // onEnd
-        },
-        [&] { // isFinished
-          return true;
-        }
-    ),
-    TrajectoryCommand(PathPlanner::loadPath("Phase3", PathConstraints(4_mps, 2_mps_sq))),
+    // frc2::ParallelRaceGroup(
+    //   frc2::WaitCommand(1_s),
+    //   PivotToPos(PIVOT_GROUND_ANGLE), 
+    //   WristToPos(WRIST_GROUND_ANGLE)
+    // ),
+
+    // frc2::FunctionalCommand(
+    //     [&] {
+    //       GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, -6);
+    //     },
+    //     [&] {},
+    //     [&](bool e) { // onEnd
+    //     },
+    //     [&] { // isFinished
+    //       return true;
+    //     }
+    // ),
+
+    // frc2::FunctionalCommand(
+    //     [&] {
+    //       GetArm().m_BottomIntake.EnableCurrentLimit(true);
+    //       GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 0);
+    //     },
+    //     [&] {},
+    //     [&](bool e) { // onEnd
+    //     },
+    //     [&] { // isFinished
+    //       return true;
+    //     }
+    // ),
+
+    //frc2::ParallelDeadlineGroup(
+    //TrajectoryCommand(PathPlanner::loadPath("Phase3", PathConstraints(4_mps, 1_mps_sq))),
+      // PivotToPos(PIVOT_TRANSIT_ANGLE), 
+      // WristToPos(120)
+    //),
+    //frc2::WaitCommand(0.5_s),
     AutoBalance()
   ));
 
