@@ -69,7 +69,7 @@ void Arm::Init()
 	// m_TopIntake.ConfigContinuousCurrentLimit(2);
 	// m_TopIntake.EnableCurrentLimit(true);
 	m_BottomIntake.ConfigPeakCurrentDuration(1750);
-	m_BottomIntake.ConfigPeakCurrentLimit(8.5);
+	m_BottomIntake.ConfigPeakCurrentLimit(7);
 	m_BottomIntake.ConfigContinuousCurrentLimit(3.5);
 	m_BottomIntake.EnableCurrentLimit(true);
  
