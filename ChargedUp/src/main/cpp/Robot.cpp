@@ -166,14 +166,16 @@ frc::Pose2d Robot::TransformPose(frc::Pose2d SelectedPose){
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
+  /**
+   * pushing/pulling values to/from the network tables
+   */
   frc2::CommandScheduler::GetInstance().Run();
-  Robot::GetCOB().GetTable().GetEntry("/COB/robotAngle").SetDouble(Robot::GetAngle());   
+  Robot::GetCOB().GetTable().GetEntry("/COB/robotAngle").SetDouble(-Robot::GetAngle());
   Robot::GetCOB().GetTable().GetEntry("/COB/matchTime").SetDouble(DriverStation::GetMatchTime());
   Robot::GetCOB().GetTable().GetEntry("/COB/ticks").SetDouble(m_COBTicks);
   m_COBTicks++;
   Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/pitchAngle").SetDouble(Robot::GetRobot()->GetNavX().GetPitch() + 0.05);
   m_AutoPath = std::string(Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/auto").GetString(""));
-  DebugOutF(m_AutoPath);
 
   // Robot::GetCOB().GetTable().GetEntry("/COB/armValue").SetDouble(Robot::GetArm().GetPot());   
   // Robot::GetCOB().GetTable().GetEntry("/COB/armAngle").SetDouble(Robot::GetArm().PivotTicksToDeg(Robot::GetArm().GetPivot().GetSelectedSensorPosition()));                                                                                                                                   
