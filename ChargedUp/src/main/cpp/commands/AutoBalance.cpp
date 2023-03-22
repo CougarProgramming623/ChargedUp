@@ -85,7 +85,7 @@ void AutoBalance::Execute() {
     );
     // DebugOutF("Error: " + std::to_string(errorY));
     // DebugOutF("Output: " + std::to_string(outputY));
-    DebugOutF(std::to_string(m_currentAngleT));
+    //DebugOutF(std::to_string(m_currentAngleT));
     Robot::GetRobot()->dErrorY = errorY;
 }
 

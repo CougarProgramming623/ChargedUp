@@ -29,9 +29,10 @@ void Robot::RobotInit() {
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
   s_Instance = this;
+  m_Arm.Init();
   m_DriveTrain.DriveInit();
   m_Vision.VisionInit(); //Make one
-  m_Arm.Init();
+  AutoButtons();
   m_COBTicks = 0;
   m_AutoPath = "";
 }
@@ -247,9 +248,9 @@ void Robot::AutonomousInit() {
 
 void Robot::AutonomousPeriodic() {
 
-    DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
-    DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
-    DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
+    // DebugOutF("X: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
+    // DebugOutF("Y: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
+    // DebugOutF("Deg: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
   
 }
 
@@ -275,9 +276,9 @@ void Robot::TeleopPeriodic() {
   // frc2::CommandScheduler::GetInstance().Run();
   // frc2::CommandScheduler::GetInstance().Schedule(m_Arm.Telescope(50));  
 
-  DebugOutF("OdoX: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
-  DebugOutF("OdoY: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
-  DebugOutF("OdoZ: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
+  // DebugOutF("OdoX: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().X().value()));
+  // DebugOutF("OdoY: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Y().value()));
+  // DebugOutF("OdoZ: " + std::to_string(GetDriveTrain().GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
 
   // DebugOutF("LLX: " + std::to_string(m_Vision.GetPoseBlue().X().value()));
   // DebugOutF("LLY: " + std::to_string(m_Vision.GetPoseBlue().Y().value()));

@@ -14,32 +14,26 @@ using ctre::phoenix::motorcontrol::can::TalonSRX;
 
 
 Arm::Arm() : m_Pivot(PIVOT_MOTOR),
-			 m_Extraction(EXTRACTION_MOTOR),
-			 m_Intake(6),
-			 m_LeftBrake(LEFT_BRAKE),
-			 m_RightBrake(RIGHT_BRAKE),
-			 m_SlipBrake(SLIP_BRAKE),
+			 m_Wrist(WRIST_MOTOR),
+			//  m_TopIntake(TOP_INTAKE_MOTOR),
+			 m_BottomIntake(BOTTOM_INTAKE_MOTOR),
 
 			 //BUTTONBOARD 1
 			 m_Override(BUTTON_L(ARM_OVERRIDE)),
-			 m_Override2(BUTTON_L(2)),
+			 m_Override2(BUTTON_L(ARM_OVERRIDE_2)),
 
 			 m_ConeMode(BUTTON_L(CONE_MODE)),
 			 m_CubeMode(BUTTON_L(CUBE_MODE)),
 
-			 m_FrontMode(BUTTON_L(FRONT_MODE)),
-			 m_BackMode(BUTTON_L(BACK_MODE)),
-
-			 m_ManualArmBrake(BUTTON_L(MANUAL_ARM_BRAKE)),
-			 m_ManualSlipBrake(BUTTON_L(MANUAL_SLIP_BRAKE)),
-
-			m_Squeeze(BUTTON_L_TWO(6)),
+			 m_IntakeButton(BUTTON_L(INTAKE_BUTTON)),
+			 m_OuttakeButton(BUTTON_L(OUTTAKE_BUTTON)),
 
 			 m_TransitMode(BUTTON_L_TWO(TRANSIT_MODE)),
 			 m_GroundPickupMode(BUTTON_L_TWO(GROUND_PICKUP_MODE)),
-			 m_LoadingMode(BUTTON_L_TWO(LOADING_MODE)),
+			 m_PlacingMode(BUTTON_L_TWO(PLACING_MODE)),
 
 			m_Timer()
+
 
 			// m_Top(PlaceElement(0, 2)),
 
@@ -50,477 +44,92 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 
 void Arm::Init()
 {
-	shouldSqueeze = true;
-	m_Pivot.SetSelectedSensorPosition(PivotDegToTicks(OFFSET_FROM_VERTICAL));
-	//ArmBrakes(true);
-	//SlipBrakes(true);
-
 	SetButtons();
-	// Brake(false);
-	m_Pivot.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
-	m_Extraction.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	WristInit();
 
-	// set PID values
+	m_Pivot.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	m_Wrist.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	// m_TopIntake.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	m_BottomIntake.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+
 	m_Pivot.ConfigAllowableClosedloopError(0, PIVOT_ERROR);
 	m_Pivot.Config_kP(0, PIVOT_KP);
 	m_Pivot.Config_kI(0, PIVOT_KI);
 	m_Pivot.Config_kD(0, PIVOT_KD);
-	m_Extraction.ConfigAllowableClosedloopError(0, EXTRACTION_ERROR);
-	m_Extraction.Config_kP(0, EXTRACTION_KP);
-	m_Extraction.Config_kI(0, EXTRACTION_KI);
-	m_Extraction.Config_kD(0, EXTRACTION_KD);
+
+	// m_TopIntake.ConfigPeakCurrentDuration(1750);
+	// m_TopIntake.ConfigPeakCurrentLimit(6);
+	// m_TopIntake.ConfigContinuousCurrentLimit(2);
+	// m_TopIntake.EnableCurrentLimit(true);
+	m_BottomIntake.ConfigPeakCurrentDuration(1750);
+	m_BottomIntake.ConfigPeakCurrentLimit(6);
+	m_BottomIntake.ConfigContinuousCurrentLimit(2);
+	m_BottomIntake.EnableCurrentLimit(true);
 }
 
 void Arm::SetButtons()
 {
 	//m_Override.WhenPressed(frc2::InstantCommand([&] {frc2::CommandScheduler::GetInstance().CancelAll()};));
-	// m_Override2.WhenPressed(ManualControls());
+	m_Override.WhenPressed(ManualControls());
 
-	// m_ManualArmBrake.WhenPressed(ManualArmBrake());
-	// m_ManualSlipBrake.WhenPressed(ManualSlipBrake());
-
+	m_IntakeButton.WhenPressed(DynamicIntake());
+	m_OuttakeButton.WhenPressed(DynamicIntake());
+	m_GroundPickupMode.WhenPressed(PivotToPos(WRIST_GROUND_ANGLE)); //check
+	m_TransitMode.WhenPressed(PivotToPos(WRIST_TRANSIT_ANGLE)); //check
+	m_PlacingMode.WhenPressed(PivotToPos(WRIST_PLACING_ANGLE)); //check
 	
-	// m_TR.WhenPressed(m_Top);
-
-	// m_TC.WhenPressed(m_Mid);
-
-	// m_GroundPickupMode.WhenPressed(m_Bot);
-	// m_TransitMode.WhenPressed(TransitMode());
-	// m_LoadingMode.WhenPressed(LoadingMode());
-
-	Robot::GetRobot()->m_TL.WhenPressed(frc2::InstantCommand([&]{
-		DebugOutF("TL");
-		m_Intake.EnableCurrentLimit(false);
-		m_Intake.EnableCurrentLimit(true);
-		m_Intake.Set(ControlMode::PercentOutput, .55);
-	}));
-
-	Robot::GetRobot()->m_TC.WhenPressed(frc2::InstantCommand([&]{
-		DebugOutF("TC");
-		m_Intake.EnableCurrentLimit(false);
-		m_Intake.EnableCurrentLimit(true);
-		m_Intake.Set(ControlMode::PercentOutput, 0);
-	}));
-
-	Robot::GetRobot()->m_TR.WhenPressed(frc2::InstantCommand([&]{
-		DebugOutF("TR");
-		m_Intake.EnableCurrentLimit(false);
-		m_Intake.EnableCurrentLimit(true);
-
-		m_Intake.Set(ControlMode::PercentOutput, -.55);
-	}));
-
-	m_Intake.ConfigPeakCurrentDuration(1750);
-	m_Intake.ConfigPeakCurrentLimit(6);
-	m_Intake.ConfigContinuousCurrentLimit(2);
-	m_Intake.EnableCurrentLimit(true);
-
 }
 
-// 	// m_BL.WhenPressed(frc2::InstantCommand([&]{
-// 	// 	DebugOutF("m_BL");
-// 	// 	SelectedRow = 2;
-// 	// 	SelectedColumn = 0;
-// 	// 	frc::Pose2d SelectedPose = 
-// 	// 		Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-// 	// 	if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
-// 	// 		SelectedPose = SelectedPose.TransformBy(
-// 	// 			frc::Transform2d(
-// 	// 				frc::Translation2d(units::meter_t(0), units::meter_t(1.6764)),
-// 	// 				frc::Rotation2d(units::radian_t(0))
-// 	// 			)
-// 	// 		);
-// 	// 	} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
-// 	// 		SelectedPose = SelectedPose.TransformBy(
-// 	// 			frc::Transform2d(
-// 	// 				frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.6764)),
-// 	// 				frc::Rotation2d(units::radian_t(0))
-// 	// 			)
-// 	// 		);		
-// 	// 	}
-// 	// 	if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
-// 	// 		SelectedPose = 
-// 	// 			frc::Pose2d(
-// 	// 				units::meter_t(16.541)-SelectedPose.Translation().X(), 
-// 	// 				SelectedPose.Translation().Y(),
-// 	// 				SelectedPose.Rotation().RotateBy(Rotation2d(units::degree_t(180)))
-// 	// 			);
-// 	// 	}
-// 	// 	Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
-// 	// 	}));
+void Arm::WristInit(){
+	m_Wrist.SetSelectedSensorPosition(WRIST_OFFSET);
+}
 
-// 	// m_BC.WhenPressed(frc2::InstantCommand([&]{
-// 	// 	DebugOutF("m_BC");
-// 	// 	SelectedRow = 2;
-// 	// 	SelectedColumn = 1;
-// 	// 	frc::Pose2d SelectedPose = 
-// 	// 		Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-// 	// 	if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
-// 	// 		SelectedPose = SelectedPose.TransformBy(
-// 	// 			frc::Transform2d(
-// 	// 				frc::Translation2d(units::meter_t(0), units::meter_t(1.6764)),
-// 	// 				frc::Rotation2d(units::radian_t(0))
-// 	// 			)
-// 	// 		);
-// 	// 	} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
-// 	// 		SelectedPose = SelectedPose.TransformBy(
-// 	// 			frc::Transform2d(
-// 	// 				frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.6764)),
-// 	// 				frc::Rotation2d(units::radian_t(0))
-// 	// 			)
-// 	// 		);		
-// 	// 	}
-// 	// 	if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
-// 	// 		SelectedPose = 
-// 	// 			frc::Pose2d(
-// 	// 				units::meter_t(16.541)-SelectedPose.Translation().X(), 
-// 	// 				SelectedPose.Translation().Y(),
-// 	// 				SelectedPose.Rotation().RotateBy(Rotation2d(units::degree_t(180)))
-// 	// 			);
-// 	// 	}
-// 	// 	Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;
-// 	// 	}));
+// while override is active, gives manual joysticks control over the two arm motors
+frc2::FunctionalCommand* Arm::ManualControls()
+{
+	return new frc2::FunctionalCommand([&] { // onInit
+		//empty
+	},
+	[&] { // onExecute
+		m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetButtonBoard().GetRawAxis(PIVOT_CONTROL) / 3);
+		m_Wrist.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetButtonBoard().GetRawAxis(WRIST_CONTROL) / 3);
 
-// 	// m_BR.WhenPressed(frc2::InstantCommand([&]{
-// 	// 	DebugOutF("m_BR");
-// 	// 	SelectedRow = 2;
-// 	// 	SelectedColumn = 2;
-// 	// 	frc::Pose2d SelectedPose = 
-// 	// 		Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-// 	// 	if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
-// 	// 		SelectedPose = SelectedPose.TransformBy(
-// 	// 			frc::Transform2d(
-// 	// 				frc::Translation2d(units::meter_t(0), units::meter_t(1.6764)),
-// 	// 				frc::Rotation2d(units::radian_t(0))
-// 	// 			)
-// 	// 		);
-// 	// 	} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
-// 	// 		SelectedPose = SelectedPose.TransformBy(
-// 	// 			frc::Transform2d(
-// 	// 				frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.6764)),
-// 	// 				frc::Rotation2d(units::radian_t(0))
-// 	// 			)
-// 	// 		);		
-// 	// 	}
-// 	// 	if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
-// 	// 		SelectedPose = 
-// 	// 			frc::Pose2d(
-// 	// 				units::meter_t(16.541)-SelectedPose.Translation().X(), 
-// 	// 				SelectedPose.Translation().Y(),
-// 	// 				SelectedPose.Rotation().RotateBy(Rotation2d(units::degree_t(180)))
-// 	// 			);
-// 	// 	}
-// 	// 	Robot::GetRobot()->GetDriveTrain().m_TransformedPose = SelectedPose;		
-// 	// // }));
+	// ---------------------------------------------------------------------------------------
 
-// 	// m_Override.WhenPressed(frc2::InstantCommand([&]{WaitBrakeTelescope(60)->Schedule();}));
-// 	// m_Override.WhenPressed(frc2::InstantCommand([&]{DebugOutF("pushed");}));
-// 	// m_Override.WhenReleased(frc2::InstantCommand([&]{WaitBrakeTelescope(50)->Schedule();}));
-// }
+	//  double power = .55;
+	// 	if(Robot::GetRobot()->GetButtonBoard().GetRawButton(CUBE_MODE)) {
+	// 		if(Robot::GetRobot()->GetButtonBoard().GetRawButton(INTAKE_BUTTON)) {
+	// 			m_TopIntake.Set(ControlMode::PercentOutput, power);
+	// 			m_BottomIntake.Set(ControlMode::PercentOutput, power);
+	// 		} else if (Robot::GetRobot()->GetButtonBoard().GetRawButton(OUTTAKE_BUTTON)) {
+	// 			m_TopIntake.Set(ControlMode::PercentOutput, -power);
+	// 			m_BottomIntake.Set(ControlMode::PercentOutput, -power);
+	// 		}
+	// 	} else if (Robot::GetRobot()->GetButtonBoard().GetRawButton(CONE_MODE)) {
+	// 		if(Robot::GetRobot()->GetButtonBoard().GetRawButton(INTAKE_BUTTON)) {f
+	// 			m_TopIntake.Set(ControlMode::PercentOutput, power);
+	// 			m_BottomIntake.Set(ControlMode::PercentOutput, -power);
+	// 		} else if (Robot::GetRobot()->GetButtonBoard().GetRawButton(OUTTAKE_BUTTON)) {
+	// 			m_TopIntake.Set(ControlMode::PercentOutput, -power);
+	// 			m_BottomIntake.Set(ControlMode::PercentOutput, power);
+	// 		}
+	// }
 
-// void Arm::ArmBrakes(bool shouldBrake)
-// {
+	//---------------------------------------------------------------------------------------------
 	
-// 			if (shouldBrake)
-// 		{
-// 			m_LeftBrake.Set(0);
-// 			m_RightBrake.Set(0);
-// 		}
-// 		else
-// 		{
-// 			m_LeftBrake.Set(1);
-// 			m_RightBrake.Set(1);
-// 		}
+	double power = -.55; //default power for cone
 	
-	
-// }
+	if(Robot::GetRobot()->GetButtonBoard().GetRawButton(INTAKE_BUTTON)) m_BottomIntake.Set(ControlMode::PercentOutput, power);
+	else if (Robot::GetRobot()->GetButtonBoard().GetRawButton(OUTTAKE_BUTTON)) m_BottomIntake.Set(ControlMode::PercentOutput, 1);
+	else m_BottomIntake.Set(ControlMode::PercentOutput, 0);
 
-// void Arm::SlipBrakes(bool shouldBrake)
-// {
-// 	if (shouldBrake)
-// 	{
-// 		m_SlipBrake.Set(.55);
-// 	}
-// 	else
-// 	{
-// 		m_SlipBrake.Set(0);
-// 	}
-// }
-
-// frc2::InstantCommand* Arm::PivotToPosition(double angleSetpoint)
-// {
-// 	return new frc2::InstantCommand([&]{
-// 		StartingTicks = m_Pivot.GetSelectedSensorPosition();
-// 		double currentAngle = PivotTicksToDeg(StartingTicks); // current angle of the arm
-// 		double degToMove = angleSetpoint - currentAngle;	  // how many degrees the arm needs to move in the correct direction
-// 		TicksToMove = PivotDegToTicks(degToMove);			  // how many ticks the pivot motor needs to move in the correct direction
-// 		Setpoint = StartingTicks + TicksToMove;
-
-// 		m_Pivot.Set(ControlMode::Position, Setpoint);
-// 		//DebugOutF(std::to_string(PivotTicksToDeg(m_Pivot.GetSelectedSensorPosition())));
-// 	}
-// 	);
-// }
-
-// frc2::SequentialCommandGroup* Arm::WaitBrakeTelescope(double Setpoint) {
-// 	double tempSet = Setpoint;
-// 	return new frc2::SequentialCommandGroup(
-// 		frc2::InstantCommand([&]{
-// 			ArmBrakes(false);
-// 			SlipBrakes(false);
-// 			}),
-// 		frc2::WaitCommand(0.25_s),
-// 		*Telescope(tempSet)
-// 	);
-// }
-
-// // length should be a setpoint in inches
-// frc2::FunctionalCommand* Arm::Telescope(double Setpoint) {
-// 	SetpointLength = Setpoint;
-// 	return new frc2::FunctionalCommand(
-// 		[&] { // onInit
-// 		//empty
-// 		},
-// 		[&] { // onExecute
-// 			ArmLength = StringPotUnitsToInches(m_StringPot.GetValue()) + 1 + ARM_MINIMUM_LENGTH;
-// 			DebugOutF(std::to_string(ArmLength));
-// 			if(ArmLength < SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, -.1);
-// 			else if(ArmLength > SetpointLength) m_Extraction.Set(ControlMode::PercentOutput, .2);
-			
-// 		},
-// 		[&](bool e) { // onEnd
-// 			m_Extraction.Set(ControlMode::PercentOutput, 0);
-// 			ArmBrakes(true);
-// 			SlipBrakes(true);
-// 		},
-// 		[&] { // isFinished
-// 			return (abs(ArmLength - SetpointLength) < 3);
-// 		});
-// }
-
-// frc2::SequentialCommandGroup* Arm::Squeeze()
-// {
-// 	return new frc2::SequentialCommandGroup(
-// 		frc2::InstantCommand([&] {if (shouldSqueeze) SlipBrakes(false);}),
-// 		frc2::WaitCommand(.5_s),
-// 		frc2::FunctionalCommand([&] { // onInit
-// 		if(shouldSqueeze) {
-// 			ArmBrakes(true);
-// 			m_Extraction.Set(ControlMode::PercentOutput, .15);
-// 			DebugOutF("set false");
-
-// 		} else {
-// 			double a;
-// 			DebugOutF("set true");
-// 			m_Timer.Reset();
-// 			m_Timer.Start();
-// 			SlipBrakes(false);
-// 			ArmBrakes(true);
-// 			a = m_Extraction.GetSelectedSensorPosition();
-// 			m_Extraction.Set(ControlMode::Position, m_Extraction.GetSelectedSensorPosition() - 20000);
-// 		}
-// 		},
-// 		[&] { // onExecute
-// 			//if (shouldSqueeze) DebugOutF(std::to_string(m_Extraction.GetSupplyCurrent()));
-// 			//else DebugOutF(std::to_string(m_Extraction.GetSelectedSensorVelocity()));
-
-// 		},
-// 		[&](bool e) { // onEnd
-// 			if(shouldSqueeze) {
-// 				m_Extraction.Set(ControlMode::PercentOutput, EXTRACTION_MOTOR_HOLD_POWER);
-// 				shouldSqueeze = false;
-// 				DebugOutF("Ended squeeze");
-// 			} else {
-// 				m_Extraction.Set(ControlMode::PercentOutput, 0);
-// 				SlipBrakes(true);
-// 				shouldSqueeze = true;
-// 				DebugOutF("Ended unsqueeze");
-// 			}
-// 		},
-// 		[&] { // isFinished
-// 			return (m_Extraction.GetSupplyCurrent() > SQUEEZE_AMP_THRESHOLD && shouldSqueeze) || (m_Timer.Get() > 1.5_s && !shouldSqueeze);
-// 		}
-// 		// ,	&Robot::GetRobot()->GetArm()
-// 		) 
-// 	);
-// }
-
-// // sets arm to a set angle and radius based on element being places
-// // type can be either CONE or CUBE
-// frc2::SequentialCommandGroup* Arm::PlaceElement(/*int type,*/ int row, int column)
-// {
-// 	//index 0 is TL; index 8 is BR (read like a book)
-// 	double FrontRadiiValues[9] = {
-// 		FRONT_HIGH_CONE_RADIUS,   FRONT_HIGH_CUBE_RADIUS,  FRONT_HIGH_CONE_RADIUS,
-// 		FRONT_MIDDLE_CONE_RADIUS, FRONT_MIDDLE_CUBE_RADIUS, FRONT_MIDDLE_CONE_RADIUS,
-// 		FRONT_LOW_RADIUS,         FRONT_LOW_RADIUS,        FRONT_LOW_RADIUS
-// 	}; //inches
-
-// 	double FrontAngleValues[9] = {
-// 		FRONT_HIGH_CONE_ANGLE,   FRONT_HIGH_CUBE_ANGLE,   FRONT_HIGH_CONE_ANGLE,
-// 		FRONT_MIDDLE_CONE_ANGLE, FRONT_MIDDLE_CUBE_ANGLE, FRONT_MIDDLE_CONE_ANGLE,
-// 		FRONT_LOW_ANGLE,         FRONT_LOW_ANGLE,         FRONT_LOW_ANGLE
-// 	}; //degrees
-
-// 	double BackRadiiValues[9] = {
-// 		BACK_HIGH_CONE_RADIUS,   BACK_HIGH_CUBE_RADIUS,  BACK_HIGH_CONE_RADIUS,
-// 		BACK_MIDDLE_CONE_RADIUS, BACK_MIDDLE_CUBE_ANGLE, BACK_MIDDLE_CONE_ANGLE,
-// 		BACK_LOW_RADIUS,         BACK_LOW_RADIUS,        BACK_LOW_RADIUS
-// 	}; //inches
-
-// 	double BackAngleValues[9] = {
-// 		BACK_HIGH_CONE_ANGLE,   BACK_HIGH_CUBE_ANGLE,   BACK_HIGH_CONE_ANGLE,
-// 		BACK_MIDDLE_CONE_ANGLE, BACK_MIDDLE_CUBE_ANGLE, BACK_MIDDLE_CONE_ANGLE,
-// 		FRONT_LOW_ANGLE,         BACK_LOW_ANGLE,        BACK_LOW_ANGLE
-// 	}; //degrees
-// 	int ArrayValueNeeded = (row*3) + column;
-
-
-// 	if (row != 0) {
-// 		return new frc2::SequentialCommandGroup(
-// 			*PivotToPosition(FrontAngleValues[ArrayValueNeeded]),
-// 			frc2::InstantCommand([&]{
-// 				ArmBrakes(false);
-// 				SlipBrakes(false);
-// 				}),
-// 			frc2::WaitCommand(0.25_s),
-// 			*Telescope(FrontRadiiValues[ArrayValueNeeded])
-// 	);
-// 	} else {
-// 		return new frc2::SequentialCommandGroup(
-// 			*PivotToPosition(BackAngleValues[ArrayValueNeeded]),
-// 			frc2::InstantCommand([&]{
-// 				ArmBrakes(false);
-// 				SlipBrakes(false);
-// 				}),
-// 			frc2::WaitCommand(0.25_s),
-// 			*Telescope(BackRadiiValues[ArrayValueNeeded])
-// 		);
-// 	}
-// }
-
-// frc2::SequentialCommandGroup* Arm::PlaceElementAuto()
-// {
-// 	//index 0 is TL; index 8 is BR (read like a book)
-// 	double FrontRadiiValues[9] = {
-// 		FRONT_HIGH_CONE_RADIUS,   FRONT_HIGH_CUBE_RADIUS,  FRONT_HIGH_CONE_RADIUS,
-// 		FRONT_MIDDLE_CONE_RADIUS, FRONT_MIDDLE_CUBE_RADIUS, FRONT_MIDDLE_CONE_RADIUS,
-// 		FRONT_LOW_RADIUS,         FRONT_LOW_RADIUS,        FRONT_LOW_RADIUS
-// 	}; //inches
-
-// 	double FrontAngleValues[9] = {
-// 		FRONT_HIGH_CONE_ANGLE,   FRONT_HIGH_CUBE_ANGLE,   FRONT_HIGH_CONE_ANGLE,
-// 		FRONT_MIDDLE_CONE_ANGLE, FRONT_MIDDLE_CUBE_ANGLE, FRONT_MIDDLE_CONE_ANGLE,
-// 		FRONT_LOW_ANGLE,         FRONT_LOW_ANGLE,         FRONT_LOW_ANGLE
-// 	}; //degrees
-
-// 	double BackRadiiValues[9] = {
-// 		BACK_HIGH_CONE_RADIUS,   BACK_HIGH_CUBE_RADIUS,  BACK_HIGH_CONE_RADIUS,
-// 		BACK_MIDDLE_CONE_RADIUS, BACK_MIDDLE_CUBE_ANGLE, BACK_MIDDLE_CONE_ANGLE,
-// 		BACK_LOW_RADIUS,         BACK_LOW_RADIUS,        BACK_LOW_RADIUS
-// 	}; //inches
-
-// 	double BackAngleValues[9] = {
-// 		BACK_HIGH_CONE_ANGLE,   BACK_HIGH_CUBE_ANGLE,   BACK_HIGH_CONE_ANGLE,
-// 		BACK_MIDDLE_CONE_ANGLE, BACK_MIDDLE_CUBE_ANGLE, BACK_MIDDLE_CONE_ANGLE,
-// 		FRONT_LOW_ANGLE,         BACK_LOW_ANGLE,        BACK_LOW_ANGLE
-// 	}; //degrees
-
-
-// 	int ArrayValueNeeded = (SelectedRow*3) + SelectedColumn;
-
-
-// 	if (SelectedRow != 0) {
-// 		return new frc2::SequentialCommandGroup(
-// 			*PivotToPosition(FrontAngleValues[ArrayValueNeeded]),
-// 			DriveToPosCommand(),
-// 			frc2::InstantCommand([&]{
-// 				ArmBrakes(false);
-// 				SlipBrakes(false);
-// 				}),
-// 			frc2::WaitCommand(0.25_s),
-// 			*Telescope(FrontRadiiValues[ArrayValueNeeded])
-// 	);
-// 	} else {
-// 		return new frc2::SequentialCommandGroup(
-// 			*PivotToPosition(BackAngleValues[ArrayValueNeeded]),
-// 			DriveToPosCommand(),
-// 			frc2::InstantCommand([&]{
-// 				ArmBrakes(false);
-// 				SlipBrakes(false);
-// 				}),
-// 			frc2::WaitCommand(0.25_s),
-// 			*Telescope(BackRadiiValues[ArrayValueNeeded])
-// 		);
-// 	}
-// }
-
-// // Arm positions for transit
-// frc2::SequentialCommandGroup* Arm::TransitMode()
-// {
-// 	return new frc2::SequentialCommandGroup(				
-// 			frc2::InstantCommand([&] { PivotToPosition(TRANSIT_ANGLE);}),
-// 			*Telescope(TRANSIT_RADIUS)
-// 		);
-// }
-
-// // Arm positions for picking up from the ground
-// frc2::SequentialCommandGroup* Arm::GroundPickupMode()
-// {
-// 	return new frc2::SequentialCommandGroup(
-// 		frc2::InstantCommand([&] { PivotToPosition(GROUND_PICKUP_ANGLE);}),
-// 		*Telescope(GROUND_PICKUP_RADIUS));		
-// }
-
-// // Arm positions to load cone from loading station
-// frc2::SequentialCommandGroup* Arm::LoadingMode() //untested
-// {
-// 	return new frc2::SequentialCommandGroup(
-// 		frc2::InstantCommand([&] { PivotToPosition(BACK_LOADING_ANGLE);}),
-// 		*Telescope(BACK_LOADING_RADIUS)
-// 	);
-// }
-								
-		
-
-// // while override is active, gives manual joysticks control over the two arm motors
-// frc2::FunctionalCommand* Arm::ManualControls()
-// {
-// 	return new frc2::FunctionalCommand([&] { // onInit
-// 		SlipBrakes(false);
-// 		ArmBrakes(false);
-// 	},
-// 	[&] { // onExecute
-// 		m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(PIVOT_CONTROL) / 5);
-// 		m_Extraction.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetJoystick().GetRawAxis(EXTRACTION_CONTROL) / 5);
-// 	},
-// 	[&](bool e) { // onEnd
-// 		m_Pivot.Set(ControlMode::PercentOutput, 0);
-// 		m_Extraction.Set(ControlMode::PercentOutput, 0);
-// 		SlipBrakes(true);
-// 		ArmBrakes(true);
-// 	},
-// 	[&] { // isFinished
-// 		return !Robot::GetRobot()->GetButtonBoard().GetRawButton(ARM_OVERRIDE);
-// 	});
-// }
-
-// frc2::InstantCommand* Arm::ManualArmBrake() {
-// 	return new frc2::InstantCommand([&] {
-// 		if (m_RightBrake.Get() < .1) { //engaged
-// 			ArmBrakes(false);
-// 		} else { //disengaged
-// 			ArmBrakes(true);
-// 		}
-// 	});
-// }
-
-// frc2::InstantCommand* Arm::ManualSlipBrake() {
-// 	return new frc2::InstantCommand([&] {
-// 		if (m_SlipBrake.Get() > .5 ) { //engaged
-// 			SlipBrakes(false);
-// 		} else { //disengaged
-// 			SlipBrakes(true);
-// 		}
-// 	});
-// }
+	},[&](bool e) { // onEnd
+		m_Pivot.Set(ControlMode::PercentOutput, 0);
+		m_Wrist.Set(ControlMode::PercentOutput, 0);
+		m_BottomIntake.Set(ControlMode::PercentOutput, 0);
+		// m_BottomIntake.Set(ControlMode::PercentOutput, 0);
+	},
+	[&] { // isFinished
+		return !Robot::GetRobot()->GetButtonBoard().GetRawButton(ARM_OVERRIDE);
+	});
+}
