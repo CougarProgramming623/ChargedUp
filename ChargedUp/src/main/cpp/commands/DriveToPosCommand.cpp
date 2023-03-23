@@ -28,11 +28,11 @@ void DriveToPosCommand::Initialize(){
 
         PathPoint(
             m_Start.Translation(), 
-            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(),
+            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(), //wrong?
             m_Start.Rotation()
         ), PathPoint(
             m_End.Translation(), 
-            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(),
+            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(), //wrong?
             m_End.Rotation()
         )
 

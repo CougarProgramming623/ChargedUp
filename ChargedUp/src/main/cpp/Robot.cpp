@@ -202,19 +202,19 @@ void Robot::AutoButtons(){
 		// })
 }
 
-frc::Pose2d Robot::TransformPose(frc::Pose2d SelectedPose){
+frc::Pose2d Robot::TransformPose(frc::Pose2d SelectedPose){ //rotating poses do not add correctly
 	if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
 		SelectedPose = SelectedPose +
 			frc::Transform2d(
 				frc::Translation2d(units::meter_t(0), units::meter_t(1.68)),
 				frc::Rotation2d(units::radian_t(0))
-		).Inverse();
+		).Inverse(); //delete inverse if not going 180
 	} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
 		SelectedPose = SelectedPose + 
 			frc::Transform2d(
 				frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.68)),
 				frc::Rotation2d(units::radian_t(0))
-		).Inverse();		
+		).Inverse(); //delete inverse if not going 180	
 	}
 	if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
 		SelectedPose = 
