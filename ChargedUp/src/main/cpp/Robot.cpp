@@ -317,7 +317,7 @@ void Robot::AutonomousInit() {
 
   //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
 
-  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.25), units::meter_t(7.50), frc::Rotation2d(units::degree_t(0)));
+  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.91), units::meter_t(1.82), frc::Rotation2d(units::degree_t(0)));
   //frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), frkkjc::Rotation2d(units::degree_t(0)));
 
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
