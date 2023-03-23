@@ -20,6 +20,7 @@
 #include "COB.h"
 #include "Vision.h"
 #include "subsystems/Arm.h"
+#include "subsystems/MotionMagicTest.h"
 #include <frc/geometry/Pose2d.h>
 
 class Robot : public frc::TimedRobot {
@@ -109,4 +110,6 @@ class Robot : public frc::TimedRobot {
 
   int m_COBTicks;
   std::string m_AutoPath;
+
+  MotionMagicTest m_MMT;
 };

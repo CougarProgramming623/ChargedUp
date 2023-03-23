@@ -31,10 +31,10 @@ void Robot::RobotInit() {
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
   s_Instance = this;
-  m_DriveTrain.DriveInit();
+  // m_DriveTrain.DriveInit();
   m_Vision.VisionInit(); //Make one
   AutoButtons();
-  m_Arm.Init();
+  // m_Arm.Init();
   m_COBTicks = 0;
   m_AutoPath = "";
 }
@@ -417,10 +417,11 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+  m_MMT.MotionMagicTestInit();
 
   //GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
-  GetDriveTrain().BreakMode(true);
+  // GetDriveTrain().BreakMode(true);
    
   // frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.54), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
   //   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
