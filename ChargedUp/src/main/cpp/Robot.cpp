@@ -31,10 +31,10 @@ void Robot::RobotInit() {
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
   s_Instance = this;
-  // m_DriveTrain.DriveInit();
+  m_DriveTrain.DriveInit();
   m_Vision.VisionInit(); //Make one
   AutoButtons();
-  // m_Arm.Init();
+  m_Arm.Init();
   m_COBTicks = 0;
   m_AutoPath = "";
 }
@@ -72,6 +72,7 @@ void Robot::AutoButtons(){
 			PivotToPos(PIVOT_GROUND_ANGLE),
       WristToPos(WRIST_GROUND_ANGLE)
 	));
+
 
   m_ML.WhenPressed(
     new frc2::ParallelCommandGroup(
@@ -417,7 +418,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-  m_MMT.MotionMagicTestInit();
+  // m_MMT.MotionMagicTestInit();
 
   //GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);

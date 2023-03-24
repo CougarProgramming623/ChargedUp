@@ -19,7 +19,7 @@ void PivotToPos::Initialize() {
 }
 
 void PivotToPos::Execute() {
-	ARM.GetPivotMotor().Set(ControlMode::Position, ARM.PivotDegreesToTicks(targetDegrees));
+	ARM.GetPivotMotor().Set(ControlMode::MotionMagic, ARM.PivotDegreesToTicks(targetDegrees));
 	//DebugOutF(std::to_string(abs(ARM.PivotDegreesToTicks(targetDegrees) - ARM.GetPivotMotor().GetSelectedSensorPosition())));
 }
 
