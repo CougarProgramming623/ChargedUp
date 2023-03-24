@@ -6,16 +6,22 @@ AutoBalance::AutoBalance() {
     DebugOutF("Constructed");
 }
 
+/*
+initialize values
+*/
 void AutoBalance::Initialize() {
     //DebugOutF("Initialized");
-    bool balanced = false;
+    balanced = false;
+}
+/*
+pushes the balanced status and the pitch to the network tables and utilizes PID and the drivetrain BaseDrive()
+function to perform the autobalance command
+*/
+void AutoBalance::Execute() {
+
     double angle = Robot::GetRobot()->GetNavX().GetPitch() + 0.05;
-    Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/pitchAngle").SetDouble(Robot::GetRobot()->GetNavX().GetPitch() + 0.05);
     if(angle > -0.5 && angle < 0.5) (balanced = true);
     Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/balanced").SetBoolean(balanced);
-}
-
-void AutoBalance::Execute() {
 
     double kPy = 0.01;//0.00005;
     double kIy = 0;//0.0000001;
@@ -79,10 +85,14 @@ void AutoBalance::Execute() {
     );
     // DebugOutF("Error: " + std::to_string(errorY));
     // DebugOutF("Output: " + std::to_string(outputY));
-    DebugOutF(std::to_string(m_currentAngleT));
+    //DebugOutF(std::to_string(m_currentAngleT));
     Robot::GetRobot()->dErrorY = errorY;
 }
 
 void AutoBalance::End(bool interrupted){
     //DebugOutF("Finished");
+}
+
+bool AutoBalance::IsFinished(){
+    return Robot::GetRobot()->GetJoyStick().GetRawAxis(1) > 0.3 || Robot::GetRobot()->GetJoyStick().GetRawAxis(0) > 0.3 || Robot::GetRobot()->GetJoyStick().GetRawAxis(2) > 0.3;
 }

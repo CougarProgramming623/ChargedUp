@@ -24,6 +24,7 @@
 #include "COB.h"
 #include "Vision.h"
 #include "subsystems/Arm.h"
+#include <frc/geometry/Pose2d.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -35,6 +36,8 @@ class Robot : public frc::TimedRobot {
   inline frc::Joystick& GetJoystick() { return m_Joystick; }
 
   void RobotInit() override;
+  void AutoButtons();
+  frc::Pose2d TransformPose(frc::Pose2d SelectedPose);
   void RobotPeriodic() override;
   void DisabledInit() override;
   void DisabledPeriodic() override;
@@ -57,6 +60,7 @@ class Robot : public frc::TimedRobot {
   inline COB& GetCOB() { return m_COB; }
   inline Vision& GetVision() { return m_Vision; }
 
+
   double previousErrorX = 0;
   double previousErrorY = 0;
   double dErrorY = 0;
@@ -66,8 +70,26 @@ class Robot : public frc::TimedRobot {
   double previousValueY = 0;
   double previousValueT = 0;
 
+  frc2::Button m_TL;
+	frc2::Button m_TC;
+	frc2::Button m_TR;
+	frc2::Button m_ML;
+	frc2::Button m_MC;
+	frc2::Button m_MR;
+	frc2::Button m_BL;
+	frc2::Button m_BC;
+	frc2::Button m_BR;
+
+	frc2::Button m_LeftGrid;
+	frc2::Button m_CenterGrid;
+	frc2::Button m_RightGrid;
+
+  frc2::Button m_NavXReset;
 
  private:
+
+  int SelectedRow;
+	int SelectedColumn;
 
   static Robot* s_Instance;
 
@@ -89,10 +111,14 @@ class Robot : public frc::TimedRobot {
 
   frc::Timer m_AutoTimer;
   DriveTrain m_DriveTrain;
+  Arm m_Arm;
 
   Vision m_Vision;
 
   COB m_COB;
   frc::Joystick m_ButtonBoard = frc::Joystick(0);
   frc::Joystick m_ButtonBoardTwo = frc::Joystick(2);
+
+  int m_COBTicks;
+  std::string m_AutoPath;
 };

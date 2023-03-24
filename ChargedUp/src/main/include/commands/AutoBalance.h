@@ -7,7 +7,7 @@
 #include <frc2/command/SubsystemBase.h>
 
 class AutoBalance
-    :public frc2::CommandHelper<frc2::CommandBase, AutoBalance> {
+    : public frc2::CommandHelper<frc2::CommandBase, AutoBalance> {
     
 public:
   explicit AutoBalance();
@@ -15,8 +15,10 @@ public:
   void Initialize() override;
   void Execute() override;
   void End(bool interrupted) override;
+  bool IsFinished() override;
 
  private:
+  bool balanced;
   double m_currentAngleX;
   double m_currentAngleY;
   double m_currentAngleT;

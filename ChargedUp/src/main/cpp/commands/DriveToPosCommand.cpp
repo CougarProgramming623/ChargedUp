@@ -17,6 +17,7 @@ void DriveToPosCommand::Initialize(){
     DebugOutF("Init");
     m_Start = Robot::GetRobot()->GetDriveTrain().GetOdometry()->GetEstimatedPosition();
     m_End = Robot::GetRobot()->GetDriveTrain().m_TransformedPose;
+    // DebugOutF(std::to_string(Robot::GetRobot()->GetDriveTrain().m_TransformedPose.X().value()));
     DebugOutF("Start: (" + std::to_string(m_Start.Translation().X().value()) + ", " + std::to_string(m_Start.Translation().Y().value()) + ")");
     DebugOutF("End: (" + std::to_string(m_End.Translation().X().value()) + ", " + std::to_string(m_End.Translation().Y().value()) + ")");
     
@@ -27,11 +28,11 @@ void DriveToPosCommand::Initialize(){
 
         PathPoint(
             m_Start.Translation(), 
-            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(),
+            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(), //wrong?
             m_Start.Rotation()
         ), PathPoint(
             m_End.Translation(), 
-            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(),
+            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(), //wrong?
             m_End.Rotation()
         )
 

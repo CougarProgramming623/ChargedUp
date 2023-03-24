@@ -56,10 +56,6 @@ class DriveTrain : public frc2::SubsystemBase {
   void BaseDrive(frc::ChassisSpeeds chassisSpeeds);
   void DriveInit();
   void BreakMode(bool on);
-  // void TrajectoryFollow(frc::Trajectory trajectory);
-  // void TrajectoryDrive(std::array<frc::SwerveModuleState, 4> states);
-  // void PathPlannerFollow(pathplanner::PathPlannerTrajectory trajectory);
-
   void Periodic() override;
 
   frc::Translation2d m_FrontLeftLocation;
@@ -103,21 +99,27 @@ class DriveTrain : public frc2::SubsystemBase {
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> m_EventMap;
 
   int m_SelectedGrid;
-  frc::Pose2d m_TransformedPose;
 
   frc::Pose2d m_PoseMatrix[3][3] = {
     {TLPOSE, TCPOSE, TRPOSE},
     {MLPOSE, MCPOSE, MRPOSE},
     {BLPOSE, BCPOSE, BRPOSE},
   };
+
+  frc::Pose2d m_TransformedPose;
   
   private:
+
+
 
   frc::Timer m_Timer;
 
   frc2::Button m_TestJoystickButton;
+  frc2::Button m_JoystickButtonTwo;
 
   bool m_IsBalancing;
+
+  frc2::Button m_NavXReset;
 
   frc::SwerveDriveKinematics<4> m_Kinematics;
   frc::SwerveDrivePoseEstimator<4> m_Odometry;
