@@ -29,11 +29,7 @@ Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 m_IntakeButton(BUTTON_L(INTAKE_BUTTON)),
 			 m_OuttakeButton(BUTTON_L(OUTTAKE_BUTTON)),
 
-			 m_TransitMode(BUTTON_L_TWO(TRANSIT_MODE)),
-			 m_GroundPickupMode(BUTTON_L_TWO(GROUND_PICKUP_MODE)),
-			 m_PlacingMode(BUTTON_L_TWO(PLACING_MODE)),
-
-			 m_BigRed(BUTTON_L(BIG_RED)),
+			 
 
 			m_Timer()
 
@@ -95,21 +91,6 @@ void Arm::SetButtons()
 	m_IntakeButton.WhenPressed(DynamicIntake());
 	m_OuttakeButton.WhenPressed(DynamicIntake());
 
-	m_GroundPickupMode.WhenPressed(
-		new frc2::ParallelCommandGroup(
-			frc2::PrintCommand("Back Mid Cube"),
-			PivotToPos(PIVOT_PLACING_MID_CUBE_ANGLE), 
-      		WristToPos(WRIST_PLACING_MID_CUBE_ANGLE)
-	  	)
-	);
-
-	m_TransitMode.WhenPressed(
-		new frc2::ParallelCommandGroup(
-			frc2::PrintCommand("Intermediate Cone"),
-			PivotToPos(66.6), 
-      		WristToPos(WRIST_TRANSIT_ANGLE)
-	  	)
-	);
 
 	// m_GroundPickupMode.WhenPressed(
 	// 	new frc2::ParallelCommandGroup(
@@ -133,13 +114,7 @@ void Arm::SetButtons()
 	// 	)		// new WristToPos(WRIST_PLACING_MID_CUBE_ANGLE)
 	// );
 
-	m_BigRed.WhenPressed(
-		new frc2::ParallelCommandGroup(
-			frc2::PrintCommand("Transit"),
-			PivotToPos(PIVOT_TRANSIT_ANGLE), 
-      		WristToPos(127)
-	  	)		
-	);
+	
 
 	
 }

@@ -81,7 +81,13 @@ class Robot : public frc::TimedRobot {
 	frc2::Button m_CenterGrid;
 	frc2::Button m_RightGrid;
 
-  frc2::Button m_NavXReset;
+  frc2::Button m_BigRed;
+
+  frc2::Button m_MidCone;
+  frc2::Button m_MidCube;
+  frc2::Button m_PlacingMode;
+
+   frc2::Button m_NavXReset;
 
  private:
 
