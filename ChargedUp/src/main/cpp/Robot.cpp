@@ -130,8 +130,8 @@ void Robot::AutoButtons(){
 	m_LeftGrid.WhenPressed(
     new frc2::ParallelCommandGroup(
 		  frc2::PrintCommand("High Cube Placement"),
-			PivotToPos(-40.0), 
-      WristToPos(28.0)
+			PivotToPos(-33.0), 
+      WristToPos(46.0)
 	  )
   );
 
@@ -268,8 +268,8 @@ void Robot::RobotPeriodic() {
 
   // DebugOutF("PosDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().GetWristMotor().GetSelectedSensorPosition())));
 	// DebugOutF("PosTicks: " + std::to_string(GetArm().GetWristMotor().GetSelectedSensorPosition()));
-  // DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
-  // DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
+  DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
+  DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
 
   //DebugOutF(m_AutoPath);
 
@@ -359,7 +359,7 @@ void Robot::AutonomousInit() {
         return false;
         }
       ),
-      WristToPos(WRIST_PLACING_MID_CONE_ANGLE)
+      WristToPos(28.0)
     ),
 
     frc2::ParallelRaceGroup(

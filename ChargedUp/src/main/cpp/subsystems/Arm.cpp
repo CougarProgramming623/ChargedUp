@@ -50,24 +50,23 @@ void Arm::Init()
 	// m_TopIntake.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 	m_BottomIntake.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
-	m_Pivot.ConfigAllowableClosedloopError(0, PIVOT_ERROR);
-	m_Pivot.Config_kP(0, PIVOT_KP);
-	m_Pivot.Config_kI(0, PIVOT_KI);
-	m_Pivot.Config_kD(0, PIVOT_KD);
-
-	m_Wrist.ConfigAllowableClosedloopError(0, WRIST_ERROR);
-	m_Wrist.Config_kP(0, WRIST_KP);
-	m_Wrist.Config_kI(0, WRIST_KI);
-	m_Wrist.Config_kD(0, WRIST_KD);
-
-	m_Wrist.Config_kF(0, 0.06089285714, 0);
-	// m_Wrist.Config_kP(0, 0.006730263158, 0);
-	m_Wrist.ConfigMotionCruiseVelocity(8400, 0); //8400 working value
-	m_Wrist.ConfigMotionAcceleration(8400, 0); //16800 working value
-
+	m_Pivot.ConfigAllowableClosedloopError(0, 10);
+	m_Pivot.Config_kP(0, 0.01);
+	m_Pivot.Config_kI(0, 0.00001); //0.000005
+	m_Pivot.Config_kD(0, 0.3);
 	m_Pivot.Config_kF(0, 0.0639375, 0);
 	m_Pivot.ConfigMotionCruiseVelocity(8000, 0); //8400 working value
 	m_Pivot.ConfigMotionAcceleration(8000, 0); //16800 working value
+
+	m_Wrist.ConfigAllowableClosedloopError(0, 0);
+	m_Wrist.Config_kP(0, 0.0175); //0.009
+	m_Wrist.Config_kI(0, 0.000002);
+	m_Wrist.Config_kD(0, 0.6);
+	m_Wrist.Config_kF(0, 0.06089285714, 0);
+	m_Wrist.ConfigMotionCruiseVelocity(8400, 0); //8400 working value
+	m_Wrist.ConfigMotionAcceleration(16800, 0); //16800 working value
+
+	
 
 	// m_TopIntake.ConfigPeakCurrentDuration(1750);
 	// m_TopIntake.ConfigPeakCurrentLimit(6);
