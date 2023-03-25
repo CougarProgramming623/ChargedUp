@@ -73,24 +73,6 @@ void Robot::AutoButtons(){
   //     WristToPos(WRIST_GROUND_ANGLE)
 	// ));
 
-  m_ML.WhenPressed(
-    // new frc2::ParallelCommandGroup(
-		// 	frc2::PrintCommand("Low Cube Placement"),
-		// 	PivotToPos(86), 
-    //   WristToPos(45)
-	  // )
-
-    new frc2::InstantCommand([&]{
-		DebugOutF("m_ML");
-		SelectedRow = 1;
-		SelectedColumn = 0;
-		frc::Pose2d SelectedPose = 
-			Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
-    })
-
-  );
-
   // m_TL.WhenPressed(
   //   new frc2::ParallelCommandGroup(
 	// 	  frc2::PrintCommand("Mid Cube Placement"),
@@ -131,8 +113,24 @@ void Robot::AutoButtons(){
 	//   )
   // );
 
-  
-	
+  m_ML.WhenPressed(
+    // new frc2::ParallelCommandGroup(
+		// 	frc2::PrintCommand("Low Cube Placement"),
+		// 	PivotToPos(86), 
+    //   WristToPos(45)
+	  // )
+
+    new frc2::InstantCommand([&]{
+		DebugOutF("m_ML");
+		SelectedRow = 1;
+		SelectedColumn = 0;
+		frc::Pose2d SelectedPose = 
+			Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
+		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
+    })
+
+  );
+
 	m_MC.WhenPressed(
     new frc2::InstantCommand([&]{
 		DebugOutF("m_MC");
@@ -256,8 +254,8 @@ void Robot::RobotPeriodic() {
 
   // DebugOutF("PosDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().GetWristMotor().GetSelectedSensorPosition())));
 	// DebugOutF("PosTicks: " + std::to_string(GetArm().GetWristMotor().GetSelectedSensorPosition()));
-  DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
-  DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
+  // DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
+  // DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
 
   //DebugOutF(m_AutoPath);
 
@@ -429,8 +427,14 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
 
   //GetNavX().ZeroYaw();
+  m_DriveTrain.BreakMode(true);
   GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
+  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(3.1), units::meter_t(4.4), frc::Rotation2d(units::degree_t(0)));
+  GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
+  wpi::array<frc::SwerveModulePosition, 4>
+        (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
+  startingPose);
    
   // frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.54), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
   //   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
