@@ -126,7 +126,7 @@ frc2::FunctionalCommand* Arm::ManualControls()
 	},
 	[&] { // onExecute
 		m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetButtonBoard().GetRawAxis(PIVOT_CONTROL) / 2);
-		m_Wrist.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetButtonBoard().GetRawAxis(WRIST_CONTROL) / 3);
+		m_Wrist.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetButtonBoard().GetRawAxis(WRIST_CONTROL) / 2);
 
 	// ---------------------------------------------------------------------------------------
 
