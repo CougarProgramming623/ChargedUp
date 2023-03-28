@@ -46,7 +46,7 @@ void Robot::AutoButtons(){
   m_TC = frc2::Button(BUTTON_L_TWO(GRID_TC));
   m_TR = frc2::Button(BUTTON_L_TWO(GRID_TR));
   m_ML = frc2::Button(BUTTON_L_TWO(GRID_ML));
-  m_MC = frc2::Button(BUTTON_L_TWO(GRID_MC));
+  m_MC = frc2::Button([&] { return Robot::GetRobot()->GetButtonBoardTwo().GetRawButton(8); });
   m_MR = frc2::Button(BUTTON_L_TWO(GRID_MR));
   m_BL = frc2::Button(BUTTON_L_TWO(GRID_BL));
   m_BC = frc2::Button(BUTTON_L_TWO(GRID_BC));
@@ -56,7 +56,7 @@ void Robot::AutoButtons(){
   m_CenterGrid = frc2::Button(BUTTON_L_TWO(CENTER_GRID));
   m_RightGrid = frc2::Button(BUTTON_L_TWO(RIGHT_GRID));
 
-  m_NavXReset = frc2::Button(BUTTON_L(8)); //PUT Define
+  m_NavXReset = frc2::Button([&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(8); }); //PUT Define
   
   
   m_NavXReset.WhenPressed(
@@ -430,7 +430,7 @@ void Robot::TeleopInit() {
   m_DriveTrain.BreakMode(true);
   GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
-  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(3.1), units::meter_t(4.4), frc::Rotation2d(units::degree_t(0)));
+  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(3.03), units::meter_t(4.42), frc::Rotation2d(units::degree_t(0)));
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
   wpi::array<frc::SwerveModulePosition, 4>
         (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
