@@ -169,7 +169,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define PIVOT_GEAR_RATIO 160.0
 #define PIVOT_TICKS_PER_DEGREE (PIVOT_GEAR_RATIO*2048.0/360.0)
 
-#define WRIST_GEAR_RATIO 150.0
+#define WRIST_GEAR_RATIO 156.522
 #define WRIST_TICKS_PER_DEGREE (WRIST_GEAR_RATIO*2048.0/360.0)
 
 #define ARM_TOTAL_TICKS 185684
@@ -178,7 +178,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define CANCODER_MAX 237.6
 #define CANCODER_ZERO 126.3
 
-#define WRIST_TOTAL_TICKS 254609.0
+#define WRIST_TOTAL_TICKS 265679.39932
 #define WRIST_TOTAL_DEGREES (WRIST_TOTAL_TICKS/WRIST_GEAR_RATIO/2048)*360
 #define STRINGPOT_TOTAL_RANGE 512.0
 #define STRINGPOT_TOP 1125.0

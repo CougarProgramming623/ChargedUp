@@ -74,8 +74,8 @@ void Robot::AutoButtons(){
   m_BL.WhenPressed(
     new frc2::ParallelCommandGroup(
 		  frc2::PrintCommand("Ground Cube Pickup"),
-			PivotToPos(94.0),
-      WristToPos(-4.0)
+			PivotToPos(98.0),
+      WristToPos(3.0)
 	));
 
 
@@ -114,8 +114,8 @@ void Robot::AutoButtons(){
   m_TC.WhenPressed(
     new frc2::ParallelCommandGroup(
 		  frc2::PrintCommand("Low Substation"),
-			PivotToPos(23.0), 
-      WristToPos(-132.0)
+			PivotToPos(25.0), 
+      WristToPos(-121.0)
 	  )
   );  
 
@@ -348,12 +348,12 @@ void Robot::AutonomousInit() {
       PivotToPos(-22.0), 
       frc2::FunctionalCommand(
         [&] {
-          GetArm().m_BottomIntake.EnableCurrentLimit(false);
-          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, -1);
+          GetArm().GetBottomIntakeMotor().EnableCurrentLimit(false);
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -1);
         },
         [&] {},
         [&](bool e) { // onEnd
-          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 0);
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
         },
         [&] { // isFinished
         return false;
@@ -365,12 +365,12 @@ void Robot::AutonomousInit() {
     frc2::ParallelRaceGroup(
       frc2::FunctionalCommand(
         [&] {
-          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 1);
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 1);
         },
         [&] {},
         [&](bool e) { // onEnd
-          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 0);
-          GetArm().m_BottomIntake.EnableCurrentLimit(true);
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+          GetArm().GetBottomIntakeMotor().EnableCurrentLimit(true);
         },
         [&] { // isFinished
         return false;
