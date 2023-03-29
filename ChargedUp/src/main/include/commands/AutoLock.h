@@ -13,6 +13,5 @@ class AutoLock : public frc2::CommandHelper<frc2::CommandBase, AutoLock> {
   void Execute() override;
   double Deadfix(double in, double deadband);
 
-  int m_Theta;
-  frc::ProfiledPIDController <units::radians> m_ThetaController;
+  int m_GoalTheta;
 };
