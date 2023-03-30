@@ -22,18 +22,21 @@ void DriveToPosCommand::Initialize(){
     DebugOutF("Start: (" + std::to_string(m_Start.Translation().X().value()) + ", " + std::to_string(m_Start.Translation().Y().value()) + ")");
     DebugOutF("End: (" + std::to_string(m_End.Translation().X().value()) + ", " + std::to_string(m_End.Translation().Y().value()) + ")");
     
+    vertical = m_End.Y().value() - m_Start.Y().value();
+    horizontal = m_End.X().value() - m_Start.X().value();
+
     m_Trajectory = PathPlanner::generatePath(
         units::meters_per_second_t(2),
 		units::meters_per_second_squared_t(0.5),
-		false, 
+		false,
 
         PathPoint(
             m_Start.Translation(), 
-            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(), //wrong?
+            frc::Rotation2d(units::radian_t(atan(vertical/horizontal))),
             m_Start.Rotation()
         ), PathPoint(
             m_End.Translation(), 
-            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(), //wrong?
+            frc::Rotation2d(units::radian_t(atan(vertical/horizontal) + M_PI)), //wrong?
             m_End.Rotation()
         )
 
