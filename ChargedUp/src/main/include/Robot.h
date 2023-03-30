@@ -81,6 +81,7 @@ class Robot : public frc::TimedRobot {
 	frc2::Button m_RightGrid;
 
   frc2::Button m_NavXReset;
+  frc2::Button m_VisionPoseReset;
 
  private:
 

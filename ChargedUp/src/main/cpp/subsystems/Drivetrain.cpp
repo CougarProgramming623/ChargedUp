@@ -107,13 +107,15 @@ void DriveTrain::Periodic(){
   // DebugOutF("visionTheta: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().Rotation().Degrees().value()));
   if(COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){ // FIX uncomment when we have both limelights back
   // if(COB_GET_ENTRY("/limelight/botpose").GetDoubleArray(std::span<double>()).size() != 0){ //Works with one limelight
-    if(
-      std::abs(visionRelative.X().value()) < 1 &&
-      std::abs(visionRelative.Y().value()) < 1 &&
-      std::abs(-fmod(360 - visionRelative.Rotation().Degrees().value(), 360)) < 30) {
-        m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
-        - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("tl")).GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("cl")).GetDouble(0))/1000.0));
-        //DebugOutF("Vision Update");
+    if(m_DriveToPoseFlag != true){
+      if(
+        std::abs(visionRelative.X().value()) < 1 &&
+        std::abs(visionRelative.Y().value()) < 1 &&
+        std::abs(-fmod(360 - visionRelative.Rotation().Degrees().value(), 360)) < 30) {
+          m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
+          - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("tl")).GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("cl")).GetDouble(0))/1000.0));
+          //DebugOutF("Vision Update");
+        }
       }
     }
   m_Odometry.Update(m_Rotation, m_ModulePositions);

@@ -57,12 +57,28 @@ void Robot::AutoButtons(){
   m_RightGrid = frc2::Button(BUTTON_L_TWO(RIGHT_GRID));
 
   m_NavXReset = frc2::Button([&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(8); }); //PUT Define
+  m_VisionPoseReset = frc2::Button([&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(7); }); //PUT Define
   
   
   m_NavXReset.WhenPressed(
     new frc2::InstantCommand([&]{
       DebugOutF("NavX Zero");
       zeroGyroscope();
+    })
+  );
+
+  m_VisionPoseReset.WhenPressed(
+    new frc2::InstantCommand([&] {
+      if(COB_GET_ENTRY(m_Vision.FrontBack("tv")).GetInteger(0) == 1 && COB_GET_ENTRY(m_Vision.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){
+        frc::Pose2d startingPose = frc::Pose2d(m_Vision.GetPoseBlue().Translation(), units::radian_t(Deg2Rad(GetAngle())));
+        GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
+        wpi::array<frc::SwerveModulePosition, 4>
+              (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
+        startingPose);
+        DebugOutF("Pose Reset. X: " + std::to_string(startingPose.X().value()) + ", Y: " + std::to_string(startingPose.Y().value()) + ", Z: " + std::to_string(startingPose.Rotation().Degrees().value()));
+      } else {
+        DebugOutF("Pose Reset Fail");
+      }
     })
   );
 
@@ -241,7 +257,7 @@ void Robot::RobotPeriodic() {
  * robot is disabled.
  */
 void Robot::DisabledInit() {
-  GetDriveTrain().BreakMode(false);
+  GetDriveTrain().BreakMode(true);
   GetDriveTrain().m_BackLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
   GetDriveTrain().m_BackRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
   GetDriveTrain().m_FrontLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
@@ -263,6 +279,10 @@ void Robot::AutonomousInit() {
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
+  GetDriveTrain().m_BackLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_BackRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_FrontLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_FrontRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
   //PathPlannerTrajectory traj;
 
   //Load trajectory
@@ -393,6 +413,10 @@ void Robot::TeleopInit() {
 
   //GetNavX().ZeroYaw();
   m_DriveTrain.BreakMode(true);
+  GetDriveTrain().m_BackLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_BackRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_FrontLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_FrontRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
   GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
   zeroGyroscope();
