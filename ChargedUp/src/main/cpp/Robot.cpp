@@ -113,13 +113,15 @@ void Robot::AutoButtons(){
 	//   )
   // );
 
-  m_ML.WhenPressed(
-    // new frc2::ParallelCommandGroup(
-		// 	frc2::PrintCommand("Low Cube Placement"),
-		// 	PivotToPos(86), 
-    //   WristToPos(45)
-	  // )
+  // m_ML.WhenPressed(
+  //   new frc2::ParallelCommandGroup(
+	// 		frc2::PrintCommand("Low Cube Placement"),
+	// 		PivotToPos(86), 
+  //     WristToPos(45)
+	//   )
+  // );
 
+  m_ML.WhenPressed(
     new frc2::InstantCommand([&]{
 		DebugOutF("m_ML");
 		SelectedRow = 1;
@@ -128,7 +130,6 @@ void Robot::AutoButtons(){
 			Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
     })
-
   );
 
 	m_MC.WhenPressed(
@@ -172,42 +173,6 @@ void Robot::AutoButtons(){
 		} else{
 			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
 	}}));
-
-  // new frc2::InstantCommand([&]{
-	// 	DebugOutF("m_ML");
-	// 	SelectedRow = 1;
-	// 	SelectedColumn = 0;
-	// 	frc::Pose2d SelectedPose = 
-	// 		Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-	// 	Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
-  //   })
-
-    //   new frc2::InstantCommand([&]{
-	// 	DebugOutF("m_TL");
-	// 	SelectedRow = 0;
-	// 	SelectedColumn = 0; 
-	// 	frc::Pose2d SelectedPose = 
-	// 		Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-	// 	Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
-	// })
-
-  // new frc2::InstantCommand([&]{
-		// DebugOutF("m_TC");
-		// SelectedRow = 0;
-		// SelectedColumn = 1;
-		// frc::Pose2d SelectedPose = 
-		// 	Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		// Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);	
-		// })
-
-    // new frc2::InstantCommand([&]{
-		// DebugOutF("m_TR");
-		// SelectedRow = 0;
-		// SelectedColumn = 2;
-		// frc::Pose2d SelectedPose = 
-		// 	Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		// Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);	
-		// })
 }
 
 frc::Pose2d Robot::TransformPose(frc::Pose2d SelectedPose){ //rotating poses do not add correctly
