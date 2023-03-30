@@ -57,6 +57,7 @@ void Robot::AutoButtons(){
   m_RightGrid = frc2::Button(BUTTON_L_TWO(RIGHT_GRID));
 
   m_NavXReset = frc2::Button(BUTTON_L(8)); //PUT Define
+  GetArm().m_PlacingMode = frc2::Button(BUTTON_L_TWO(15));
   
   
   m_NavXReset.WhenPressed(
@@ -65,7 +66,7 @@ void Robot::AutoButtons(){
       zeroGyroscope();
   }));
   
-  m_PlacingMode.WhenPressed(new frc2::ParallelCommandGroup(
+  GetArm().m_PlacingMode.WhenPressed(new frc2::ParallelCommandGroup(
 		  frc2::PrintCommand("Bottom Left Placement"),
 			PivotToPos(Robot::GetRobot()->GetArm().m_PivotMatrix[SelectedRow][SelectedColumn]), 
       WristToPos(Robot::GetRobot()->GetArm().m_WristMatrix[SelectedRow][SelectedColumn])
@@ -74,11 +75,16 @@ void Robot::AutoButtons(){
 
   m_TL.WhenPressed(new frc2::InstantCommand([&]{
     DebugOutF("m_TL");
-    SelectedRow = 0;
-    SelectedColumn = 0;
-    frc::Pose2d SelectedPose = 
-		Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
+    // SelectedRow = 0;
+    // SelectedColumn = 0;
+    // frc::Pose2d SelectedPose = 
+		// Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
+		// Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("High Substation"),
+			PivotToPos(-8.0), 
+      WristToPos(28)
+    );
   }));
 
 
@@ -134,11 +140,16 @@ void Robot::AutoButtons(){
 
   m_TR.WhenPressed(new frc2::InstantCommand([&]{
     DebugOutF("m_TR");
-    SelectedRow = 0;
-    SelectedColumn = 2;
-    frc::Pose2d SelectedPose = 
-		Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
+    // SelectedRow = 0;
+    // SelectedColumn = 2;
+    // frc::Pose2d SelectedPose = 
+		// Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
+		// Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("Low Substation"),
+			PivotToPos(25.0), 
+      WristToPos(-121.0)
+    );
   }));
 
 
@@ -162,23 +173,18 @@ void Robot::AutoButtons(){
   }));
 
 
-	m_LeftGrid.WhenPressed(
+	m_LeftGrid.WhenPressed(new frc2::InstantCommand([&]{
     DebugOutF("m_LeftGrid");
 		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)) {
       Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
 		} else{
 			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 2;
-		}
-  );
+	}}));
 
   
-  m_CenterGrid.WhenPressed(
+  m_CenterGrid.WhenPressed(new frc2::InstantCommand([&]{
     Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 1;
-    new frc2::ParallelCommandGroup(
-		  frc2::PrintCommand("Substation Cone Pickup"),
-			PivotToPos(PIVOT_SHELF_PICKUP_ANGLE), 
-      WristToPos(28)
-	));
+  }));
 
 
   m_RightGrid.WhenPressed(new frc2::InstantCommand([&]{
@@ -362,7 +368,7 @@ void Robot::AutonomousInit() {
   frc2::CommandScheduler::GetInstance().Schedule(new frc2::SequentialCommandGroup(
     frc2::ParallelRaceGroup(
       frc2::WaitCommand(2_s),
-      PivotToPos(PIVOT_PLACING_MID_CONE_ANGLE), 
+      PivotToPos(-20.0), 
       frc2::FunctionalCommand(
         [&] {
           GetArm().m_BottomIntake.EnableCurrentLimit(false);
@@ -376,7 +382,7 @@ void Robot::AutonomousInit() {
         return false;
         }
       ),
-      WristToPos(WRIST_PLACING_MID_CONE_ANGLE)
+      WristToPos(30.0)
     ),
 
     frc2::ParallelRaceGroup(
@@ -398,14 +404,14 @@ void Robot::AutonomousInit() {
 
     frc2::ParallelRaceGroup(
       frc2::WaitCommand(1_s),
-      PivotToPos(PIVOT_TRANSIT_ANGLE), 
+      PivotToPos(98.0), 
       WristToPos(120)
     ),
 
     TrajectoryCommand(traj),
     // frc2::ParallelRaceGroup(
     //   frc2::WaitCommand(1_s),
-    //   PivotToPos(PIVOT_GROUND_ANGLE), 
+    //   PivotToPos(98.0), 
     //   WristToPos(WRIST_GROUND_ANGLE)
     // ),
 
@@ -436,7 +442,7 @@ void Robot::AutonomousInit() {
 
     //frc2::ParallelDeadlineGroup(
     //TrajectoryCommand(PathPlanner::loadPath("Phase3", PathConstraints(4_mps, 1_mps_sq))),
-      // PivotToPos(PIVOT_TRANSIT_ANGLE), 
+      // PivotToPos(98.0), 
       // WristToPos(120)
     //),
     //frc2::WaitCommand(0.5_s),

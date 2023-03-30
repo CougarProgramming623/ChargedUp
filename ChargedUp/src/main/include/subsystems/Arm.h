@@ -69,16 +69,17 @@ class Arm : public frc2::SubsystemBase {
 	TalonSRX m_BottomIntake;
 
 	double m_PivotMatrix[3][3] = {
-		{0, PIVOT_PLACING_HIGH_CUBE_ANGLE, 0},
-		{PIVOT_PLACING_MID_CONE_ANGLE, PIVOT_PLACING_MID_CUBE_ANGLE, PIVOT_PLACING_MID_CONE_ANGLE},
-		{PIVOT_GROUND_ANGLE, PIVOT_GROUND_ANGLE, PIVOT_GROUND_ANGLE},
+		{0, -33.0, 0},
+		{-20.0, 58.5, -20.0},
+		{50, 50, 50},
 	};
 
 	double m_WristMatrix[3][3] = {
-		{0, WRIST_PLACING_HIGH_CUBE_ANGLE, 0},
-		{WRIST_PLACING_MID_CONE_ANGLE, WRIST_PLACING_MID_CUBE_ANGLE, WRIST_PLACING_MID_CONE_ANGLE},
-		{WRIST_GROUND_ANGLE, WRIST_GROUND_ANGLE, WRIST_GROUND_ANGLE},
+		{0, 46.0, 0},
+		{30.0, 60, 30.0},
+		{-40, -40, -40},
 	};
+	frc2::Button m_PlacingMode;
 
 	private:
 	
@@ -94,7 +95,6 @@ class Arm : public frc2::SubsystemBase {
 	//buttons
 	frc2::Button m_TransitMode;
 	frc2::Button m_GroundPickupMode;
-	frc2::Button m_PlacingMode;
 
 	frc2::Button m_Override;
 	frc2::Button m_Override2;

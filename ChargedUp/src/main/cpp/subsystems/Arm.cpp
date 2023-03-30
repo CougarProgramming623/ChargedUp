@@ -88,9 +88,9 @@ void Arm::SetButtons()
 
 	m_GroundPickupMode.WhenPressed(
 		new frc2::ParallelCommandGroup(
-			frc2::PrintCommand("Back Mid Cube"),
-			PivotToPos(PIVOT_PLACING_MID_CUBE_ANGLE), 
-      		WristToPos(WRIST_PLACING_MID_CUBE_ANGLE)
+			frc2::PrintCommand("Ground Pickup"),
+			PivotToPos(98.0), 
+      		WristToPos(3.0)
 	  	)
 	);
 
@@ -98,14 +98,14 @@ void Arm::SetButtons()
 		new frc2::ParallelCommandGroup(
 			frc2::PrintCommand("Intermediate Cone"),
 			PivotToPos(66.6), 
-      		WristToPos(WRIST_TRANSIT_ANGLE)
+      		WristToPos(132.0)
 	  	)
 	);
 
 	// m_GroundPickupMode.WhenPressed(
 	// 	new frc2::ParallelCommandGroup(
 	// 		frc2::PrintCommand("-45"),
-	// 		PivotToPos(PIVOT_GROUND_ANGLE)
+	// 		PivotToPos(98.0)
 	// 	)
 	// 	// new WristToPos(WRIST_GROUND_ANGLE)
 	// );
@@ -127,7 +127,7 @@ void Arm::SetButtons()
 	m_BigRed.WhenPressed(
 		new frc2::ParallelCommandGroup(
 			frc2::PrintCommand("Transit"),
-			PivotToPos(PIVOT_TRANSIT_ANGLE), 
+			PivotToPos(98.0), 
       		WristToPos(127)
 	  	)		
 	);
