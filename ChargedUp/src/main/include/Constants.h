@@ -114,10 +114,11 @@
 
 #define COB_KEY_DISTANCE "/COB/distance"
 
-#define COB_KEY_BOT_POSE_FRONT "/limelight/botpose" //FIX
+#define COB_KEY_BOT_POSE_FRONT "/limelight-front/botpose" //FIX
 #define COB_KEY_BOT_POSE_BACK "/limelight-back/botpose"
 
-#define COB_KEY_BOT_POSE_BLUE "/limelight/botpose_wpiblue"
+#define COB_KEY_BOT_POSE_BLUE_FRONT "/limelight-front/botpose_wpiblue"
+#define COB_KEY_BOT_POSE_BLUE_BACK  "/limelight-back/botpose_wpiblue"
 
 #define COB_KEY_TV_FRONT "/limelight-front/tv"
 #define COB_KEY_TV_BACK "/limelight-back/tv"

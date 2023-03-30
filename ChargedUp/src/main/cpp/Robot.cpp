@@ -430,7 +430,8 @@ void Robot::TeleopInit() {
   m_DriveTrain.BreakMode(true);
   GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
-  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(3.03), units::meter_t(4.42), frc::Rotation2d(units::degree_t(0)));
+  zeroGyroscope();
+  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.5), units::meter_t(.8), frc::Rotation2d(units::degree_t(0)));
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
   wpi::array<frc::SwerveModulePosition, 4>
         (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
