@@ -32,7 +32,7 @@ void DriveToPosCommand::Initialize(){
 
         PathPoint(
             m_Start.Translation(), 
-            frc::Rotation2d(units::radian_t(atan(vertical/horizontal))),
+            frc::Rotation2d(units::radian_t(atan(vertical/horizontal) + M_PI)),
             m_Start.Rotation()
         ), PathPoint(
             m_End.Translation(), 
@@ -78,5 +78,5 @@ void DriveToPosCommand::End(bool interrupted){
 
 //End command when close to intended pose
 bool DriveToPosCommand::IsFinished(){
-    return m_Trajectory.getTotalTime() + .5_s < m_Timer.Get();
+    return m_Trajectory.getTotalTime() + 1.5_s < m_Timer.Get();
 }
