@@ -57,15 +57,15 @@ void Arm::Init()
 	m_Pivot.Config_kD(0, 0.3);
 	m_Pivot.Config_kF(0, 0.0639375, 0);
 	m_Pivot.ConfigMotionCruiseVelocity(8000, 0); //8400 working value
-	m_Pivot.ConfigMotionAcceleration(8000, 0); //16800 working value
+	m_Pivot.ConfigMotionAcceleration(10000, 0); //8000 working value
 
 	m_Wrist.ConfigAllowableClosedloopError(0, 0);
 	m_Wrist.Config_kP(0, 0.0175); //0.009
 	m_Wrist.Config_kI(0, 0.000002);
 	m_Wrist.Config_kD(0, 0.6);
 	m_Wrist.Config_kF(0, 0.06089285714, 0);
-	m_Wrist.ConfigMotionCruiseVelocity(8400, 0); //8400 working value
-	m_Wrist.ConfigMotionAcceleration(16800, 0); //16800 working value
+	m_Wrist.ConfigMotionCruiseVelocity(14000, 0); //10000 working value
+	m_Wrist.ConfigMotionAcceleration(28000, 0); //20000 working value
 
 	
 
