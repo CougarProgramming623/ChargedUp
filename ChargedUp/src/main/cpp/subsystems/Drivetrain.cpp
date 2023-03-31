@@ -41,7 +41,7 @@ void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
  
-  m_TestJoystickButton.ToggleWhenPressed(new AutoBalance());
+  //m_TestJoystickButton.ToggleWhenPressed(new AutoBalance());
   m_JoystickButtonTwo.ToggleWhenPressed(AutoLock());
 
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.5, 0.5, .561799});

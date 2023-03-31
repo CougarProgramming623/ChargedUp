@@ -64,6 +64,9 @@ void Robot::AutoButtons(){
 
   m_NavXReset = frc2::Button(BUTTON_L(8)); //PUT Define
   GetArm().m_PlacingMode = frc2::Button(BUTTON_L_TWO(15));
+  m_AutoBalance = frc2::Button(BUTTON_L(7));
+
+  m_AutoBalance.ToggleWhenPressed(new AutoBalance());
   
   
   m_NavXReset.WhenPressed(
