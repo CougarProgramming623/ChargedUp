@@ -90,6 +90,9 @@ class Robot : public frc::TimedRobot {
   frc2::Button m_NavXReset;
   frc2::Button m_AutoBalance;
 
+  frc2::Button m_ArmPrintSwitch;
+  frc2::Button m_SwervePrintSwitch;
+
  private:
 
   int SelectedRow;

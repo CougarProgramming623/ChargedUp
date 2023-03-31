@@ -67,6 +67,9 @@ void Robot::AutoButtons(){
   m_AutoBalance = frc2::Button(BUTTON_L(7));
 
   m_AutoBalance.ToggleWhenPressed(new AutoBalance());
+
+  m_ArmPrintSwitch = frc2::Button(BUTTON_L(2));
+  m_SwervePrintSwitch = frc2::Button(BUTTON_L(4));
   
   
   m_NavXReset.WhenPressed(
@@ -213,6 +216,95 @@ void Robot::AutoButtons(){
         ),      
         WristToPos(127.0)
       )
+    );
+
+  m_ArmPrintSwitch.WhileHeld( 
+    new frc2::InstantCommand([&]{
+      DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
+      DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
+    })
+  );
+
+  m_SwervePrintSwitch.WhileHeld(
+    new frc2::InstantCommand([&]{
+      DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
+      DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
+      DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
+      DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
+    })
+  );
+
+
+  m_BL.WhenPressed(
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("Ground Cube Pickup"),
+			PivotToPos(98.0),
+      WristToPos(3.0)
+	));
+
+
+  m_ML.WhenPressed(
+    new frc2::ParallelCommandGroup(
+			frc2::PrintCommand("Low Cube Placement"),
+			PivotToPos(50), 
+      WristToPos(-40)
+	  )
+  );
+
+  m_TL.WhenPressed(
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("Mid Cube Placement"),
+			PivotToPos(58.5), 
+      WristToPos(60)
+	  )
+  );
+
+  m_BC.WhenPressed(
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("Tipped Cone Pickup"),
+			PivotToPos(66.6), 
+      WristToPos(-98.5)
+	  )
+  );
+
+  m_MC.WhenPressed(
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("Mid Cone Place"),
+			PivotToPos(-20.0), 
+      WristToPos(30.0)
+	  )
+  );  
+
+  m_TC.WhenPressed(
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("Low Substation"),
+			PivotToPos(25.0), 
+      WristToPos(-121.0)
+	  )
+  );  
+
+	m_CenterGrid.WhenPressed(
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("High Substation"),
+			PivotToPos(-8.0), 
+      WristToPos(28)
+	  )
+  );
+
+	m_LeftGrid.WhenPressed(
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("High Cube Placement"),
+			PivotToPos(-33.0), 
+      WristToPos(46.0)
+	  )
+  );
+
+  m_BigRed.WhenPressed(
+		new frc2::ParallelCommandGroup(
+			frc2::PrintCommand("Transit"),
+			  PivotToPos(92.0), 
+      	WristToPos(127.0)
+	  	)		
 	);
 
   
