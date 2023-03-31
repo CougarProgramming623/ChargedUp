@@ -34,14 +34,12 @@ DriveTrain::DriveTrain()
       m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);}),
       m_JoystickButtonTwo([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(2);}),
       m_Timer(),
-      m_EventMap(),
-      m_NavXReset(BUTTON_L_TWO(8))
+      m_EventMap()
 {}
 
 void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
-  m_NavXReset.WhenPressed(new frc2::InstantCommand([&]{Robot::GetRobot()->GetNavX().ZeroYaw();}));
  
   m_TestJoystickButton.ToggleWhenPressed(new AutoBalance());
   m_JoystickButtonTwo.ToggleWhenPressed(AutoLock());
