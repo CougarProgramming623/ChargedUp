@@ -62,6 +62,9 @@ void Robot::AutoButtons(){
   m_PlacingMode = frc2::Button(BUTTON_L_TWO(PLACING_MODE));
 
   m_NavXReset = frc2::Button(BUTTON_L(8)); //PUT Define
+
+  m_ArmPrintSwitch = frc2::Button(BUTTON_L(2));
+  m_SwervePrintSwitch = frc2::Button(BUTTON_L(4));
   
   
   m_NavXReset.WhenPressed(
@@ -70,6 +73,23 @@ void Robot::AutoButtons(){
       zeroGyroscope();
     })
   );
+
+  m_ArmPrintSwitch.WhileHeld( 
+    frc2::InstantCommand([&]{
+      DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
+      DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
+    })
+  );
+
+  m_SwervePrintSwitch.WhileHeld(
+    frc2::InstantCommand([&]{
+      DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
+      DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
+      DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
+      DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
+    })
+  )
+
 
   m_BL.WhenPressed(
     new frc2::ParallelCommandGroup(
@@ -467,10 +487,10 @@ void Robot::TeleopPeriodic() {
   // DebugOutF("LLY: " + std::to_string(m_Vision.GetPoseBlue().Y().value()));
   // DebugOutF("LLZ: " + std::to_string(m_Vision.GetPoseBlue().Rotation().Degrees().value()));
 
-  DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
-  DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
-  DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
-  DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
+  // DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
+  // DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
+  // DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
+  // DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
 }
 
 /**
