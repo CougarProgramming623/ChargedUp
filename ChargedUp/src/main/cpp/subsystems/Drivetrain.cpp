@@ -8,6 +8,7 @@
 #include <frc/Timer.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/ParallelCommandGroup.h>
+#include "./commands/AutoLock.h"
 
 //Constructor
 DriveTrain::DriveTrain()
@@ -40,8 +41,8 @@ void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
  
-  m_TestJoystickButton.WhenPressed(new AutoBalance());
-  //m_JoystickButtonTwo.WhenPressed(new DriveToPosCommand());
+  m_TestJoystickButton.ToggleWhenPressed(new AutoBalance());
+  m_JoystickButtonTwo.ToggleWhenPressed(AutoLock());
 
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.5, 0.5, .561799});
   m_FrontRightModule.m_DriveController.motor.SetInverted(false); //true for O12
