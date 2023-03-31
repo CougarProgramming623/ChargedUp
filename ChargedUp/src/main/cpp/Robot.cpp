@@ -75,20 +75,20 @@ void Robot::AutoButtons(){
   );
 
   m_ArmPrintSwitch.WhileHeld( 
-    frc2::InstantCommand([&]{
+    new frc2::InstantCommand([&]{
       DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
       DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
     })
   );
 
   m_SwervePrintSwitch.WhileHeld(
-    frc2::InstantCommand([&]{
+    new frc2::InstantCommand([&]{
       DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
       DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
       DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
       DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
     })
-  )
+  );
 
 
   m_BL.WhenPressed(
