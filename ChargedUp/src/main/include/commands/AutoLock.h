@@ -2,6 +2,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc2/command/SubsystemBase.h>
+#include <frc/geometry/Rotation2d.h>
 
 
 class AutoLock : public frc2::CommandHelper<frc2::CommandBase, AutoLock> {
@@ -13,5 +14,5 @@ class AutoLock : public frc2::CommandHelper<frc2::CommandBase, AutoLock> {
   void Execute() override;
   double Deadfix(double in, double deadband);
 
-  int m_GoalTheta;
+  frc::Rotation2d m_GoalTheta;
 };
