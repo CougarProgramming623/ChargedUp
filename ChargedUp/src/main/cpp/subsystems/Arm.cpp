@@ -127,17 +127,7 @@ void Arm::SetButtons()
 	// 		frc2::PrintCommand("45"),
 	// 		PivotToPos(45)
 	// 	)		// new WristToPos(WRIST_PLACING_MID_CUBE_ANGLE)
-	// );
-
-	m_BigRed.WhenPressed(
-		new frc2::ParallelCommandGroup(
-			frc2::PrintCommand("Transit"),
-			PivotToPos(98.0), 
-      		WristToPos(127)
-	  	)		
-	);
-
-	
+	// );	
 }
 
 // while override is active, gives manual joysticks control over the two arm motors

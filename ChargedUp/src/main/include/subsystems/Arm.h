@@ -112,8 +112,6 @@ class Arm : public frc2::SubsystemBase {
 	frc2::Button m_IntakeButton;
 	frc2::Button m_OuttakeButton;
 
-	frc2::Button m_BigRed;
-
 	frc::Timer m_Timer;
 
 	frc2::SequentialCommandGroup* m_Top;

@@ -223,12 +223,13 @@ void Robot::AutoButtons(){
   }));
 
   m_BigRed.WhenPressed(frc2::ParallelCommandGroup(
-        frc2::SequentialCommandGroup(
-          frc2::WaitCommand(0.25_s),
-          PivotToPos(92.0)
-        ),      
-        WristToPos(127.0)
-      )
+      frc2::PrintCommand("Big Red"),
+      frc2::SequentialCommandGroup(
+        frc2::WaitCommand(0.25_s),
+        PivotToPos(92.0)
+      ),      
+      WristToPos(127.0)
+    )
 	);
 
   m_LeftGrid.WhenPressed(new frc2::InstantCommand([&]{
