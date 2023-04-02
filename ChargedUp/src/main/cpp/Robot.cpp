@@ -474,6 +474,10 @@ void Robot::TeleopInit() {
  * This function is called periodically during operator control.  
  */
 void Robot::TeleopPeriodic() {
+  m_LED.EndGame();
+  m_LED.Cube();
+  m_LED.Cone();
+  m_LED.SetData();
   //m_LED.SponsorBoardRainbow();
   //m_LED.LowBattery();
 }

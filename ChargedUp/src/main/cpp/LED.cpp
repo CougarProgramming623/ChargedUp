@@ -16,9 +16,9 @@ const int kEND_EYE_2    = 0;
 const int kNUM_LED = -1;
 
 
-const int kNum_LED = 110;
+const int kNum_LED = 14;
 
-frc::Color colorArray[] = {frc::Color::kRed, frc::Color::kOrangeRed, frc::Color::kYellow, frc::Color::kGreen, frc::Color::kBlue, frc::Color::kViolet, frc::Color::kWhite};
+frc::Color colorArray[] = {frc::Color::kRed, frc::Color::kOrangeRed, frc::Color::kYellow, frc::Color::kGreen, frc::Color::kBlue, frc::Color::kPurple, frc::Color::kWhite};
 frc::Color redWhiteArray[] = {frc::Color::kWhite, frc::Color::kRed};
 
 LED::LED()  :
@@ -55,16 +55,44 @@ void LED::LowBattery(){
     //     m_IterationTracker = 0;
     // }
 
-    m_AddressableLED.SetData(m_LEDBuffer);
 }
 
+void LED::SetData(){ m_AddressableLED.SetData(m_LEDBuffer); }
 
+void LED::EndGame(){
+    if ((int)COB_GET_ENTRY(COB_KEY_MATCHTIME).GetDouble(31) <= 30 && (int)COB_GET_ENTRY(COB_KEY_MATCHTIME).GetDouble(31) > 28){
+        if ((int)COB_GET_ENTRY(COB_KEY_MATCHTIME).GetDouble(31) % 1 == .5 || (int)COB_GET_ENTRY(COB_KEY_MATCHTIME).GetDouble(31) % 1 == 0){
+            SponsorBoardSolid(frc::Color::kWhite);
+        } else {
+            SponsorBoardSolid(0,0,0);
+        }
+    } else if ((int)COB_GET_ENTRY(COB_KEY_MATCHTIME).GetDouble(31) <= 20){
+        if ((int)COB_GET_ENTRY(COB_KEY_MATCHTIME).GetDouble(31) % 1 == .5 || (int)COB_GET_ENTRY(COB_KEY_MATCHTIME).GetDouble(31) % 1 == 0){
+            SponsorBoardSolid(frc::Color::kWhite);
+        } else {
+            SponsorBoardSolid(0,0,0);
+        }
+    }
+}
+
+void LED::Cube(){ 
+    if(Robot::GetRobot()->GetButtonBoard().GetRawButton(19)){
+        SponsorBoardSolid(frc::Color::kYellow);
+    }
+}
+void LED::Cone(){ 
+    if(Robot::GetRobot()->GetButtonBoard().GetRawButton(18)){
+        SponsorBoardSolid(frc::Color::kViolet);
+    }
+}
 
 void LED::SponsorBoardAllianceColor(){
-    if(/*COB_GET_ENTRY(COB_KEY_IS_RED).getBoolean(false)*/ true){
+    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed){
         SponsorBoardSolid(frc::Color::kRed);
-    } else {
+    } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue){
         SponsorBoardSolid(frc::Color::kBlue);
+    } else {
+        SponsorBoardSolid(frc::Color::kPurple);
     }
 }
 
@@ -72,14 +100,12 @@ void LED::SponsorBoardSolid(frc::Color color){
     for(int i = 0; i < kNum_LED; i++){
             m_LEDBuffer[i].SetLED(color);
     }
-    m_AddressableLED.SetData(m_LEDBuffer);
 }
 
 void LED::SponsorBoardSolid(int R, int G, int B){
     for(int i = 0; i < kNum_LED; i++){
         m_LEDBuffer[i].SetRGB(R, G, B);
     }
-    m_AddressableLED.SetData(m_LEDBuffer);
 }
 
 
@@ -100,7 +126,6 @@ void LED::SponsorBoardRainbow(){
     if (m_IterationTracker == 110){
         m_IterationTracker = 0;
     }
-    m_AddressableLED.SetData(m_LEDBuffer);
 }
 
 void LED::SponsorBoardFlash(frc::Color color){

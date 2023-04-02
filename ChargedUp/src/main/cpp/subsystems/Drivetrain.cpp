@@ -120,10 +120,11 @@ void DriveTrain::Periodic(){
           );
         //DebugOutF("Inner Adjusted");
         // }
+        } 
       }
     }
+    m_Odometry.Update(m_Rotation, m_ModulePositions);
   }
-  m_Odometry.Update(m_Rotation, m_ModulePositions);
 }
 
 //Converts chassis speed object and updates module states

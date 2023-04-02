@@ -16,6 +16,11 @@ class LED{
 
         void LowBattery();
 
+        void SetData();
+        void EndGame();
+        void Cube();
+        void Cone();
+
         void SponsorBoardAllianceColor();
         void SponsorBoardSolid(frc::Color allianceColor);
         void SponsorBoardSolid(int R, int G, int B);
