@@ -484,7 +484,6 @@ void Robot::TeleopPeriodic() {
   // DebugOutF("LLZ: " + std::to_string(m_Vision.GetPoseBlue().Rotation().Degrees().value()));
 
 
-}
 
 /**
  * This function is called periodically during test mode.

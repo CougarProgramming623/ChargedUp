@@ -14,7 +14,6 @@
 #include <frc2/command/Command.h>
 
 #include <pathplanner/lib/PathPlanner.h>
-#include "RobotContainer.h"
 #include "LED.h"
 #include "subsystems/DriveTrain.h"
 #include <AHRS.h>
@@ -112,9 +111,6 @@ class Robot : public frc::TimedRobot {
   frc2::Button m_LEDYellow;
   frc2::Button m_LEDPurple;
   LED m_LED;
-
-  RobotContainer m_container;
-  Arm m_Arm;
 
   frc::Timer m_AutoTimer;
   DriveTrain m_DriveTrain;
