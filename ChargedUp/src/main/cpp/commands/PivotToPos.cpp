@@ -13,13 +13,13 @@ PivotToPos::PivotToPos(double degPos) {
 void PivotToPos::Initialize() {
 	ARM.GetPivotMotor().SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
 
-	DebugOutF("starting at: " + std::to_string((ARM.GetPivotCANCoder().GetAbsolutePosition() - CANCODER_ZERO)) + " degrees");
-	DebugOutF("Going to: " + std::to_string(ARM.PivotTicksToDegrees(ARM.PivotDegreesToTicks(targetDegrees))) + " degrees");
+	// DebugOutF("starting at: " + std::to_string((ARM.GetPivotCANCoder().GetAbsolutePosition() - CANCODER_ZERO)) + " degrees");
+	// DebugOutF("Going to: " + std::to_string(ARM.PivotTicksToDegrees(ARM.PivotDegreesToTicks(targetDegrees))) + " degrees");
 
 }
 
 void PivotToPos::Execute() {
-	ARM.GetPivotMotor().Set(ControlMode::Position, ARM.PivotDegreesToTicks(targetDegrees));
+	ARM.GetPivotMotor().Set(ControlMode::MotionMagic, ARM.PivotDegreesToTicks(targetDegrees));
 	//DebugOutF(std::to_string(abs(ARM.PivotDegreesToTicks(targetDegrees) - ARM.GetPivotMotor().GetSelectedSensorPosition())));
 }
 

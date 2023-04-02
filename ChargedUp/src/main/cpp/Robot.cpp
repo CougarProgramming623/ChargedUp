@@ -46,19 +46,24 @@ void Robot::RobotInit() {
 void Robot::AutoButtons(){
 
   //BUTTONBOARD 2
-  m_TL = frc2::Button(BUTTON_L_TWO(GRID_TL));
-  m_TC = frc2::Button(BUTTON_L_TWO(GRID_TC));
-  m_TR = frc2::Button(BUTTON_L_TWO(GRID_TR));
-  m_ML = frc2::Button(BUTTON_L_TWO(GRID_ML));
-  m_MC = frc2::Button(BUTTON_L_TWO(GRID_MC));
-  m_MR = frc2::Button(BUTTON_L_TWO(GRID_MR));
-  m_BL = frc2::Button(BUTTON_L_TWO(GRID_BL));
-  m_BC = frc2::Button(BUTTON_L_TWO(GRID_BC));
-  m_BR = frc2::Button(BUTTON_L_TWO(GRID_BR));
+  m_TL          = frc2::Button(BUTTON_L_TWO(GRID_TL));
+  m_TC          = frc2::Button(BUTTON_L_TWO(GRID_TC));
+  m_TR          = frc2::Button(BUTTON_L_TWO(GRID_TR));
+  m_ML          = frc2::Button(BUTTON_L_TWO(GRID_ML));
+  m_MC          = frc2::Button(BUTTON_L_TWO(GRID_MC));
+  m_MR          = frc2::Button(BUTTON_L_TWO(GRID_MR));
+  m_BL          = frc2::Button(BUTTON_L_TWO(GRID_BL));
+  m_BC          = frc2::Button(BUTTON_L_TWO(GRID_BC));
+  m_BR          = frc2::Button(BUTTON_L_TWO(GRID_BR));
+  m_BigRed      = frc2::Button(BUTTON_L(BIG_RED)),
 
-  m_LeftGrid = frc2::Button(BUTTON_L_TWO(LEFT_GRID));
-  m_CenterGrid = frc2::Button(BUTTON_L_TWO(CENTER_GRID));
-  m_RightGrid = frc2::Button(BUTTON_L_TWO(RIGHT_GRID));
+  m_LeftGrid    = frc2::Button(BUTTON_L_TWO(LEFT_GRID));
+  m_CenterGrid  = frc2::Button(BUTTON_L_TWO(CENTER_GRID));
+  m_RightGrid   = frc2::Button(BUTTON_L_TWO(RIGHT_GRID));
+
+  m_MidCone = frc2::Button(BUTTON_L_TWO(TRANSIT_MODE));
+	m_MidCube = frc2::Button(BUTTON_L_TWO(GROUND_PICKUP_MODE));
+  m_PlacingMode = frc2::Button(BUTTON_L_TWO(PLACING_MODE));
 
   m_NavXReset = frc2::Button(BUTTON_L(8)); //PUT Define
   
@@ -73,15 +78,16 @@ void Robot::AutoButtons(){
   m_BL.WhenPressed(
     new frc2::ParallelCommandGroup(
 		  frc2::PrintCommand("Ground Cube Pickup"),
-			PivotToPos(PIVOT_GROUND_ANGLE),
-      WristToPos(WRIST_GROUND_ANGLE)
+			PivotToPos(98.0),
+      WristToPos(3.0)
 	));
+
 
   m_ML.WhenPressed(
     new frc2::ParallelCommandGroup(
 			frc2::PrintCommand("Low Cube Placement"),
-			PivotToPos(86), 
-      WristToPos(45)
+			PivotToPos(50), 
+      WristToPos(-40)
 	  )
   );
 
@@ -103,16 +109,24 @@ void Robot::AutoButtons(){
 
   m_MC.WhenPressed(
     new frc2::ParallelCommandGroup(
-		  frc2::PrintCommand("Mid Cone Pickup"),
-			PivotToPos(PIVOT_PLACING_MID_CONE_ANGLE), 
-      WristToPos(WRIST_PLACING_MID_CONE_ANGLE)
+		  frc2::PrintCommand("Mid Cone Place"),
+			PivotToPos(-20.0), 
+      WristToPos(30.0)
+	  )
+  );  
+
+  m_TC.WhenPressed(
+    new frc2::ParallelCommandGroup(
+		  frc2::PrintCommand("Low Substation"),
+			PivotToPos(25.0), 
+      WristToPos(-121.0)
 	  )
   );  
 
 	m_CenterGrid.WhenPressed(
     new frc2::ParallelCommandGroup(
-		  frc2::PrintCommand("Substation Cone Pickup"),
-			PivotToPos(PIVOT_SHELF_PICKUP_ANGLE), 
+		  frc2::PrintCommand("High Substation"),
+			PivotToPos(-8.0), 
       WristToPos(28)
 	  )
   );
@@ -120,10 +134,18 @@ void Robot::AutoButtons(){
 	m_LeftGrid.WhenPressed(
     new frc2::ParallelCommandGroup(
 		  frc2::PrintCommand("High Cube Placement"),
-			PivotToPos(PIVOT_PLACING_HIGH_CUBE_ANGLE), 
-      WristToPos(WRIST_PLACING_HIGH_CUBE_ANGLE)
+			PivotToPos(-33.0), 
+      WristToPos(46.0)
 	  )
   );
+
+  m_BigRed.WhenPressed(
+		new frc2::ParallelCommandGroup(
+			frc2::PrintCommand("Transit"),
+			  PivotToPos(92.0), 
+      	WristToPos(127.0)
+	  	)		
+	);
 
   
 	
@@ -248,10 +270,21 @@ void Robot::RobotPeriodic() {
   Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/pitchAngle").SetDouble(Robot::GetRobot()->GetNavX().GetPitch() + 0.05);
   m_AutoPath = std::string(Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/auto").GetString(""));
 
+  if(Robot::GetButtonBoard().GetRawButton(2)){
+    DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
+    DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
+  }
+
+  if(Robot::GetButtonBoard().GetRawButton(4)){
+    DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
+    DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
+    DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
+    DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
+  }
+
+
   // DebugOutF("PosDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().GetWristMotor().GetSelectedSensorPosition())));
 	// DebugOutF("PosTicks: " + std::to_string(GetArm().GetWristMotor().GetSelectedSensorPosition()));
-  DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
-  DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
 
   //DebugOutF(m_AutoPath);
 
@@ -272,11 +305,11 @@ void Robot::RobotPeriodic() {
  * robot is disabled.
  */
 void Robot::DisabledInit() {
-  GetDriveTrain().BreakMode(false);
-  GetDriveTrain().m_BackLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
-  GetDriveTrain().m_BackRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
-  GetDriveTrain().m_FrontLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
-  GetDriveTrain().m_FrontRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+  GetDriveTrain().BreakMode(true);
+  GetDriveTrain().m_BackLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_BackRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_FrontLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_FrontRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
   
 }
@@ -327,32 +360,32 @@ void Robot::AutonomousInit() {
   frc2::CommandScheduler::GetInstance().Schedule(new frc2::SequentialCommandGroup(
     frc2::ParallelRaceGroup(
       frc2::WaitCommand(2_s),
-      PivotToPos(PIVOT_PLACING_MID_CONE_ANGLE), 
+      PivotToPos(-22.0), 
       frc2::FunctionalCommand(
         [&] {
-          GetArm().m_BottomIntake.EnableCurrentLimit(false);
-          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, -1);
+          GetArm().GetBottomIntakeMotor().EnableCurrentLimit(false);
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -1);
         },
         [&] {},
         [&](bool e) { // onEnd
-          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 0);
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
         },
         [&] { // isFinished
         return false;
         }
       ),
-      WristToPos(WRIST_PLACING_MID_CONE_ANGLE)
+      WristToPos(28.0)
     ),
 
     frc2::ParallelRaceGroup(
       frc2::FunctionalCommand(
         [&] {
-          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 1);
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 1);
         },
         [&] {},
         [&](bool e) { // onEnd
-          GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 0);
-          GetArm().m_BottomIntake.EnableCurrentLimit(true);
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+          GetArm().GetBottomIntakeMotor().EnableCurrentLimit(true);
         },
         [&] { // isFinished
         return false;
@@ -363,7 +396,7 @@ void Robot::AutonomousInit() {
 
     frc2::ParallelRaceGroup(
       frc2::WaitCommand(1_s),
-      PivotToPos(PIVOT_TRANSIT_ANGLE), 
+      PivotToPos(92.0), 
       WristToPos(120)
     ),
 
@@ -400,14 +433,15 @@ void Robot::AutonomousInit() {
     // ),
 
     //frc2::ParallelDeadlineGroup(
-    //TrajectoryCommand(PathPlanner::loadPath("Phase3", PathConstraints(4_mps, 1_mps_sq))),
+    //TrajectoryCommand(PathPlanner::loadPath("Phase3", 
+    //PathConstraints(4_mps, 1_mps_sq), //no idea why but this crashed the code
       // PivotToPos(PIVOT_TRANSIT_ANGLE), 
       // WristToPos(120)
     //),
     //frc2::WaitCommand(0.5_s),
     AutoBalance()
-  ));
-
+    
+    ));
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
   // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
 }
@@ -421,10 +455,11 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+  // m_MMT.MotionMagicTestInit();
 
   //GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
-  GetDriveTrain().BreakMode(true);
+  // GetDriveTrain().BreakMode(true);
    
   // frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.54), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
   //   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
@@ -448,10 +483,8 @@ void Robot::TeleopPeriodic() {
   // DebugOutF("LLY: " + std::to_string(m_Vision.GetPoseBlue().Y().value()));
   // DebugOutF("LLZ: " + std::to_string(m_Vision.GetPoseBlue().Rotation().Degrees().value()));
 
-  // DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
-  // DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
-  // DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
-  // DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
+
+}
 
 /**
  * This function is called periodically during test mode.

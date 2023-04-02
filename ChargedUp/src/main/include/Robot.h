@@ -24,6 +24,7 @@
 #include "COB.h"
 #include "Vision.h"
 #include "subsystems/Arm.h"
+#include "subsystems/MotionMagicTest.h"
 #include <frc/geometry/Pose2d.h>
 
 class Robot : public frc::TimedRobot {
@@ -84,7 +85,13 @@ class Robot : public frc::TimedRobot {
 	frc2::Button m_CenterGrid;
 	frc2::Button m_RightGrid;
 
-  frc2::Button m_NavXReset;
+  frc2::Button m_BigRed;
+
+  frc2::Button m_MidCone;
+  frc2::Button m_MidCube;
+  frc2::Button m_PlacingMode;
+
+   frc2::Button m_NavXReset;
 
  private:
 
@@ -121,4 +128,6 @@ class Robot : public frc::TimedRobot {
 
   int m_COBTicks;
   std::string m_AutoPath;
+
+  MotionMagicTest m_MMT;
 };
