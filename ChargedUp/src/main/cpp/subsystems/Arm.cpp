@@ -7,6 +7,7 @@
 #include <frc2/command/ParallelCommandGroup.h>
 #include <frc2/command/WaitCommand.h>
 #include "./commands/DriveToPosCommand.h"
+#include "Constants.h"
 
 using ctre::phoenix::motorcontrol::ControlMode;
 using ctre::phoenix::motorcontrol::can::TalonFX;
@@ -53,19 +54,17 @@ void Arm::Init()
 
 	m_Pivot.ConfigAllowableClosedloopError(0, 10);
 	m_Pivot.Config_kP(0, 0.01);
-	m_Pivot.Config_kI(0, 0.00001); //0.000005
-	m_Pivot.Config_kD(0, 0.3);
+	m_Pivot.Config_kI(0, 0.00002); //0.000005 || 0.00001 original on 4/2/23
+	m_Pivot.Config_kD(0, 0.4); //0.3 original on 4/2/23
 	m_Pivot.Config_kF(0, 0.0639375, 0);
-	m_Pivot.ConfigMotionCruiseVelocity(8000, 0); //8400 working value
-	m_Pivot.ConfigMotionAcceleration(10000, 0); //8000 working value
 
 	m_Wrist.ConfigAllowableClosedloopError(0, 0);
 	m_Wrist.Config_kP(0, 0.0175); //0.009
 	m_Wrist.Config_kI(0, 0.000002);
 	m_Wrist.Config_kD(0, 0.6);
 	m_Wrist.Config_kF(0, 0.06089285714, 0);
-	m_Wrist.ConfigMotionCruiseVelocity(14000, 0); //10000 working value
-	m_Wrist.ConfigMotionAcceleration(28000, 0); //20000 working value
+	
+	SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
 
 	
 
@@ -81,7 +80,7 @@ void Arm::Init()
 
 	m_PivotCANCoder.ConfigAbsoluteSensorRange(AbsoluteSensorRange::Unsigned_0_to_360);
 	m_Pivot.SetSelectedSensorPosition((CANCODER_ZERO - m_PivotCANCoder.GetAbsolutePosition()) * PIVOT_TICKS_PER_DEGREE);
-	m_Wrist.SetSelectedSensorPosition((WristStringPotUnitsToTicks(m_StringPot.GetValue()))-29000.0 - WristDegreesToTicks(45));
+	m_Wrist.SetSelectedSensorPosition((WristStringPotUnitsToTicks(m_StringPot.GetValue())));
 }
 
 void Arm::SetButtons()
@@ -94,6 +93,7 @@ void Arm::SetButtons()
 	m_GroundPickupMode.WhenPressed(
 		new frc2::ParallelCommandGroup(
 			frc2::PrintCommand("Ground Pickup"),
+			frc2::InstantCommand([&]{SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);}),
 			PivotToPos(98.0), 
       		WristToPos(3.0)
 	  	)
@@ -102,6 +102,7 @@ void Arm::SetButtons()
 	m_TransitMode.WhenPressed(
 		new frc2::ParallelCommandGroup(
 			frc2::PrintCommand("Intermediate Cone"),
+			frc2::InstantCommand([&]{SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);}),
 			PivotToPos(66.6), 
       		WristToPos(132.0)
 	  	)
@@ -129,14 +130,6 @@ void Arm::SetButtons()
 	// 	)		// new WristToPos(WRIST_PLACING_MID_CUBE_ANGLE)
 	// );
 
-	m_BigRed.WhenPressed(
-		new frc2::ParallelCommandGroup(
-			frc2::PrintCommand("Transit"),
-			PivotToPos(98.0), 
-      		WristToPos(127)
-	  	)		
-	);
-
 	
 }
 
@@ -144,9 +137,8 @@ void Arm::SetButtons()
 frc2::FunctionalCommand* Arm::ManualControls()
 {
 	return new frc2::FunctionalCommand([&] { // onInit
-		//empty
-	},
-	[&] { // onExecute
+		SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
+	}, [&] { // onExecute
 		m_Pivot.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetButtonBoard().GetRawAxis(PIVOT_CONTROL) / 2);
 		m_Wrist.Set(ControlMode::PercentOutput, Robot::GetRobot()->GetButtonBoard().GetRawAxis(WRIST_CONTROL) / 2);
 
@@ -187,4 +179,11 @@ frc2::FunctionalCommand* Arm::ManualControls()
 	[&] { // isFinished
 		return !Robot::GetRobot()->GetButtonBoard().GetRawButton(ARM_OVERRIDE);
 	});
+}
+
+void Arm::SetMotionMagicValues(double pivotVel, double pivotAcc, double wristVel, double wristAcc) {
+	m_Pivot.ConfigMotionCruiseVelocity(pivotVel, 0); 
+	m_Pivot.ConfigMotionAcceleration(pivotAcc, 0); 
+	m_Wrist.ConfigMotionCruiseVelocity(wristVel, 0); 
+	m_Wrist.ConfigMotionAcceleration(wristAcc, 0);
 }

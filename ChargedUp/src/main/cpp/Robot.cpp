@@ -77,8 +77,9 @@ void Robot::AutoButtons(){
   
   m_Print.WhileHeld(
     new frc2::InstantCommand([&]{
-      DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
+      DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue()))));
       DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
+      DebugOutF("StringPotRaw: " + std::to_string(GetArm().GetStringPot().GetValue()));
     })
   );
 
@@ -97,6 +98,7 @@ void Robot::AutoButtons(){
   m_GroundPickup.WhenPressed(
     //DebugOutF("Ground Pickup");
     new frc2::ParallelCommandGroup(
+        frc2::InstantCommand([&]{Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);}),
         PivotToPos(94.0), 
         WristToPos(-2.0)
       )
@@ -105,6 +107,7 @@ void Robot::AutoButtons(){
   m_SingleSub.WhenPressed(
     //DebugOutF("Single Substation");
     new frc2::ParallelCommandGroup(
+        frc2::InstantCommand([&]{Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);}),
         PivotToPos(Robot::GetRobot()->GetArm().m_PivotMatrix[0][2]), 
         WristToPos(Robot::GetRobot()->GetArm().m_WristMatrix[0][2])
       )
@@ -113,6 +116,7 @@ void Robot::AutoButtons(){
   m_SingleSubCube.WhenPressed(
     //DebugOutF("Single Substation");
     new frc2::ParallelCommandGroup(
+        frc2::InstantCommand([&]{Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);}),
         PivotToPos(72.0), 
         WristToPos(54.0)
       )
@@ -121,6 +125,7 @@ void Robot::AutoButtons(){
   m_DoubleSub.WhenPressed(
     //DebugOutF("Double Substation");
     new frc2::ParallelCommandGroup(
+      frc2::InstantCommand([&]{Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);}),
       PivotToPos(Robot::GetRobot()->GetArm().m_PivotMatrix[0][0]), 
       WristToPos(Robot::GetRobot()->GetArm().m_WristMatrix[0][0])
     )
@@ -136,6 +141,7 @@ void Robot::AutoButtons(){
     DebugOutF("m_ML");
 
     GetArm().m_PlacingMode.WhenPressed(frc2::ParallelCommandGroup(
+        frc2::InstantCommand([&]{Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);}),
         PivotToPos(Robot::GetRobot()->GetArm().m_PivotMatrix[1][0]), 
         WristToPos(Robot::GetRobot()->GetArm().m_WristMatrix[1][0])
       ));
@@ -161,6 +167,7 @@ void Robot::AutoButtons(){
   m_TC.WhenPressed(new frc2::InstantCommand([&]{
     DebugOutF("m_TC");
     GetArm().m_PlacingMode.WhenPressed(frc2::ParallelCommandGroup(
+        frc2::InstantCommand([&]{Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);}),
         PivotToPos(Robot::GetRobot()->GetArm().m_PivotMatrix[0][1]), 
         WristToPos(Robot::GetRobot()->GetArm().m_WristMatrix[0][1])
       ));
@@ -203,6 +210,7 @@ void Robot::AutoButtons(){
   m_MR.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_MR");
 		GetArm().m_PlacingMode.WhenPressed(frc2::ParallelCommandGroup(
+        frc2::InstantCommand([&]{Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);}),
         PivotToPos(Robot::GetRobot()->GetArm().m_PivotMatrix[1][2]), 
         WristToPos(Robot::GetRobot()->GetArm().m_WristMatrix[1][2])
       ));
@@ -223,6 +231,7 @@ void Robot::AutoButtons(){
   }));
 
   m_BigRed.WhenPressed(frc2::ParallelCommandGroup(
+        frc2::InstantCommand([&]{Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);}),
         frc2::SequentialCommandGroup(
           frc2::WaitCommand(0.25_s),
           PivotToPos(92.0)
