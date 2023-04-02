@@ -4,14 +4,14 @@
 
 #define ARM Robot::GetRobot()->GetArm()
 
-WristToPos::WristToPos(double degPos) {
-	targetDegrees = degPos;
+WristToPos::WristToPos() {
+	// targetDegrees = degPos;
 	AddRequirements(&Robot::GetRobot()->GetArm());
 }
 
 void WristToPos::Initialize() {
 	ARM.GetWristMotor().SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
-
+	targetDegrees = Robot::GetRobot()->GetArm().m_WristPos;
 }
 
 void WristToPos::Execute() {
@@ -31,5 +31,4 @@ void WristToPos::End(bool interrupted){
 bool WristToPos::IsFinished() {
 	//return abs(ARM.WristDegreesToTicks(targetDegrees) - ARM.GetWristMotor().GetSelectedSensorPosition()) < 20000;
 	return Robot::GetRobot()->GetButtonBoard().GetRawButton(ARM_OVERRIDE);
-;
 }

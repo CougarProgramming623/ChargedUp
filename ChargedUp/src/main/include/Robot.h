@@ -97,10 +97,13 @@ class Robot : public frc::TimedRobot {
 
   frc2::Button m_Print;
 
- private:
-
   int SelectedRow;
 	int SelectedColumn;
+
+ private:
+
+  
+  frc2::ParallelCommandGroup* m_ArmCommand;
 
   static Robot* s_Instance;
 

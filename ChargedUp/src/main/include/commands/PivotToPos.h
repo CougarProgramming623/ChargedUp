@@ -8,7 +8,7 @@
 
 class PivotToPos : public frc2::CommandHelper<frc2::CommandBase, PivotToPos> {
 	public:
-		explicit PivotToPos(double degPos);
+		explicit PivotToPos();
 		void Initialize() override;
 		void Execute() override;
   		void End(bool interrupted) override;

@@ -85,6 +85,9 @@ class Arm : public frc2::SubsystemBase {
 	};
 	frc2::Button m_PlacingMode;
 
+	double m_WristPos;
+	double m_PivotPos;
+
 	private:
 	
 	//motors

@@ -91,21 +91,25 @@ void Arm::SetButtons()
 	m_IntakeButton.WhenPressed(DynamicIntake());
 	m_OuttakeButton.WhenPressed(DynamicIntake());
 
-	m_GroundPickupMode.WhenPressed(
+	m_GroundPickupMode.WhenPressed(new frc2::InstantCommand([&]{
+		Robot::GetRobot()->GetArm().m_PivotPos = 98.0;
+      	Robot::GetRobot()->GetArm().m_WristPos = 3.0;
 		new frc2::ParallelCommandGroup(
 			frc2::PrintCommand("Ground Pickup"),
-			PivotToPos(98.0), 
-      		WristToPos(3.0)
-	  	)
-	);
+			PivotToPos(), 
+      		WristToPos()
+	  	);
+	}));
 
-	m_TransitMode.WhenPressed(
+	m_TransitMode.WhenPressed(new frc2::InstantCommand([&]{
+		Robot::GetRobot()->GetArm().m_PivotPos = 66.6;
+      	Robot::GetRobot()->GetArm().m_WristPos = 132.0;
 		new frc2::ParallelCommandGroup(
-			frc2::PrintCommand("Intermediate Cone"),
-			PivotToPos(66.6), 
-      		WristToPos(132.0)
-	  	)
-	);
+			frc2::PrintCommand(""),
+			PivotToPos(), 
+      		WristToPos()
+	  	);
+	}));
 
 	// m_GroundPickupMode.WhenPressed(
 	// 	new frc2::ParallelCommandGroup(
