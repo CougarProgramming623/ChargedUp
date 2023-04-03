@@ -15,7 +15,7 @@ void WristToPos::Initialize() {
 }
 
 void WristToPos::Execute() {
-	ARM.GetWristMotor().SetSelectedSensorPosition((ARM.WristStringPotUnitsToTicks(ARM.GetStringPot().GetValue()))-29000.0- ARM.WristDegreesToTicks(45));
+	ARM.GetWristMotor().SetSelectedSensorPosition((ARM.WristStringPotUnitsToTicks(ARM.GetStringPot().GetValue())));
 	ARM.GetWristMotor().Set(ControlMode::MotionMagic, ARM.WristDegreesToTicks(targetDegrees));
 	// DebugOutF("TargetDeg: " + std::to_string(targetDegrees));
 	// DebugOutF("TargetTicks: " + std::to_string(ARM.WristDegreesToTicks(targetDegrees)));

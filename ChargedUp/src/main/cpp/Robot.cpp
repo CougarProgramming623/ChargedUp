@@ -78,8 +78,9 @@ void Robot::AutoButtons(){
   
   m_Print.WhileHeld(
     new frc2::InstantCommand([&]{
-      DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
+      DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue()))));
       DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
+      DebugOutF("StringPotRaw: " + std::to_string(GetArm().GetStringPot().GetValue()));
     })
   );
 
@@ -95,7 +96,9 @@ void Robot::AutoButtons(){
   //     WristToPos(Robot::GetRobot()->GetArm().m_WristMatrix[SelectedRow][SelectedColumn])
 	// ));
 
-  m_TR.WhenPressed(
+  m_TR.WhenPressed(frc2::PrintCommand("Nothing"));
+
+GetArm().m_PlacingMode.WhenPressed(
       new frc2::InstantCommand([&]{
         if(m_ArmCommand != nullptr){
           m_ArmCommand->Cancel();
@@ -117,6 +120,7 @@ void Robot::AutoButtons(){
       frc2::InstantCommand([&]{
         Robot::GetRobot()->GetArm().m_PivotPos = 94.0;
         Robot::GetRobot()->GetArm().m_WristPos = -2.0;
+        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
       }),
       WristToPos(),
       PivotToPos(),
@@ -129,6 +133,7 @@ void Robot::AutoButtons(){
       frc2::InstantCommand([&]{
         Robot::GetRobot()->GetArm().m_PivotPos = Robot::GetRobot()->GetArm().m_PivotMatrix[0][2];
         Robot::GetRobot()->GetArm().m_WristPos = Robot::GetRobot()->GetArm().m_WristMatrix[0][2];
+        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
       }),
       WristToPos(),
       PivotToPos(),
@@ -141,6 +146,7 @@ void Robot::AutoButtons(){
       frc2::InstantCommand([&]{
         Robot::GetRobot()->GetArm().m_PivotPos = Robot::GetRobot()->GetArm().m_PivotMatrix[0][0];
         Robot::GetRobot()->GetArm().m_WristPos = Robot::GetRobot()->GetArm().m_WristMatrix[0][0];    
+        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
       }),
       WristToPos(),
       PivotToPos(),
@@ -153,6 +159,7 @@ void Robot::AutoButtons(){
       frc2::InstantCommand([&]{
         Robot::GetRobot()->GetArm().m_PivotPos = 72.0;
         Robot::GetRobot()->GetArm().m_WristPos = 54.0; 
+        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
       }),
       WristToPos(),
       PivotToPos(),
@@ -161,6 +168,7 @@ void Robot::AutoButtons(){
 
   m_ML.WhenPressed(new frc2::InstantCommand([&]{
     DebugOutF("m_ML");
+    Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
     SelectedRow = 1;
     SelectedColumn = 0;
     frc::Pose2d SelectedPose = 
@@ -182,6 +190,7 @@ void Robot::AutoButtons(){
 
   m_TC.WhenPressed(new frc2::InstantCommand([&]{
     DebugOutF("m_TC");
+    Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
     SelectedRow = 0;
     SelectedColumn = 1;
     frc::Pose2d SelectedPose = 
@@ -218,6 +227,7 @@ void Robot::AutoButtons(){
 
   m_MR.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_MR");
+    Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
     SelectedRow = 1;
     SelectedColumn = 2;
 		frc::Pose2d SelectedPose = 
@@ -239,6 +249,7 @@ void Robot::AutoButtons(){
       frc2::InstantCommand([&]{
         Robot::GetRobot()->GetArm().m_PivotPos = 92.0;
         Robot::GetRobot()->GetArm().m_WristPos = 127.0;
+        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
         frc2::PrintCommand("Big Red");
       }),
       frc2::SequentialCommandGroup(
