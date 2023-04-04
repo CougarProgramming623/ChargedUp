@@ -283,6 +283,14 @@ void Robot::RobotPeriodic() {
     DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
   }
 
+  //LED
+  m_LED.EndGame();
+  m_LED.SubstationColor();
+  m_LED.SetEyesData();
+  m_LED.SetBoardData();
+  //m_LED.SponsorBoardRainbow();
+  //m_LED.LowBattery();
+
 
   // DebugOutF("PosDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().GetWristMotor().GetSelectedSensorPosition())));
 	// DebugOutF("PosTicks: " + std::to_string(GetArm().GetWristMotor().GetSelectedSensorPosition()));
@@ -475,13 +483,7 @@ void Robot::TeleopInit() {
  * This function is called periodically during operator control.  
  */
 void Robot::TeleopPeriodic() {
-  m_LED.EndGame();
-  m_LED.Cube();
-  m_LED.Cone();
-  m_LED.SetEyesData();
-  m_LED.SetBoardData();
-  //m_LED.SponsorBoardRainbow();
-  //m_LED.LowBattery();
+
 }
 
   

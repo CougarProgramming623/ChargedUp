@@ -18,9 +18,10 @@ class LED{
 
         void SetEyesData();
         void SetBoardData();
+
         void EndGame();
-        void Cube();
-        void Cone();
+        void SubstationColor();
+
 
         void SponsorBoardAllianceColor();
         void SponsorBoardSolid(frc::Color allianceColor);
@@ -46,7 +47,7 @@ class LED{
     private:
 
         frc::AddressableLED m_Eyes{9};
-        frc::AddressableLED m_Sponsorboard{0};
+        frc::AddressableLED m_Sponsorboard{1};
         std::array <frc::AddressableLED::LEDData, 28> m_EyesBuffer;
         std::array <frc::AddressableLED::LEDData, 40> m_BoardBuffer; //FIX Length
         int m_IterationTracker;

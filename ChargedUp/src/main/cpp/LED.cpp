@@ -70,14 +70,15 @@ void LED::EndGame(){
     }
 }
 
-void LED::Cube(){ 
+void LED::SubstationColor(){ 
     if(Robot::GetRobot()->GetButtonBoard().GetRawButton(19)){
         EyesSolid(frc::Color::kYellow);
-    }
-}
-void LED::Cone(){ 
-    if(Robot::GetRobot()->GetButtonBoard().GetRawButton(18)){
+    } else if(Robot::GetRobot()->GetButtonBoard().GetRawButton(18)){
         EyesSolid(frc::Color::kViolet);
+    }
+
+    if(Robot::GetRobot()->GetJoyStick().GetRawButton(3)) {//FIX Button number
+        EyesSolid(frc::Color::kWhite);
     }
 }
 
