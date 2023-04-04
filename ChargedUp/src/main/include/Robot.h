@@ -8,8 +8,7 @@
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/CommandPtr.h>
-
-#include <frc2/command/Command.h>
+#include <frc/SerialPort.h>
 
 #include <pathplanner/lib/PathPlanner.h>
 #include "subsystems/DriveTrain.h"
@@ -108,7 +107,7 @@ class Robot : public frc::TimedRobot {
 
   static Robot* s_Instance;
 
-  AHRS m_NavX{frc::SPI::Port::kMXP};
+  AHRS m_NavX;
 
   frc::Joystick m_Joystick = frc::Joystick(1);
 

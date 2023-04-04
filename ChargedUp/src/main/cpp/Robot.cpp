@@ -22,7 +22,8 @@ using namespace pathplanner;
 
 Robot* Robot::s_Instance = nullptr;
 
-Robot::Robot()
+Robot::Robot() :
+m_NavX(frc::SerialPort::Port(2), AHRS::SerialDataType(0), uint8_t(66))
 {
   s_Instance = this;
 }
@@ -545,7 +546,7 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
   // frc2::CommandScheduler::GetInstance().Run();
   // frc2::CommandScheduler::GetInstance().Schedule(m_Arm.Telescope(50));  
-
+  DebugOutF("Theta: " + std::to_string(GetAngle())); 
   
   // DebugOutF("LLX: " + std::to_string(m_Vision.GetPoseBlue().X().value()));
   // DebugOutF("LLY: " + std::to_string(m_Vision.GetPoseBlue().Y().value()));
