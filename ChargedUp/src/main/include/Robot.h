@@ -94,6 +94,7 @@ class Robot : public frc::TimedRobot {
 
   frc2::Button m_NavXReset;
   frc2::Button m_AutoBalance;
+  frc2::Button m_VisionPoseReset;
 
   frc2::Button m_Print;
 

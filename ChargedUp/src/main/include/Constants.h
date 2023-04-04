@@ -82,7 +82,7 @@
 
     #define BACK_LEFT_MODULE_DRIVE_MOTOR 52
     #define BACK_LEFT_MODULE_STEER_MOTOR 59
-    #define BACK_LEFT_MODULE_STEER_OFFSET -161.51//JJ-181 //-160.67 //-178.25
+    #define BACK_LEFT_MODULE_STEER_OFFSET -161.51//-178.25// -180.43
     #define BACK_LEFT_MODULE_ENCODER_PORT 3
 
     #define BACK_RIGHT_MODULE_DRIVE_MOTOR 51
@@ -114,10 +114,11 @@
 
 #define COB_KEY_DISTANCE "/COB/distance"
 
-#define COB_KEY_BOT_POSE_FRONT "/limelight/botpose" //FIX
+#define COB_KEY_BOT_POSE_FRONT "/limelight-front/botpose" //FIX
 #define COB_KEY_BOT_POSE_BACK "/limelight-back/botpose"
 
-#define COB_KEY_BOT_POSE_BLUE "/limelight/botpose_wpiblue"
+#define COB_KEY_BOT_POSE_BLUE_FRONT "/limelight-front/botpose_wpiblue"
+#define COB_KEY_BOT_POSE_BLUE_BACK  "/limelight-back/botpose_wpiblue"
 
 #define COB_KEY_TV_FRONT "/limelight-front/tv"
 #define COB_KEY_TV_BACK "/limelight-back/tv"
@@ -215,7 +216,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define TRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(.49), frc::Rotation2d(units::degree_t(0)))
 
 #define MLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.61), frc::Rotation2d(units::degree_t(180)))
-#define MCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.05), frc::Rotation2d(units::degree_t(180)))
+#define MCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.072), frc::Rotation2d(units::degree_t(180)))
 #define MRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(.49), frc::Rotation2d(units::degree_t(180)))
 
 #define BLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.61), frc::Rotation2d(units::degree_t(180)))

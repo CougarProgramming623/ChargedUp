@@ -62,6 +62,8 @@ class DriveTrain : public frc2::SubsystemBase {
   frc::Translation2d m_FrontRightLocation;
   frc::Translation2d m_BackLeftLocation;
   frc::Translation2d m_BackRightLocation;
+  
+  bool m_DriveToPoseFlag = false;
 
   inline frc::SwerveDriveKinematics<4> GetKinematics() { return m_Kinematics; }
   inline frc::SwerveDrivePoseEstimator<4>* GetOdometry(){ return &m_Odometry; }
@@ -108,6 +110,8 @@ class DriveTrain : public frc2::SubsystemBase {
 
   frc::Pose2d m_TransformedPose;
   
+  int m_VisionCounter;
+
   private:
 
 

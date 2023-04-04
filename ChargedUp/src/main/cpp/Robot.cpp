@@ -74,6 +74,7 @@ void Robot::AutoButtons(){
    m_Print = frc2::Button(BUTTON_L(2));
 
   m_AutoBalance.WhileHeld(new AutoBalance());
+  m_VisionPoseReset = frc2::Button([&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(7); }); //PUT Define
  
   
   m_Print.WhileHeld(
@@ -273,7 +274,6 @@ GetArm().m_PlacingMode.WhenPressed(
     Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 1;
   }));
 
-
   m_RightGrid.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_RightGrid");
 		if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
@@ -281,72 +281,36 @@ GetArm().m_PlacingMode.WhenPressed(
 		} else{
 			Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
 	}}));
-  
 
-  // m_LeftGrid.WhenPressed(new frc2::InstantCommand([&]{
-	// 	DebugOutF("m_LeftGrid");
-	// 	if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
-	// 		Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 0;
-	// 	} else{
-	// 		Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 2;
-	// 	}
-	// }));
-
-	// m_CenterGrid.WhenPressed(new frc2::InstantCommand([&]{
-	// 	DebugOutF("m_CenterGrid");
-	// 	Robot::GetRobot()->GetDriveTrain().m_SelectedGrid = 1;
-	// }));
-
-  // new frc2::InstantCommand([&]{
-	// 	DebugOutF("m_ML");
-	// 	SelectedRow = 1;
-	// 	SelectedColumn = 0;
-	// 	frc::Pose2d SelectedPose = 
-	// 		Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-	// 	Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
-  //   })
-
-    //   new frc2::InstantCommand([&]{
-	// 	DebugOutF("m_TL");
-	// 	SelectedRow = 0;
-	// 	SelectedColumn = 0; 
-	// 	frc::Pose2d SelectedPose = 
-	// 		Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-	// 	Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
-	// })
-
-  // new frc2::InstantCommand([&]{
-		// DebugOutF("m_TC");
-		// SelectedRow = 0;
-		// SelectedColumn = 1;
-		// frc::Pose2d SelectedPose = 
-		// 	Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		// Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);	
-		// })
-
-    // new frc2::InstantCommand([&]{
-		// DebugOutF("m_TR");
-		// SelectedRow = 0;
-		// SelectedColumn = 2;
-		// frc::Pose2d SelectedPose = 
-		// 	Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		// Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);	
-		// })
+  m_VisionPoseReset.WhenPressed(
+    new frc2::InstantCommand([&] {
+      if(COB_GET_ENTRY(m_Vision.FrontBack("tv")).GetInteger(0) == 1 && COB_GET_ENTRY(m_Vision.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){
+        frc::Pose2d startingPose = frc::Pose2d(m_Vision.GetPoseBlue().Translation(), units::radian_t(Deg2Rad(GetAngle())));
+        GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
+        wpi::array<frc::SwerveModulePosition, 4>
+              (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
+        startingPose);
+        DebugOutF("Pose Reset. X: " + std::to_string(startingPose.X().value()) + ", Y: " + std::to_string(startingPose.Y().value()) + ", Z: " + std::to_string(startingPose.Rotation().Degrees().value()));
+      } else {
+        DebugOutF("Pose Reset Fail");
+      }
+    })
+  );
 }
 
-frc::Pose2d Robot::TransformPose(frc::Pose2d SelectedPose){
+frc::Pose2d Robot::TransformPose(frc::Pose2d SelectedPose){ //rotating poses do not add correctly
 	if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 1){
 		SelectedPose = SelectedPose +
 			frc::Transform2d(
 				frc::Translation2d(units::meter_t(0), units::meter_t(1.68)),
 				frc::Rotation2d(units::radian_t(0))
-		).Inverse();
+		).Inverse(); //delete inverse if not going 180
 	} else if(Robot::GetRobot()->GetDriveTrain().m_SelectedGrid == 2){
 		SelectedPose = SelectedPose + 
 			frc::Transform2d(
 				frc::Translation2d(units::meter_t(0), units::meter_t(2 * 1.68)),
 				frc::Rotation2d(units::radian_t(0))
-		).Inverse();		
+		).Inverse(); //delete inverse if not going 180	
 	}
 	if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
 		SelectedPose = 
@@ -424,6 +388,10 @@ void Robot::AutonomousInit() {
   GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
   GetDriveTrain().BreakMode(true);
+  GetDriveTrain().m_BackLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_BackRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_FrontLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_FrontRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
   //PathPlannerTrajectory traj;
 
   //Load trajectory
@@ -441,8 +409,8 @@ void Robot::AutonomousInit() {
 
   //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
 
-  //frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.3), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
-  frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), frc::Rotation2d(units::degree_t(0)));
+  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.91), units::meter_t(1.82), frc::Rotation2d(units::degree_t(0)));
+  //frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), frkkjc::Rotation2d(units::degree_t(0)));
 
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
     wpi::array<frc::SwerveModulePosition, 4>
@@ -555,8 +523,12 @@ void Robot::TeleopInit() {
   // m_MMT.MotionMagicTestInit();
 
   //GetNavX().ZeroYaw();
+  m_DriveTrain.BreakMode(true);
+  GetDriveTrain().m_BackLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_BackRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_FrontLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  GetDriveTrain().m_FrontRightModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
   GetNavX().SetAngleAdjustment(0);
-  // GetDriveTrain().BreakMode(true);
    
   // frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.54), units::meter_t(1.75), frc::Rotation2d(units::degree_t(0)));
   //   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
