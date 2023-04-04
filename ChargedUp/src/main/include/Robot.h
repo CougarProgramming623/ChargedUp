@@ -8,8 +8,7 @@
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/CommandPtr.h>
-
-#include <frc2/command/Command.h>
+#include <frc/SerialPort.h>
 
 #include <pathplanner/lib/PathPlanner.h>
 #include "subsystems/DriveTrain.h"
@@ -82,6 +81,11 @@ class Robot : public frc::TimedRobot {
 	frc2::Button m_RightGrid;
 
   frc2::Button m_BigRed;
+  frc2::Button m_GroundPickup;
+
+  frc2::Button m_SingleSub;
+  frc2::Button m_SingleSubCube;
+  frc2::Button m_DoubleSub;
 
   frc2::Button m_MidCone;
   frc2::Button m_MidCube;
@@ -89,18 +93,21 @@ class Robot : public frc::TimedRobot {
 
   frc2::Button m_NavXReset;
   frc2::Button m_AutoBalance;
+  frc2::Button m_VisionPoseReset;
 
-  frc2::Button m_ArmPrintSwitch;
-  frc2::Button m_SwervePrintSwitch;
-
- private:
+  frc2::Button m_Print;
 
   int SelectedRow;
 	int SelectedColumn;
 
+ private:
+
+  
+  frc2::ParallelCommandGroup* m_ArmCommand;
+
   static Robot* s_Instance;
 
-  AHRS m_NavX{frc::SPI::Port::kMXP};
+  AHRS m_NavX;
 
   frc::Joystick m_Joystick = frc::Joystick(1);
 

@@ -42,6 +42,7 @@ void DriveTrain::DriveInit(){
   SetDefaultCommand(DriveWithJoystick());
  
   //m_TestJoystickButton.ToggleWhenPressed(new AutoBalance());
+  m_TestJoystickButton.WhenPressed(new DriveToPosCommand());
   m_JoystickButtonTwo.ToggleWhenPressed(AutoLock());
 
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.5, 0.5, .561799});
@@ -95,6 +96,7 @@ void DriveTrain::Periodic(){
 
   m_ModulePositions = wpi::array<frc::SwerveModulePosition, 4>(m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition());
 
+
   frc::Pose2d visionRelative = Robot::GetRobot()->GetVision().GetPoseBlue().RelativeTo(m_Odometry.GetEstimatedPosition());
   // DebugOutF("OdoX: " + std::to_string(GetOdometry()->GetEstimatedPosition().X().value()));
   // DebugOutF("OdoY: " + std::to_string(GetOdometry()->GetEstimatedPosition().Y().value()));
@@ -103,22 +105,24 @@ void DriveTrain::Periodic(){
   // DebugOutF("visionX: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().X().value()));
   // DebugOutF("visionY: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().Y().value()));
   // DebugOutF("visionTheta: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().Rotation().Degrees().value()));
-  //if(COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){ // FIX uncomment when we have both limelights back
-  if(COB_GET_ENTRY("/limelight/botpose").GetDoubleArray(std::span<double>()).size() != 0){ //Works with one limelight
-    if(
-      std::abs(visionRelative.X().value()) < 1 &&
-      std::abs(visionRelative.Y().value()) < 1 &&
-      std::abs(-fmod(360 - visionRelative.Rotation().Degrees().value(), 360)) < 30) {
-      // if(COB_GET_ENTRY(GET_VISION.FrontBack("tv")).GetInteger(0) == 1 && COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){
-      //     m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
-      //     - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("tl")).GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("cl")).GetDouble(0))/1000.0)
-      //     );
-      // }
-    }
+  if(COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){ // FIX uncomment when we have both limelights back
+  // if(COB_GET_ENTRY("/limelight/botpose").GetDoubleArray(std::span<double>()).size() != 0){ //Works with one limelight
+    if(m_DriveToPoseFlag != true || m_VisionCounter == 50)
+    {
+      if(
+        std::abs(visionRelative.X().value()) < 1 &&
+        std::abs(visionRelative.Y().value()) < 1 &&
+        std::abs(-fmod(360 - visionRelative.Rotation().Degrees().value(), 360)) < 30) 
+        {
+          m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
+          - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("tl")).GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("cl")).GetDouble(0))/1000.0));
+          DebugOutF("Vision Update");
+          m_VisionCounter = 0;
+        } 
+    } else { m_VisionCounter++; }
+    m_Odometry.Update(m_Rotation, m_ModulePositions);
   }
-  m_Odometry.Update(m_Rotation, m_ModulePositions);
 }
-
 //Converts chassis speed object and updates module states
 void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
   m_ChassisSpeeds = chassisSpeeds;

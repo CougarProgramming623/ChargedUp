@@ -46,9 +46,11 @@ class Arm : public frc2::SubsystemBase {
 	
 
 	frc2::FunctionalCommand* ManualControls();
+	void SetMotionMagicValues(double pivotVel, double pivotAcc, double wristVel, double wristAcc);
 
 	inline double WristStringPotUnitsToDegrees(double units) {return -((units - STRINGPOT_ZERO) * WRIST_DEGREES_PER_STRINGPOT_UNITS); }
 	inline double WristDegreesToStringPotUnits(double degrees) {return -((degrees / WRIST_DEGREES_PER_STRINGPOT_UNITS) + STRINGPOT_ZERO); }
+	
 	inline double WristStringPotUnitsToTicks(double units) {return WristDegreesToTicks(WristStringPotUnitsToDegrees(units));}
 	inline double WristTicksToStringPotUnits(double ticks) {return WristDegreesToStringPotUnits(WristTicksToDegrees(ticks));}
 	inline double WristDegreesToTicks(double degrees) {return degrees * WRIST_TICKS_PER_DEGREE;}
@@ -85,6 +87,9 @@ class Arm : public frc2::SubsystemBase {
 	};
 	frc2::Button m_PlacingMode;
 
+	double m_WristPos;
+	double m_PivotPos;
+
 	private:
 	
 	//motors
@@ -111,8 +116,6 @@ class Arm : public frc2::SubsystemBase {
 
 	frc2::Button m_IntakeButton;
 	frc2::Button m_OuttakeButton;
-
-	frc2::Button m_BigRed;
 
 	frc::Timer m_Timer;
 

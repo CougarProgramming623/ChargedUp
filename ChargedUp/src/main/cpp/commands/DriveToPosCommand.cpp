@@ -17,22 +17,26 @@ void DriveToPosCommand::Initialize(){
     DebugOutF("Init");
     m_Start = Robot::GetRobot()->GetDriveTrain().GetOdometry()->GetEstimatedPosition();
     m_End = Robot::GetRobot()->GetDriveTrain().m_TransformedPose;
+    Robot::GetRobot()->GetDriveTrain().m_DriveToPoseFlag = true;
     // DebugOutF(std::to_string(Robot::GetRobot()->GetDriveTrain().m_TransformedPose.X().value()));
     DebugOutF("Start: (" + std::to_string(m_Start.Translation().X().value()) + ", " + std::to_string(m_Start.Translation().Y().value()) + ")");
     DebugOutF("End: (" + std::to_string(m_End.Translation().X().value()) + ", " + std::to_string(m_End.Translation().Y().value()) + ")");
     
+    vertical = m_End.Y().value() - m_Start.Y().value();
+    horizontal = m_End.X().value() - m_Start.X().value();
+
     m_Trajectory = PathPlanner::generatePath(
         units::meters_per_second_t(2),
 		units::meters_per_second_squared_t(0.5),
-		false, 
+		false,
 
         PathPoint(
             m_Start.Translation(), 
-            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(),
+            frc::Rotation2d(units::radian_t(atan(vertical/horizontal) + M_PI)),
             m_Start.Rotation()
         ), PathPoint(
             m_End.Translation(), 
-            m_End.RelativeTo(frc::Pose2d(m_Start.Translation(), frc::Rotation2d(0_rad))).Rotation(),
+            frc::Rotation2d(units::radian_t(atan(vertical/horizontal) + M_PI)), //wrong?
             m_End.Rotation()
         )
 
@@ -68,9 +72,11 @@ void DriveToPosCommand::Execute() {
 void DriveToPosCommand::End(bool interrupted){
     DebugOutF("Ending follow");
     m_Timer.Stop();
+    Robot::GetRobot()->GetDriveTrain().m_DriveToPoseFlag = false;
+
 }
 
 //End command when close to intended pose
 bool DriveToPosCommand::IsFinished(){
-    return m_Trajectory.getTotalTime() + .5_s < m_Timer.Get();
+    return m_Trajectory.getTotalTime() + 1.5_s < m_Timer.Get();
 }

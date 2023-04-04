@@ -8,7 +8,7 @@
 
 class WristToPos : public frc2::CommandHelper<frc2::CommandBase, WristToPos> {
 	public:
-		explicit WristToPos(double degPos);
+		explicit WristToPos();
 		void Initialize() override;
 		void Execute() override;
   		void End(bool interrupted) override;

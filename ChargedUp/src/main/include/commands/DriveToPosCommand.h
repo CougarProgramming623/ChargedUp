@@ -22,4 +22,7 @@ class DriveToPosCommand : public frc2::CommandHelper<frc2::CommandBase, DriveToP
   PathPlannerTrajectory m_Trajectory;
   frc::Pose2d m_Start;
   frc::Pose2d m_End;
+
+  double vertical;
+  double horizontal;
 };
