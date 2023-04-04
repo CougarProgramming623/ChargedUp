@@ -35,6 +35,7 @@ void Robot::RobotInit() {
   s_Instance = this;
   m_DriveTrain.DriveInit();
   m_Vision.VisionInit(); //Make one
+  m_LED.Init();
   m_Arm.Init();
   AutoButtons();
   m_COBTicks = 0;
@@ -343,10 +344,21 @@ void Robot::RobotPeriodic() {
   // DebugOutF("Row: " + std::to_string(SelectedRow) + " , Col: " + std::to_string(SelectedColumn));
 
 
+  if(Robot::GetButtonBoard().GetRawButton(2)){
+    DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
+    DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
+  }
+
+  if(Robot::GetButtonBoard().GetRawButton(4)){
+    DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
+    DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
+    DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
+    DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
+  }
+
+
   // DebugOutF("PosDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().GetWristMotor().GetSelectedSensorPosition())));
 	// DebugOutF("PosTicks: " + std::to_string(GetArm().GetWristMotor().GetSelectedSensorPosition()));
-  // DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue())-29000.0 - GetArm().WristDegreesToTicks(45))));
-  // DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
 
   // DebugOutF(std::to_string(m_Arm.m_WristPos));
 
@@ -546,16 +558,13 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
   // frc2::CommandScheduler::GetInstance().Run();
   // frc2::CommandScheduler::GetInstance().Schedule(m_Arm.Telescope(50));  
-  DebugOutF("Theta: " + std::to_string(GetAngle())); 
+  //DebugOutF("Theta: " + std::to_string(GetAngle())); 
   
   // DebugOutF("LLX: " + std::to_string(m_Vision.GetPoseBlue().X().value()));
   // DebugOutF("LLY: " + std::to_string(m_Vision.GetPoseBlue().Y().value()));
   // DebugOutF("LLZ: " + std::to_string(m_Vision.GetPoseBlue().Rotation().Degrees().value()));
 
-  // DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
-  // DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
-  // DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
-  // DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
+
 }
 
 /**
