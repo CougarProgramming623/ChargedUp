@@ -24,7 +24,7 @@
 #include "Vision.h"
 #include "subsystems/Arm.h"
 #include "subsystems/MotionMagicTest.h"
-#include "subsystems/LED.h"
+#include "LED.h"
 #include <frc/geometry/Pose2d.h>
 
 class Robot : public frc::TimedRobot {
