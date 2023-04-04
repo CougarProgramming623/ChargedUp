@@ -24,6 +24,7 @@
 #include "Vision.h"
 #include "subsystems/Arm.h"
 #include "subsystems/MotionMagicTest.h"
+#include "subsystems/LED.h"
 #include <frc/geometry/Pose2d.h>
 
 class Robot : public frc::TimedRobot {
@@ -130,4 +131,6 @@ class Robot : public frc::TimedRobot {
   std::string m_AutoPath;
 
   MotionMagicTest m_MMT;
+
+  LED m_LED;
 };
