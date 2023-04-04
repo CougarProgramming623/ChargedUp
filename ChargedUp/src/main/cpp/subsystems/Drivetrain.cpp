@@ -97,7 +97,7 @@ void DriveTrain::Periodic(){
   m_ModulePositions = wpi::array<frc::SwerveModulePosition, 4>(m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition());
 
 
-  frc::Pose2d visionRelative = Robot::GetRobot()->GetVision().GetPoseBlue().RelativeTo(m_Odometry.GetEstimatedPosition());
+  m_VisionRelative = Robot::GetRobot()->GetVision().GetPoseBlue().RelativeTo(m_Odometry.GetEstimatedPosition());
   // DebugOutF("OdoX: " + std::to_string(GetOdometry()->GetEstimatedPosition().X().value()));
   // DebugOutF("OdoY: " + std::to_string(GetOdometry()->GetEstimatedPosition().Y().value()));
   // DebugOutF("OdoZ: " + std::to_string(GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
@@ -110,9 +110,9 @@ void DriveTrain::Periodic(){
     if(m_DriveToPoseFlag != true || m_VisionCounter == 50)
     {
       if(
-        std::abs(visionRelative.X().value()) < 1 &&
-        std::abs(visionRelative.Y().value()) < 1 &&
-        std::abs(-fmod(360 - visionRelative.Rotation().Degrees().value(), 360)) < 30) 
+        std::abs(m_VisionRelative.X().value()) < 1 &&
+        std::abs(m_VisionRelative.Y().value()) < 1 &&
+        std::abs(-fmod(360 - m_VisionRelative.Rotation().Degrees().value(), 360)) < 30) 
         {
           m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
           - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("tl")).GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("cl")).GetDouble(0))/1000.0));

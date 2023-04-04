@@ -111,6 +111,7 @@ class DriveTrain : public frc2::SubsystemBase {
   frc::Pose2d m_TransformedPose;
   
   int m_VisionCounter;
+  frc::Pose2d m_VisionRelative;
 
   private:
 

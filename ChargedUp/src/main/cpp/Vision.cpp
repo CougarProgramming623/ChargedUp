@@ -102,6 +102,10 @@ Pose2d Vision::GetFieldPose(){
   return m_AbsolutePose; 
 }
 
+void Vision::PushID(){
+  COB_GET_ENTRY("/  COB/apriltagID").SetDouble(COB_GET_ENTRY(FrontBack("tid")).GetInteger(-1));
+}
+
 //1 for front 0 for back
 std::string Vision::FrontBack(std::string key){
   

@@ -13,6 +13,7 @@ class Vision {
         void PrintValues();
         void VisionInit();
         void CalcPose();
+        void PushID();
         
         Pose2d GetPoseBlue();
         Pose2d GetPoseRed();
