@@ -478,7 +478,8 @@ void Robot::TeleopPeriodic() {
   m_LED.EndGame();
   m_LED.Cube();
   m_LED.Cone();
-  m_LED.SetData();
+  m_LED.SetEyesData();
+  m_LED.SetBoardData();
   //m_LED.SponsorBoardRainbow();
   //m_LED.LowBattery();
 }

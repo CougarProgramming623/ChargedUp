@@ -16,7 +16,8 @@ class LED{
 
         void LowBattery();
 
-        void SetData();
+        void SetEyesData();
+        void SetBoardData();
         void EndGame();
         void Cube();
         void Cone();
@@ -33,6 +34,7 @@ class LED{
         void EyesAllianceColor();
         void EyesSolidYellow(frc::Color);
         void EyesSolidPurple(frc::Color);
+        void EyesSolid(frc::Color allianceColor);
         void EyesSolid(int R, int G, int B);
 
         void EyesAngry();
@@ -43,8 +45,10 @@ class LED{
 
     private:
 
-        frc::AddressableLED m_AddressableLED{9};
-        std::array <frc::AddressableLED::LEDData, 110> m_LEDBuffer; //FIX Length
+        frc::AddressableLED m_Eyes{9};
+        frc::AddressableLED m_Sponsorboard{0};
+        std::array <frc::AddressableLED::LEDData, 28> m_EyesBuffer;
+        std::array <frc::AddressableLED::LEDData, 40> m_BoardBuffer; //FIX Length
         int m_IterationTracker;
 
         frc2::Button m_YellowButton;
