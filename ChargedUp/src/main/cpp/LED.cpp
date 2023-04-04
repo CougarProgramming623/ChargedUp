@@ -37,28 +37,19 @@ void LED::Init(){
     EyesAllianceColor();
 } 
 
-// void LED::LowBattery(){
-//     for(int i = 0; i <= 11; i++){
-//         m_LEDBuffer[i * 10 - 1].SetLED(frc::Color::kRed);
-//     }
+void LED::LowBattery(){    
+   for(int i = 0; i < 10; i++){
+        for(int j = (i*4) + m_IterationTracker; j < ((i+1)*4) + m_IterationTracker; j++){
+            m_BoardBuffer[j % kNum_LED_Board].SetLED(frc::Color::kGreen);
+            m_BoardBuffer[j + 4 % kNum_LED_Board].SetLED(frc::Color::kRed);
+        }
+    }
     
-    // for (int j = m_IterationTracker; j < 11 + m_IterationTracker; j++){
-    //     m_LEDBuffer[j % kNum_LED].SetLED(colorArray[0]);
-    // }
-    
-    // for(int i = 0; i < 2; i++){
-    //     // DebugOutF(std::to_string(i));
-    //     for(int j = (i*11) + m_IterationTracker; j < ((i+1)*11) + m_IterationTracker; j++){
-    //         m_LEDBuffer[j % kNum_LED].SetLED(redWhiteArray[i]);
-    //     }
-    // }
-
-    // m_IterationTracker++;
-    // if (m_IterationTracker == 110){
-    //     m_IterationTracker = 0;
-    // }
-
-//}
+    m_IterationTracker++;
+    if (m_IterationTracker == kNum_LED_Board){
+        m_IterationTracker = 0;
+    }
+}
 
 void LED::SetEyesData(){ m_Eyes.SetData(m_EyesBuffer); }
 void LED::SetBoardData(){ m_Sponsorboard.SetData(m_BoardBuffer); }
@@ -112,25 +103,20 @@ void LED::SponsorBoardSolid(int R, int G, int B){
     }
 }
 
-
 /*
 Start from 255 0 0, then count up g to 255 255 0, then count down red to 0 255 0,
 then count up blue to 0 255 255, then count down green to 0 0 255,
 then count up red to 255 0 255, then count down blue to 255 0 0.
 */
-// void LED::SponsorBoardRainbow(){
-//     for(int i = 0; i < 6; i++){
-//         // DebugOutF(std::to_string(i));
-//         for(int j = (i*18) + m_IterationTracker; j < ((i+1)*18) + m_IterationTracker; j++){
-//             m_LEDBuffer[j % kNum_LED].SetLED(colorArray[i]);
-//         }
-//     }
-//     // DebugOutF(std::to_string(m_IterationTracker));
-//     m_IterationTracker++;
-//     if (m_IterationTracker == 110){
-//         m_IterationTracker = 0;
-//     }
-// }
+void LED::SponsorBoardRainbow(){
+    for (int i = 0; i <= 255; i++){
+        m_BoardBuffer[i % kNum_LED_Board].SetRGB(i, 255, 255);
+    }
+    // m_IterationTracker++;
+    // if (m_IterationTracker == kNum_LED_Board){
+    //     m_IterationTracker = 0;
+    // }
+}
 
 void LED::SponsorBoardFlash(frc::Color color){
     if(m_IterationTracker % 2 == 0){
