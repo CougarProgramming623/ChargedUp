@@ -19,7 +19,7 @@ using ctre::phoenix::sensors::AbsoluteSensorRange;
 Arm::Arm() : m_Pivot(PIVOT_MOTOR),
 			 m_Wrist(WRIST_MOTOR),
 			//  m_TopIntake(TOP_INTAKE_MOTOR),
-			 m_BottomIntake(BOTTOM_INTAKE_MOTOR/*, rev::CANSparkMaxLowLevel::MotorType::kBrushless*/),
+			 m_BottomIntake(BOTTOM_INTAKE_MOTOR, rev::CANSparkMaxLowLevel::MotorType::kBrushless),
 
 			 //BUTTONBOARD 1
 			 m_Override(BUTTON_L(ARM_OVERRIDE)),
@@ -66,12 +66,11 @@ void Arm::Init()
 	
 	SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
 
-	
-
 	// m_TopIntake.ConfigPeakCurrentDuration(1750);
 	// m_TopIntake.ConfigPeakCurrentLimit(6);
 	// m_TopIntake.ConfigContinuousCurrentLimit(2);
 	// m_TopIntake.EnableCurrentLimit(true);
+	
 	// m_BottomIntake.ConfigPeakCurrentDuration(1750);
 	// m_BottomIntake.ConfigPeakCurrentLimit(7);
 	// m_BottomIntake.ConfigContinuousCurrentLimit(3.5);
@@ -169,14 +168,14 @@ frc2::FunctionalCommand* Arm::ManualControls()
 	
 	double power = -.7; 
 	
-	if(Robot::GetRobot()->GetButtonBoard().GetRawButton(INTAKE_BUTTON)) m_BottomIntake.Set(ControlMode::PercentOutput, power);
-	else if (Robot::GetRobot()->GetButtonBoard().GetRawButton(OUTTAKE_BUTTON)) m_BottomIntake.Set(ControlMode::PercentOutput, 1);
-	else m_BottomIntake.Set(ControlMode::PercentOutput, 0);
+	if(Robot::GetRobot()->GetButtonBoard().GetRawButton(INTAKE_BUTTON)) m_BottomIntake.Set(power);
+	else if (Robot::GetRobot()->GetButtonBoard().GetRawButton(OUTTAKE_BUTTON)) m_BottomIntake.Set(1);
+	else m_BottomIntake.Set(0);
 
 	},[&](bool e) { // onEnd
 		m_Pivot.Set(ControlMode::PercentOutput, 0);
 		m_Wrist.Set(ControlMode::PercentOutput, 0);
-		m_BottomIntake.Set(ControlMode::PercentOutput, 0);
+		m_BottomIntake.Set(0);
 	},
 	[&] { // isFinished
 		return !Robot::GetRobot()->GetButtonBoard().GetRawButton(ARM_OVERRIDE);

@@ -39,18 +39,19 @@ void DynamicIntake::Execute() {
 	if (Robot::GetRobot()->GetButtonBoard().GetRawButton(CUBE_MODE)) power *= -1; 
 
 	if(Robot::GetRobot()->GetButtonBoard().GetRawButton(INTAKE_BUTTON)){
-		ARM.GetBottomIntakeMotor().EnableCurrentLimit(true);
-		ARM.GetBottomIntakeMotor().Set(ControlMode::PercentOutput, power);
+		// ARM.GetBottomIntakeMotor().EnableCurrentLimit(true);
+		ARM.GetBottomIntakeMotor().Set(power);
 	} else if (Robot::GetRobot()->GetButtonBoard().GetRawButton(OUTTAKE_BUTTON)){
-		ARM.GetBottomIntakeMotor().EnableCurrentLimit(false);
-		ARM.GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -power);
-	} else 
-		ARM.GetBottomIntakeMotor().EnableCurrentLimit(true);
+		// ARM.GetBottomIntakeMotor().EnableCurrentLimit(false);
+		ARM.GetBottomIntakeMotor().Set(-power);
+	} else {
+		// ARM.GetBottomIntakeMotor().EnableCurrentLimit(true);
+	}
 
 }
 
 void DynamicIntake::End(bool interrupted){
-	ARM.GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+	ARM.GetBottomIntakeMotor().Set(0);
 	// ARM.GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
 }
 

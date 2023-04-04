@@ -64,8 +64,8 @@ class Arm : public frc2::SubsystemBase {
 	inline TalonSRX& GetPivotMotor() {return m_Pivot;}
 	inline TalonSRX& GetWristMotor() {return m_Wrist;} 
 	// inline TalonSRX& GetTopIntakeMotor() {return m_TopIntake;}
-	inline TalonSRX& GetBottomIntakeMotor() {return m_BottomIntake;}
-	// inline rev::CANSparkMax& GetBottomIntakeMotor() {return m_BottomIntake;}
+	// inline TalonSRX& GetBottomIntakeMotor() {return m_BottomIntake;}
+	inline rev::CANSparkMax& GetBottomIntakeMotor() {return m_BottomIntake;}
 	inline ctre::phoenix::sensors::CANCoder& GetPivotCANCoder() {return m_PivotCANCoder;}
 	inline frc2::Button& GetCubeModeButton() {return m_CubeMode; }
 	inline frc2::Button& GetConeModeButton() {return m_ConeMode; }
@@ -96,8 +96,8 @@ class Arm : public frc2::SubsystemBase {
 	TalonSRX m_Pivot; 
 	ctre::phoenix::sensors::CANCoder m_PivotCANCoder{PIVOT_CAN_ID};
 	TalonSRX m_Wrist; 
-	TalonSRX m_BottomIntake;
-	// rev::CANSparkMax m_BottomIntake;
+	// TalonSRX m_BottomIntake;
+	rev::CANSparkMax m_BottomIntake;
 
 	// TalonSRX m_TopIntake;
 
