@@ -113,11 +113,8 @@ class Robot : public frc::TimedRobot {
   frc2::Button m_LEDPurple;
   LED m_LED;
 
-<<<<<<< Updated upstream
-=======
   Arm m_Arm;
 
->>>>>>> Stashed changes
   frc::Timer m_AutoTimer;
   DriveTrain m_DriveTrain;
 
@@ -132,5 +129,4 @@ class Robot : public frc::TimedRobot {
 
   MotionMagicTest m_MMT;
 
-  LED m_LED;
 };
