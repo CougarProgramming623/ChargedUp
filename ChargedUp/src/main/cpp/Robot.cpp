@@ -33,6 +33,7 @@ void Robot::RobotInit() {
   s_Instance = this;
   m_DriveTrain.DriveInit();
   m_Vision.VisionInit(); //Make one
+  m_LED.Init();
   AutoButtons();
   m_Arm.Init();
   m_COBTicks = 0;
