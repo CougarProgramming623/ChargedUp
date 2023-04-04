@@ -9,6 +9,7 @@
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/ParallelCommandGroup.h>
 #include "./commands/AutoLock.h"
+#include "./commands/DynamicIntake.h"
 
 //Constructor
 DriveTrain::DriveTrain()
@@ -33,6 +34,9 @@ DriveTrain::DriveTrain()
       m_HolonomicController(m_xController, m_yController, m_ThetaController),
       m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);}),
       m_JoystickButtonTwo([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(2);}),
+      m_NavXResetButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(3);}),
+      m_AutoBalanceButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(5);}),
+      m_JoystickOuttake([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(4);}),
       m_Timer(),
       m_EventMap()
 {}
@@ -41,9 +45,36 @@ void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
  
-  //m_TestJoystickButton.ToggleWhenPressed(new AutoBalance());
-  m_TestJoystickButton.WhenPressed(new DriveToPosCommand());
-  m_JoystickButtonTwo.ToggleWhenPressed(AutoLock());
+  //m_TestJoystickButton.WhenPressed(replace w vision command);
+
+  m_JoystickButtonTwo.ToggleWhenPressed(new AutoLock());
+
+  m_NavXResetButton.WhenPressed(
+    new frc2::InstantCommand([&]{
+      DebugOutF("NavX Zero");
+      Robot::GetRobot()->zeroGyroscope();
+  }));
+
+  m_JoystickOuttake.WhileHeld(
+    new frc2::InstantCommand([&]{
+      if(Robot::GetRobot()->m_Intake.GetCurrentCommand() != nullptr){
+        Robot::GetRobot()->m_Intake.GetCurrentCommand()->Cancel();
+      }
+      DebugOutF("Joystick Outtake");
+      Robot::GetRobot()->GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 1);
+    }
+  ));
+
+  m_JoystickOuttake.WhenReleased(
+    new frc2::InstantCommand([&]{
+      Robot::GetRobot()->GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+      frc2::CommandScheduler::GetInstance().Schedule(new DynamicIntake());
+    })
+  );
+
+
+  m_AutoBalanceButton.ToggleWhenPressed(new AutoBalance());
+
 
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.5, 0.5, .561799});
   m_FrontRightModule.m_DriveController.motor.SetInverted(false); //true for O12

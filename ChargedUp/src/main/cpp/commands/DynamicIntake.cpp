@@ -5,7 +5,7 @@
 #define ARM Robot::GetRobot()->GetArm()
 
 DynamicIntake::DynamicIntake() {
-
+	AddRequirements(&Robot::GetRobot()->m_Intake);
 }
 
 void DynamicIntake::Initialize() {
@@ -56,5 +56,6 @@ void DynamicIntake::End(bool interrupted){
 
 bool DynamicIntake::IsFinished() {
 	return !Robot::GetRobot()->GetButtonBoard().GetRawButton(INTAKE_BUTTON) &&
-		   !Robot::GetRobot()->GetButtonBoard().GetRawButton(OUTTAKE_BUTTON);
+		   !Robot::GetRobot()->GetButtonBoard().GetRawButton(OUTTAKE_BUTTON) &&
+		   !Robot::GetRobot()->GetJoyStick().GetRawButton(4);
 }

@@ -16,6 +16,9 @@
 #include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/ParallelDeadlineGroup.h>
 #include <frc2/command/SequentialCommandGroup.h>
+#include "commands/WristToPosAuto.h"
+#include "commands/PivotToPosAuto.h"
+
 
 using ctre::phoenix::motorcontrol::ControlMode;
 using namespace pathplanner;
@@ -23,7 +26,8 @@ using namespace pathplanner;
 Robot* Robot::s_Instance = nullptr;
 
 Robot::Robot() :
-m_NavX(frc::SerialPort::Port(2), AHRS::SerialDataType(0), uint8_t(66))
+m_NavX(frc::SerialPort::Port(2), AHRS::SerialDataType(0), uint8_t(66)),
+m_Intake()
 {
   s_Instance = this;
 }
@@ -37,6 +41,7 @@ void Robot::RobotInit() {
   m_Vision.VisionInit(); //Make one
   m_LED.Init();
   m_Arm.Init();
+  
   AutoButtons();
   m_COBTicks = 0;
   m_AutoPath = "";
@@ -136,7 +141,7 @@ GetArm().m_PlacingMode.WhenPressed(
       frc2::InstantCommand([&]{
         Robot::GetRobot()->GetArm().m_PivotPos = Robot::GetRobot()->GetArm().m_PivotMatrix[0][2];
         Robot::GetRobot()->GetArm().m_WristPos = Robot::GetRobot()->GetArm().m_WristMatrix[0][2];
-        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
+        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL / 1.5, WRIST_DFLT_ACC / 2.0); //make the divodor a bit smaller 2 is really slow
       }),
       WristToPos(),
       PivotToPos(),
@@ -435,51 +440,50 @@ void Robot::AutonomousInit() {
   // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
   
-  // frc2::CommandScheduler::GetInstance().Schedule(
-  //   new frc2::SequentialCommandGroup(
-  //   frc2::ParallelRaceGroup(
-  //     frc2::WaitCommand(2_s),
-  //     PivotToPos(-22.0), 
-  //     frc2::FunctionalCommand(
-  //       [&] {
-  //         GetArm().GetBottomIntakeMotor().EnableCurrentLimit(false);
-  //         GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -1);
-  //       },
-  //       [&] {},
-  //       [&](bool e) { // onEnd
-  //         GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
-  //       },
-  //       [&] { // isFinished
-  //       return false;
-  //       }
-  //     ),
-  //     WristToPos(28.0)
-  //   ),
+  frc2::CommandScheduler::GetInstance().Schedule(
+    new frc2::SequentialCommandGroup(
+    frc2::ParallelRaceGroup(
+      frc2::WaitCommand(1.8_s),
+      PivotToPosAuto(-22.0), 
+      frc2::FunctionalCommand(
+        [&] {
+          GetArm().GetBottomIntakeMotor().EnableCurrentLimit(false);
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -1);
+        },
+        [&] {},
+        [&](bool e) { // onEnd
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+        },
+        [&] { // isFinished
+        return false;
+        }
+      ),
+      WristToPosAuto(28.0)
+    ),
 
-  //   frc2::ParallelRaceGroup(
-  //     frc2::FunctionalCommand(
-  //       [&] {
-  //         GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 1);
-  //       },
-  //       [&] {},
-  //       [&](bool e) { // onEnd
-  //         GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
-  //         GetArm().GetBottomIntakeMotor().EnableCurrentLimit(true);
-  //       },
-  //       [&] { // isFinished
-  //       return false;
-  //       }
-  //     ),
-  //     frc2::WaitCommand(0.5_s)
-  //   ),
+    frc2::ParallelRaceGroup(
+      frc2::FunctionalCommand(
+        [&] {
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 1);
+        },
+        [&] {},
+        [&](bool e) { // onEnd
+          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+          GetArm().GetBottomIntakeMotor().EnableCurrentLimit(true);
+        },
+        [&] { // isFinished
+        return false;
+        }
+      ),
+      frc2::WaitCommand(0.8_s)
+    ),
 
-  //   frc2::ParallelRaceGroup(
-  //     frc2::WaitCommand(1_s),
-  //     PivotToPos(92.0), 
-  //     WristToPos(120)
-  //   ),
+    frc2::ParallelDeadlineGroup(
+      TrajectoryCommand(traj),
+      PivotToPosAuto(92.0), 
+      WristToPosAuto(120)
+    ),
 
-  //   TrajectoryCommand(traj),
   //   // frc2::ParallelRaceGroup(
   //   //   frc2::WaitCommand(1_s),
   //   //   PivotToPos(98.0), 
@@ -517,9 +521,9 @@ void Robot::AutonomousInit() {
   //     // WristToPos(120)
   //   //),
   //   //frc2::WaitCommand(0.5_s),
-  //   AutoBalance()
+    AutoBalance()
     
-  //   ));
+  ));
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
   // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
 }

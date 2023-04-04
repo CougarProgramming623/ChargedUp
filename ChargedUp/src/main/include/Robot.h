@@ -22,6 +22,8 @@
 #include "subsystems/MotionMagicTest.h"
 #include "LED.h"
 #include <frc/geometry/Pose2d.h>
+#include "./subsystems/Intake.h"
+
 
 class Robot : public frc::TimedRobot {
  public:
@@ -101,9 +103,10 @@ class Robot : public frc::TimedRobot {
   int SelectedRow;
 	int SelectedColumn;
 
+  Intake m_Intake;
+
  private:
 
-  
   frc2::ParallelCommandGroup* m_ArmCommand;
 
   static Robot* s_Instance;

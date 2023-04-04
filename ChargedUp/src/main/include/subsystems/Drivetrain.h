@@ -112,6 +112,9 @@ class DriveTrain : public frc2::SubsystemBase {
   
   int m_VisionCounter;
 
+    frc2::Button m_JoystickOuttake;
+
+
   private:
 
 
@@ -120,6 +123,9 @@ class DriveTrain : public frc2::SubsystemBase {
 
   frc2::Button m_TestJoystickButton;
   frc2::Button m_JoystickButtonTwo;
+  frc2::Button m_AutoBalanceButton;
+  frc2::Button m_NavXResetButton;
+  frc2::Button m_ExtraJoystickButton;
 
   bool m_IsBalancing;
 
