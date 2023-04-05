@@ -50,7 +50,7 @@ void DriveTrain::DriveInit(){
 
   m_JoystickButtonTwo.ToggleWhenPressed(new AutoLock());
 
-  m_ExtraJoystickButton.ToggleWhenPressed(new DriveToPosCommand());
+  m_ExtraJoystickButton.WhileHeld(new DriveToPosCommand());
 
   m_NavXResetButton.WhenPressed(
     new frc2::InstantCommand([&]{
@@ -79,7 +79,7 @@ void DriveTrain::DriveInit(){
   m_AutoBalanceButton.ToggleWhenPressed(new AutoBalance());
 
 
-  m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.5, 0.5, .561799});
+  m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.25, 0.25, .561799});
   m_FrontRightModule.m_DriveController.motor.SetInverted(false); //true for O12
   m_FrontRightModule.m_SteerController.motor.SetInverted(false); 
   m_BackRightModule.m_DriveController.motor.SetInverted(false);
@@ -141,7 +141,7 @@ void DriveTrain::Periodic(){
   // DebugOutF("visionTheta: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().Rotation().Degrees().value()));
   if(COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){ // FIX uncomment when we have both limelights back
   // if(COB_GET_ENTRY("/limelight/botpose").GetDoubleArray(std::span<double>()).size() != 0){ //Works with one limelight
-    if((m_DriveToPoseFlag != true || m_VisionCounter == 50) && !Robot::GetRobot()->m_AutoFlag)
+    if((m_DriveToPoseFlag != true || m_VisionCounter == 25) && !Robot::GetRobot()->m_AutoFlag)
     {
       if(
         std::abs(m_VisionRelative.X().value()) < 1 &&
@@ -150,7 +150,7 @@ void DriveTrain::Periodic(){
         {
           m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
           - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("tl")).GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("cl")).GetDouble(0))/1000.0));
-          DebugOutF("Vision Update");
+          //DebugOutF("Vision Update");
           m_VisionCounter = 0;
         } 
     } else { m_VisionCounter++; }

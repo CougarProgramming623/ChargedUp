@@ -103,7 +103,7 @@ Pose2d Vision::GetFieldPose(){
 }
 
 void Vision::PushID(){
-  COB_GET_ENTRY("/  COB/apriltagID").SetDouble(COB_GET_ENTRY(FrontBack("tid")).GetInteger(-1));
+  COB_GET_ENTRY("/COB/apriltagID").SetDouble(COB_GET_ENTRY(FrontBack("tid")).GetInteger(-1));
 }
 
 //1 for front 0 for back

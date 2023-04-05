@@ -26,7 +26,7 @@ frc::Color redWhiteArray[] = {frc::Color::kWhite, frc::Color::kRed};
 LED::LED()  :
     m_EyesYellow(frc2::Button(BUTTON_L(15))),
     m_EyesPurple(frc2::Button(BUTTON_L(16))),
-    m_EyesWhite([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(2);})
+    m_EyesWhite([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);})
 {}
 
 void LED::Init(){
@@ -39,19 +39,21 @@ void LED::Init(){
     EyesAllianceColor();
 
     m_EyesYellow.WhenPressed(new frc2::InstantCommand([&]{
-            DebugOutF("cone");
+            //DebugOutF("cone");
             EyesSolid(frc::Color::kYellow);
+            SetData();
         })
     );
 
     m_EyesPurple.WhenPressed(new frc2::InstantCommand([&]{
-            DebugOutF("cube");
+            //DebugOutF("cube");
             EyesSolid(frc::Color::kPurple);
+            SetData();
         })
     );
 
     m_EyesWhite.WhenPressed(new frc2::InstantCommand([&]{
-            DebugOutF("white");
+            //DebugOutF("white");
             EyesSolid(frc::Color::kWhite);
         })
     );
@@ -97,21 +99,29 @@ void LED::EndGame(){
 void LED::EyesAllianceColor(){
     if (!Robot::GetRobot()->GetButtonBoard().GetRawButton(15)
         && !Robot::GetRobot()->GetButtonBoard().GetRawButton(16)
-        && !Robot::GetRobot()->GetJoyStick().GetRawButton(2)){
+        && !Robot::GetRobot()->GetJoyStick().GetRawButton(1)){
         EyesSolid(m_AllianceColor);
     } 
 }
 
 void LED::SponsorBoardAllianceColor(){
-    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed){
-        SponsorBoardSolid(frc::Color::kRed);
-        m_AllianceColor = frc::Color::kRed;
-    } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue){
-        SponsorBoardSolid(frc::Color::kBlue);
+    if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
         m_AllianceColor = frc::Color::kBlue;
     } else {
-        SponsorBoardSolid(frc::Color::kPurple);
+        m_AllianceColor = frc::Color::kRed;
     }
+    if (frc::DriverStation::GetAlliance() != frc::DriverStation::Alliance::kRed &&
+        frc::DriverStation::GetAlliance() != frc::DriverStation::Alliance::kBlue) {
+        m_AllianceColor = frc::Color::kWhite;
+    }
+    // if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed){
+    //     m_AllianceColor = frc::Color::kRed;
+    // } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue){
+    //     m_AllianceColor = frc::Color::kBlue;
+    // } else {
+    //     m_AllianceColor = frc::Color::kWhite;
+    // }
+    SponsorBoardSolid(m_AllianceColor);
 }
 
 void LED::SponsorBoardSolid(frc::Color color){

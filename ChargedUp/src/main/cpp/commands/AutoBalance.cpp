@@ -20,7 +20,7 @@ function to perform the autobalance command
 void AutoBalance::Execute() {
 
     double angle = Robot::GetRobot()->GetNavX().GetPitch() + 0.05;
-    if(angle > -2 && angle < 2) (balanced = true);
+    if(angle > -15 && angle < 15) (balanced = true);
     Robot::GetRobot()->GetCOB().GetTable().GetEntry("/COB/balanced").SetBoolean(balanced);
 
     double kPy = 0.01;//0.00005;

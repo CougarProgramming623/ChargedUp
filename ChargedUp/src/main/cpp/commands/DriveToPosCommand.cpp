@@ -78,5 +78,5 @@ void DriveToPosCommand::End(bool interrupted){
 
 //End command when close to intended pose
 bool DriveToPosCommand::IsFinished(){
-    return m_Trajectory.getTotalTime() + 1.5_s < m_Timer.Get();
+    return false;//m_Trajectory.getTotalTime() + 1.5_s < m_Timer.Get();
 }

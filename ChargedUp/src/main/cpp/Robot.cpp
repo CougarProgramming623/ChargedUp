@@ -67,8 +67,8 @@ void Robot::AutoButtons(){
   m_BigRed      = frc2::Button(BUTTON_L(BIG_RED));
 
   m_SingleSub   = frc2::Button(BUTTON_L(5));
-  m_SingleSubCube = frc2::Button(BUTTON_L_TWO(13));
-  m_DoubleSub   = frc2::Button(BUTTON_L(7));
+  m_DoubleSub = frc2::Button(BUTTON_L_TWO(13));
+  m_SingleSubCube = frc2::Button(BUTTON_L(7));
 
   m_LeftGrid    = frc2::Button(BUTTON_L_TWO(LEFT_GRID));
   m_CenterGrid  = frc2::Button(BUTTON_L_TWO(CENTER_GRID));
@@ -85,7 +85,7 @@ void Robot::AutoButtons(){
    m_Print = frc2::Button(BUTTON_L(2));
 
   m_AutoBalance.WhileHeld(new AutoBalance());
-  m_VisionPoseReset = frc2::Button([&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(7); }); //PUT Define
+  m_VisionPoseReset = frc2::Button([&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(6); }); //PUT Define
  
   
   m_Print.WhileHeld(
@@ -154,12 +154,12 @@ GetArm().m_PlacingMode.WhenPressed(
     )
   );
 
-  m_SingleSubCube.WhenPressed(
+  m_DoubleSub.WhenPressed(
     new frc2::ParallelCommandGroup(
       frc2::InstantCommand([&]{
         Robot::GetRobot()->GetArm().m_PivotPos = Robot::GetRobot()->GetArm().m_PivotMatrix[0][0];
-        Robot::GetRobot()->GetArm().m_WristPos = Robot::GetRobot()->GetArm().m_WristMatrix[0][0];    
-        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
+        Robot::GetRobot()->GetArm().m_WristPos = Robot::GetRobot()->GetArm().m_WristMatrix[0][0];   
+        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC); 
       }),
       WristToPos(),
       PivotToPos(),
@@ -167,12 +167,12 @@ GetArm().m_PlacingMode.WhenPressed(
     )
   );
 
-  m_DoubleSub.WhenPressed(
+  m_SingleSubCube.WhenPressed(
       new frc2::ParallelCommandGroup(
       frc2::InstantCommand([&]{
         Robot::GetRobot()->GetArm().m_PivotPos = 72.0;
         Robot::GetRobot()->GetArm().m_WristPos = 54.0; 
-        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
+        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
       }),
       WristToPos(),
       PivotToPos(),
@@ -186,7 +186,7 @@ GetArm().m_PlacingMode.WhenPressed(
     SelectedColumn = 0;
     frc::Pose2d SelectedPose = 
 		  Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
+		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose).TransformBy(frc::Transform2d(frc::Translation2d(0_m, 0_m), frc::Rotation2d(180_deg)));
         
   }));
 
@@ -208,7 +208,7 @@ GetArm().m_PlacingMode.WhenPressed(
     SelectedColumn = 1;
     frc::Pose2d SelectedPose = 
 		  Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
+		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose).TransformBy(frc::Transform2d(frc::Translation2d(0_m, 0_m), frc::Rotation2d(180_deg)));
   }));
 
 
@@ -245,7 +245,7 @@ GetArm().m_PlacingMode.WhenPressed(
     SelectedColumn = 2;
 		frc::Pose2d SelectedPose = 
 		  Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
-		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
+		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose).TransformBy(frc::Transform2d(frc::Translation2d(0_m, 0_m), frc::Rotation2d(180_deg)));
   }));
 
   m_BR.WhenPressed(new frc2::InstantCommand([&]{
@@ -296,6 +296,7 @@ GetArm().m_PlacingMode.WhenPressed(
 
   m_VisionPoseReset.WhenPressed(
     new frc2::InstantCommand([&] {
+      DebugOutF("Pose Resetting");
       if(COB_GET_ENTRY(m_Vision.FrontBack("tv")).GetInteger(0) == 1 && COB_GET_ENTRY(m_Vision.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){
         frc::Pose2d startingPose = frc::Pose2d(m_Vision.GetPoseBlue().Translation(), units::radian_t(Deg2Rad(GetAngle())));
         GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
