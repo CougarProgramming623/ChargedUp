@@ -5,6 +5,7 @@
 #pragma once
 #include <math.h>
 
+//#define ROBOT_WHEELBASE
 // #define ROBOT_WHEELBASE
 #define O12
 
@@ -129,6 +130,8 @@
 #define COB_KEY_TA_FRONT "/limelight-front/ta"
 #define COB_KEY_TA_BACK "/limelight-back/ta"
 
+#define COB_KEY_MATCHTIME "/COB/matchTime"
+
 constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without this line
 
 #define ARM_SUBSYSTEM
@@ -208,6 +211,8 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define CENTER_GRID 6 
 #define RIGHT_GRID 11
 
+#define LED_YELLOW 19
+#define LED_PURPLE 18
 
 #endif
 

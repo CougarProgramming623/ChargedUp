@@ -27,7 +27,8 @@ Robot* Robot::s_Instance = nullptr;
 
 Robot::Robot() :
 m_NavX(frc::SerialPort::Port(2), AHRS::SerialDataType(0), uint8_t(66)),
-m_Intake()
+m_Intake(),
+m_LED()
 {
   s_Instance = this;
 }
@@ -43,6 +44,8 @@ void Robot::RobotInit() {
   m_Arm.Init();
   
   AutoButtons();
+  m_LED.Init();
+  
   m_COBTicks = 0;
   m_AutoPath = "";
   m_ArmCommand = nullptr;
@@ -93,6 +96,7 @@ void Robot::AutoButtons(){
     })
   );
 
+  
   
   m_NavXReset.WhenPressed(
     new frc2::InstantCommand([&]{
@@ -367,6 +371,15 @@ void Robot::RobotPeriodic() {
     DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
   }
 
+  //LED
+  m_LED.SponsorBoardAllianceColor();
+  m_LED.LowBattery();
+  m_LED.EyesAllianceColor();
+  m_LED.EndGame();
+  m_LED.SetData();
+  //m_LED.SponsorBoardRainbow();
+  //m_LED.LowBattery();
+
 
   // DebugOutF("PosDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().GetWristMotor().GetSelectedSensorPosition())));
 	// DebugOutF("PosTicks: " + std::to_string(GetArm().GetWristMotor().GetSelectedSensorPosition()));
@@ -559,7 +572,7 @@ void Robot::TeleopInit() {
     })
   );
   // m_MMT.MotionMagicTestInit();
-
+  m_LED.m_IsTele = true;  // used for LED Timer
   //GetNavX().ZeroYaw();
   m_DriveTrain.BreakMode(true);
   GetDriveTrain().m_BackLeftModule.m_SteerController.motor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
@@ -581,15 +594,11 @@ void Robot::TeleopInit() {
  * This function is called periodically during operator control.  
  */
 void Robot::TeleopPeriodic() {
-  // frc2::CommandScheduler::GetInstance().Run();
-  // frc2::CommandScheduler::GetInstance().Schedule(m_Arm.Telescope(50));  
   //DebugOutF("Theta: " + std::to_string(GetAngle())); 
   
   // DebugOutF("LLX: " + std::to_string(m_Vision.GetPoseBlue().X().value()));
   // DebugOutF("LLY: " + std::to_string(m_Vision.GetPoseBlue().Y().value()));
   // DebugOutF("LLZ: " + std::to_string(m_Vision.GetPoseBlue().Rotation().Degrees().value()));
-
-
 }
 
 /**

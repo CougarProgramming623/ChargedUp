@@ -9,8 +9,13 @@
 #include <frc/TimedRobot.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc/SerialPort.h>
+#include <frc2/command/button/Button.h>
+
+
+#include <frc2/command/Command.h>
 
 #include <pathplanner/lib/PathPlanner.h>
+#include "LED.h"
 #include "subsystems/DriveTrain.h"
 #include <AHRS.h>
 #include <frc/Joystick.h>
@@ -99,6 +104,8 @@ class Robot : public frc::TimedRobot {
   frc2::Button m_VisionPoseReset;
 
   frc2::Button m_Print;
+  int m_COBTicks;
+
 
   int SelectedRow;
 	int SelectedColumn;
@@ -121,9 +128,15 @@ class Robot : public frc::TimedRobot {
   // doesn't have undefined behavior and potentially crash.
   frc2::Command* m_autonomousCommand = nullptr;
 
+
+  frc2::Button m_LEDYellow;
+  frc2::Button m_LEDPurple;
+  LED m_LED;
+
+  Arm m_Arm;
+
   frc::Timer m_AutoTimer;
   DriveTrain m_DriveTrain;
-  Arm m_Arm;
 
   Vision m_Vision;
 
@@ -131,10 +144,8 @@ class Robot : public frc::TimedRobot {
   frc::Joystick m_ButtonBoard = frc::Joystick(0);
   frc::Joystick m_ButtonBoardTwo = frc::Joystick(2);
 
-  int m_COBTicks;
   std::string m_AutoPath;
 
   MotionMagicTest m_MMT;
 
-  LED m_LED;
 };
