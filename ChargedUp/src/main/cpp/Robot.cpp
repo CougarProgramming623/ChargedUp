@@ -50,6 +50,12 @@ void Robot::RobotInit() {
   m_AutoPath = "";
   m_ArmCommand = nullptr;
   m_AutoFlag = true;
+
+  if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+    m_ColOffset = 2;
+  } else {
+    m_ColOffset = 0;
+  }
 }
 
 void Robot::AutoButtons(){
@@ -183,7 +189,7 @@ GetArm().m_PlacingMode.WhenPressed(
     DebugOutF("m_ML");
     Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
     SelectedRow = 1;
-    SelectedColumn = 0;
+    SelectedColumn = std::abs(m_ColOffset - 0);
     frc::Pose2d SelectedPose = 
 		  Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose).TransformBy(frc::Transform2d(frc::Translation2d(0_m, 0_m), frc::Rotation2d(180_deg)));
@@ -194,7 +200,7 @@ GetArm().m_PlacingMode.WhenPressed(
   m_BL.WhenPressed(new frc2::InstantCommand([&]{
     DebugOutF("m_BL");
     SelectedRow = 2;
-    SelectedColumn = 0;
+    SelectedColumn = std::abs(m_ColOffset - 0);
     frc::Pose2d SelectedPose = 
 		  Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
@@ -205,7 +211,7 @@ GetArm().m_PlacingMode.WhenPressed(
     DebugOutF("m_TC");
     Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
     SelectedRow = 0;
-    SelectedColumn = 1;
+    SelectedColumn = std::abs(m_ColOffset - 1);
     frc::Pose2d SelectedPose = 
 		  Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose).TransformBy(frc::Transform2d(frc::Translation2d(0_m, 0_m), frc::Rotation2d(180_deg)));
@@ -215,7 +221,7 @@ GetArm().m_PlacingMode.WhenPressed(
   m_MC.WhenPressed(new frc2::InstantCommand([&]{
     DebugOutF("m_MC");
     SelectedRow = 1;
-    SelectedColumn = 1;
+    SelectedColumn = std::abs(m_ColOffset - 1);
     frc::Pose2d SelectedPose = 
 		  Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
@@ -224,7 +230,7 @@ GetArm().m_PlacingMode.WhenPressed(
   m_BC.WhenPressed(new frc2::InstantCommand([&]{
     DebugOutF("m_BC");
     SelectedRow = 2;
-    SelectedColumn = 1;
+    SelectedColumn = std::abs(m_ColOffset - 1);
     frc::Pose2d SelectedPose = 
 		  Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
@@ -242,7 +248,7 @@ GetArm().m_PlacingMode.WhenPressed(
 		DebugOutF("m_MR");
     Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
     SelectedRow = 1;
-    SelectedColumn = 2;
+    SelectedColumn = std::abs(m_ColOffset - 2);
 		frc::Pose2d SelectedPose = 
 		  Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose).TransformBy(frc::Transform2d(frc::Translation2d(0_m, 0_m), frc::Rotation2d(180_deg)));
@@ -251,7 +257,7 @@ GetArm().m_PlacingMode.WhenPressed(
   m_BR.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_BR");
     SelectedRow = 2;
-    SelectedColumn = 2;
+    SelectedColumn = std::abs(m_ColOffset - 2);
 		frc::Pose2d SelectedPose = 
 		  Robot::GetRobot()->GetDriveTrain().m_PoseMatrix[SelectedRow][SelectedColumn];
 		Robot::GetRobot()->GetDriveTrain().m_TransformedPose = TransformPose(SelectedPose);
@@ -448,8 +454,7 @@ void Robot::AutonomousInit() {
 
   //PathPlannerTrajectory::transformTrajectoryForAlliance(traj, frc::DriverStation::GetAlliance());
 
-  frc::Pose2d startingPose = frc::Pose2d(units::meter_t(2.91), units::meter_t(1.82), frc::Rotation2d(units::degree_t(0)));
-  //frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), frkkjc::Rotation2d(units::degree_t(0)));
+  frc::Pose2d startingPose = frc::Pose2d(traj.getInitialState().pose.Translation(), frc::Rotation2d(units::degree_t(0)));
 
   GetDriveTrain().GetOdometry()->ResetPosition(units::radian_t(Deg2Rad(GetAngle())), 
     wpi::array<frc::SwerveModulePosition, 4>
@@ -504,6 +509,8 @@ void Robot::AutonomousInit() {
       PivotToPosAuto(92.0), 
       WristToPosAuto(120)
     ),
+
+
 
   //   // frc2::ParallelRaceGroup(
   //   //   frc2::WaitCommand(1_s),

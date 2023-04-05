@@ -106,9 +106,9 @@ void LED::EyesAllianceColor(){
 
 void LED::SponsorBoardAllianceColor(){
     if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
-        m_AllianceColor = frc::Color::kBlue;
-    } else {
         m_AllianceColor = frc::Color::kRed;
+    } else {
+        m_AllianceColor = frc::Color::kBlue;
     }
     if (frc::DriverStation::GetAlliance() != frc::DriverStation::Alliance::kRed &&
         frc::DriverStation::GetAlliance() != frc::DriverStation::Alliance::kBlue) {

@@ -59,7 +59,10 @@ void DriveToPosCommand::Execute() {
 
     Robot* r = Robot::GetRobot();
     
-    frc::ChassisSpeeds speeds = r->GetDriveTrain().GetHolonomicController().Calculate(r->GetDriveTrain().GetOdometry()->GetEstimatedPosition(), m_Trajectory.sample(m_Timer.Get()).asWPILibState(), /*frc::Rotation2d(units::radian_t(Deg2Rad(90)))*/m_Trajectory.sample(m_Timer.Get()).holonomicRotation);
+    frc::ChassisSpeeds speeds = r->GetDriveTrain().GetHolonomicController().Calculate(
+        r->GetDriveTrain().GetOdometry()->GetEstimatedPosition(), 
+        m_Trajectory.sample(m_Timer.Get()).asWPILibState(), /*frc::Rotation2d(units::radian_t(Deg2Rad(90)))*/
+        m_Trajectory.sample(m_Timer.Get()).holonomicRotation);
 
     speeds.vy = -speeds.vy;
     speeds.omega = -speeds.omega;

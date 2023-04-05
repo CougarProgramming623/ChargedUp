@@ -113,6 +113,7 @@ class Robot : public frc::TimedRobot {
   Intake m_Intake;
 
   bool m_AutoFlag;
+  int m_ColOffset;
 
  private:
 
