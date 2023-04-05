@@ -36,7 +36,7 @@ DriveTrain::DriveTrain()
       m_JoystickButtonTwo([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(2);}),
       m_NavXResetButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(3);}),
       m_AutoBalanceButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(5);}),
-      m_JoystickOuttake([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(4);}),
+      m_JoystickOuttake([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(6);}),
       m_Timer(),
       m_EventMap()
 {}
@@ -138,7 +138,7 @@ void DriveTrain::Periodic(){
   // DebugOutF("visionTheta: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().Rotation().Degrees().value()));
   if(COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){ // FIX uncomment when we have both limelights back
   // if(COB_GET_ENTRY("/limelight/botpose").GetDoubleArray(std::span<double>()).size() != 0){ //Works with one limelight
-    if(m_DriveToPoseFlag != true || m_VisionCounter == 50)
+    if((m_DriveToPoseFlag != true || m_VisionCounter == 50) && !Robot::GetRobot()->m_AutoFlag)
     {
       if(
         std::abs(m_VisionRelative.X().value()) < 1 &&

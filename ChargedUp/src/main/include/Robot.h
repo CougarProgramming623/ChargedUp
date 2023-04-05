@@ -105,6 +105,8 @@ class Robot : public frc::TimedRobot {
 
   Intake m_Intake;
 
+  bool m_AutoFlag;
+
  private:
 
   frc2::ParallelCommandGroup* m_ArmCommand;
