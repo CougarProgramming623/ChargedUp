@@ -37,6 +37,7 @@ DriveTrain::DriveTrain()
       m_NavXResetButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(3);}),
       m_AutoBalanceButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(5);}),
       m_JoystickOuttake([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(6);}),
+      m_ExtraJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(4);}),
       m_Timer(),
       m_EventMap()
 {}
@@ -48,6 +49,8 @@ void DriveTrain::DriveInit(){
   //m_TestJoystickButton.WhenPressed(replace w vision command);
 
   m_JoystickButtonTwo.ToggleWhenPressed(new AutoLock());
+
+  m_ExtraJoystickButton.ToggleWhenPressed(new DriveToPosCommand());
 
   m_NavXResetButton.WhenPressed(
     new frc2::InstantCommand([&]{
