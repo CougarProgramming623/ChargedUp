@@ -93,6 +93,8 @@ class Robot : public frc::TimedRobot {
 
    frc2::Button m_NavXReset;
 
+   int m_COBTicks;
+
  private:
 
   int SelectedRow;
@@ -124,7 +126,6 @@ class Robot : public frc::TimedRobot {
   frc::Joystick m_ButtonBoard = frc::Joystick(0);
   frc::Joystick m_ButtonBoardTwo = frc::Joystick(2);
 
-  int m_COBTicks;
   std::string m_AutoPath;
 
   MotionMagicTest m_MMT;

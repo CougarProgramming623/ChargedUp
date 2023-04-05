@@ -32,7 +32,7 @@ DriveTrain::DriveTrain()
       m_ThetaController(14, 25, 0.02, frc::TrapezoidProfile<units::radian>::Constraints{3.14_rad_per_s, (1/2) * 3.14_rad_per_s / 1_s}),
       m_HolonomicController(m_xController, m_yController, m_ThetaController),
       m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);}),
-      m_JoystickButtonTwo([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(2);}),
+      //m_JoystickButtonTwo([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(2);}),
       m_Timer(),
       m_EventMap()
 {}
@@ -42,7 +42,7 @@ void DriveTrain::DriveInit(){
   SetDefaultCommand(DriveWithJoystick());
  
   m_TestJoystickButton.ToggleWhenPressed(new AutoBalance());
-  m_JoystickButtonTwo.ToggleWhenPressed(AutoLock());
+  //m_JoystickButtonTwo.ToggleWhenPressed(AutoLock());
 
   m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.5, 0.5, .561799});
   m_FrontRightModule.m_DriveController.motor.SetInverted(false); //true for O12

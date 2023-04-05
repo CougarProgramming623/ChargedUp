@@ -16,12 +16,9 @@ class LED{
 
         void LowBattery();
 
-        void SetEyesData();
-        void SetBoardData();
+        void SetData();
 
         void EndGame();
-        void SubstationColor();
-
 
         void SponsorBoardAllianceColor();
         void SponsorBoardSolid(frc::Color allianceColor);
@@ -46,12 +43,13 @@ class LED{
 
     private:
 
-        frc::AddressableLED m_Eyes{9};
-        frc::AddressableLED m_Sponsorboard{1};
-        std::array <frc::AddressableLED::LEDData, 28> m_EyesBuffer;
-        std::array <frc::AddressableLED::LEDData, 40> m_BoardBuffer; //FIX Length
+        frc::AddressableLED m_AddressableLED{9};
+        std::array <frc::AddressableLED::LEDData, 180> m_LEDBuffer;
         int m_IterationTracker;
 
-        frc2::Button m_YellowButton;
-        frc2::Button m_PurpleButton;
+        frc::Color m_AllianceColor;
+
+        frc2::Button m_EyesYellow;
+        frc2::Button m_EyesPurple;
+        frc2::Button m_EyesWhite;
 };

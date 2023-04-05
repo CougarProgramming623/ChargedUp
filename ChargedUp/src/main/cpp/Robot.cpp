@@ -69,6 +69,7 @@ void Robot::AutoButtons(){
   m_NavXReset = frc2::Button(BUTTON_L(8)); //PUT Define
   
   
+  
   m_NavXReset.WhenPressed(
     new frc2::InstantCommand([&]{
       DebugOutF("NavX Zero");
@@ -284,10 +285,10 @@ void Robot::RobotPeriodic() {
   }
 
   //LED
+  m_LED.SponsorBoardAllianceColor();
+  m_LED.EyesAllianceColor();
   m_LED.EndGame();
-  m_LED.SubstationColor();
-  m_LED.SetEyesData();
-  m_LED.SetBoardData();
+  m_LED.SetData();
   //m_LED.SponsorBoardRainbow();
   //m_LED.LowBattery();
 
