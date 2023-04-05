@@ -27,10 +27,10 @@ void DriveWithJoystick::Execute() {
             frc::Rotation2d(units::radian_t(Deg2Rad(-fmod(360 - r->GetNavX().GetAngle(), 360))))
     );
 
-    if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
-        speeds.vx = -speeds.vx;
-        speeds.vy = -speeds.vy;
-    }
+    // if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+    //     speeds.vx = -speeds.vx;
+    //     speeds.vy = -speeds.vy;
+    // }
     //Auto Pose Fix
     r->GetDriveTrain().BaseDrive(speeds);
 }

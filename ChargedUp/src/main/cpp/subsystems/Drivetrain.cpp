@@ -50,7 +50,7 @@ void DriveTrain::DriveInit(){
 
   m_JoystickButtonTwo.ToggleWhenPressed(new AutoLock());
 
-  m_ExtraJoystickButton.WhileHeld(new DriveToPosCommand());
+  //m_ExtraJoystickButton.WhileHeld(new DriveToPosCommand());
 
   m_NavXResetButton.WhenPressed(
     new frc2::InstantCommand([&]{
