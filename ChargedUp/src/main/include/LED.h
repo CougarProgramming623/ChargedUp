@@ -39,6 +39,7 @@ class LED{
         void EyesSleepy();
         void EyeRoll();
 
+        bool m_IsTele;
 
 
     private:

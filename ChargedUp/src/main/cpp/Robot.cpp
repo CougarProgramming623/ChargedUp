@@ -286,6 +286,7 @@ void Robot::RobotPeriodic() {
 
   //LED
   m_LED.SponsorBoardAllianceColor();
+  m_LED.LowBattery();
   m_LED.EyesAllianceColor();
   m_LED.EndGame();
   m_LED.SetData();
@@ -466,7 +467,7 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
   // m_MMT.MotionMagicTestInit();
-
+  m_LED.m_IsTele = true;  // used for LED Timer
   //GetNavX().ZeroYaw();
   GetNavX().SetAngleAdjustment(0);
   // GetDriveTrain().BreakMode(true);

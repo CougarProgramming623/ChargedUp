@@ -2,6 +2,8 @@
 #include "Util.h"
 #include "Constants.h"
 #include "Robot.h"
+#include "frc/RobotBase.h"
+#include "frc/Timer.h"
 
 //set values
 const int kSTART_BL = 0;
@@ -25,14 +27,13 @@ LED::LED()  :
     m_EyesYellow(frc2::Button(BUTTON_L(15))),
     m_EyesPurple(frc2::Button(BUTTON_L(16))),
     m_EyesWhite([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(2);})
-
-
 {}
 
 void LED::Init(){
     m_AddressableLED.SetLength(kNum_LED);
     m_AddressableLED.Start();
     m_IterationTracker = 0;
+    m_IsTele = false;
     SponsorBoardAllianceColor();
     EyesAllianceColor();
 
@@ -57,18 +58,21 @@ void LED::Init(){
 
 void LED::SetData(){ m_AddressableLED.SetData(m_LEDBuffer); }
 
-void LED::LowBattery(){    
-   for(int i = 0; i <= kNum_LED - 28; i++){
-        for(int j = (i*4) + m_IterationTracker; j < ((i+1)*4) + m_IterationTracker; j++){
-            m_LEDBuffer[j % kNum_LED].SetLED(frc::Color::kGreen);
-            m_LEDBuffer[j + 4 % kNum_LED].SetLED(frc::Color::kRed);
-        }
+void LED::LowBattery(){
+    if (false){ //FIX if we want low battery
+        for(int i = 0; i <= kNum_LED - 28; i++){
+            for(int j = (i*4) + m_IterationTracker; j < ((i+1)*4) + m_IterationTracker; j++){
+                m_LEDBuffer[j % kNum_LED].SetLED(frc::Color::kGreen);
+                m_LEDBuffer[j + 4 % kNum_LED].SetLED(frc::Color::kRed);
+            }
     }
     
     m_IterationTracker++;
     if (m_IterationTracker == kNum_LED){
         m_IterationTracker = 0;
     }
+    }
+    
 }
 
 void LED::EndGame(){
@@ -110,13 +114,13 @@ void LED::SponsorBoardAllianceColor(){
 }
 
 void LED::SponsorBoardSolid(frc::Color color){
-    for(int i = 0; i <= kNum_LED - 28; i++){
+    for(int i = 0; i < kNum_LED - 29; i++){
             m_LEDBuffer[i].SetLED(color);
     }
 }
 
 void LED::SponsorBoardSolid(int R, int G, int B){
-    for(int i = 0; i <= kNum_LED - 28; i++){
+    for(int i = 0; i < kNum_LED - 29; i++){
         m_LEDBuffer[i].SetRGB(R, G, B);
     }
 }
@@ -135,13 +139,17 @@ void LED::SponsorBoardRainbow(){
 }
 
 void LED::SponsorBoardFlash(frc::Color color){
-    if (Robot::GetRobot()->m_COBTicks % 20 == 0){
-        SponsorBoardSolid(color);
-    } else {
-        SponsorBoardSolid(0,0,0);
+    if (LED::m_IsTele){
+        if (std::fmod(frc::Timer::GetMatchTime().to<double>(), 1) < 0.5){
+            SponsorBoardSolid(m_AllianceColor);
+        } else {
+            SponsorBoardSolid(0,0,0);
+        }
     }
+}
 
-}     
+//frc::Timer::GetMatchTime().to<double>() <= 30 && frc::Timer::GetMatchTime().to<double>() > 28
+
 void LED::SponsorBoardFlash(int R, int G, int B){
     if(m_IterationTracker % 2 == 0){
         SponsorBoardSolid(R, G, B);
