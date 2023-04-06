@@ -380,7 +380,7 @@ void Robot::RobotPeriodic() {
 
   //LED
   m_LED.SponsorBoardAllianceColor();
-  m_LED.LowBattery();
+  //m_LED.LowBattery();
   m_LED.EyesAllianceColor();
   m_LED.EndGame();
   m_LED.SetData();
@@ -444,7 +444,7 @@ void Robot::AutonomousInit() {
     // DebugOutF("Blue");
   //PathPlannerTrajectory traj = PathPlanner::loadPath(m_AutoPath, PathConstraints(4_mps, 1_mps_sq));
 
-  PathPlannerTrajectory traj = PathPlanner::loadPath("AutoBalance", PathConstraints(4_mps, 1.5_mps_sq));
+  PathPlannerTrajectory traj = PathPlanner::loadPath("AutoBalanceExtra", PathConstraints(4_mps, 1.5_mps_sq));
 
   // } else {
   // //   DebugOutF("Red");
