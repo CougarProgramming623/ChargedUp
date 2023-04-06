@@ -165,7 +165,7 @@ GetArm().m_PlacingMode.WhenPressed(
       frc2::InstantCommand([&]{
         Robot::GetRobot()->GetArm().m_PivotPos = Robot::GetRobot()->GetArm().m_PivotMatrix[0][0];
         Robot::GetRobot()->GetArm().m_WristPos = Robot::GetRobot()->GetArm().m_WristMatrix[0][0];   
-        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC); 
+        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 1, PIVOT_DFLT_ACC / PIVOT_ACC_DIVISOR, WRIST_DFLT_VEL, WRIST_DFLT_ACC); 
       }),
       WristToPos(),
       PivotToPos(),
@@ -187,7 +187,7 @@ GetArm().m_PlacingMode.WhenPressed(
 
   m_ML.WhenPressed(new frc2::InstantCommand([&]{
     DebugOutF("m_ML");
-    Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
+    Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 1, PIVOT_DFLT_ACC / PIVOT_ACC_DIVISOR, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
     SelectedRow = 1;
     SelectedColumn = std::abs(m_ColOffset - 0);
     frc::Pose2d SelectedPose = 
@@ -209,7 +209,7 @@ GetArm().m_PlacingMode.WhenPressed(
 
   m_TC.WhenPressed(new frc2::InstantCommand([&]{
     DebugOutF("m_TC");
-    Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
+    Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 1, PIVOT_DFLT_ACC / PIVOT_ACC_DIVISOR, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
     SelectedRow = 0;
     SelectedColumn = std::abs(m_ColOffset - 1);
     frc::Pose2d SelectedPose = 
@@ -246,7 +246,7 @@ GetArm().m_PlacingMode.WhenPressed(
 
   m_MR.WhenPressed(new frc2::InstantCommand([&]{
 		DebugOutF("m_MR");
-    Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 2, PIVOT_DFLT_ACC / 4, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
+    Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL / 1, PIVOT_DFLT_ACC / PIVOT_ACC_DIVISOR, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
     SelectedRow = 1;
     SelectedColumn = std::abs(m_ColOffset - 2);
 		frc::Pose2d SelectedPose = 
@@ -465,93 +465,72 @@ void Robot::AutonomousInit() {
   // DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
   // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
-  
-  frc2::CommandScheduler::GetInstance().Schedule(
-    new frc2::SequentialCommandGroup(
-    frc2::ParallelRaceGroup(
-      frc2::WaitCommand(1.8_s),
-      PivotToPosAuto(-22.0), 
-      frc2::FunctionalCommand(
-        [&] {
-          GetArm().GetBottomIntakeMotor().EnableCurrentLimit(false);
-          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -1);
-        },
-        [&] {},
-        [&](bool e) { // onEnd
-          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
-        },
-        [&] { // isFinished
-        return false;
-        }
+  //if(COB_GET_ENTRY("/COB/autos").GetString() == ){
+    frc2::CommandScheduler::GetInstance().Schedule(
+      new frc2::SequentialCommandGroup(
+      frc2::ParallelRaceGroup(
+        frc2::WaitCommand(1.8_s),
+        PivotToPosAuto(-22.0), 
+        frc2::FunctionalCommand(
+          [&] {
+            GetArm().GetBottomIntakeMotor().EnableCurrentLimit(false);
+            GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -1);
+          },
+          [&] {},
+          [&](bool e) { // onEnd
+            GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+          },
+          [&] { // isFinished
+          return false;
+          }
+        ),
+        WristToPosAuto(28.0)
       ),
-      WristToPosAuto(28.0)
-    ),
 
-    frc2::ParallelRaceGroup(
-      frc2::FunctionalCommand(
-        [&] {
-          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 1);
-        },
-        [&] {},
-        [&](bool e) { // onEnd
-          GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
-          GetArm().GetBottomIntakeMotor().EnableCurrentLimit(true);
-        },
-        [&] { // isFinished
-        return false;
-        }
+      frc2::ParallelRaceGroup(
+        frc2::FunctionalCommand(
+          [&] {
+            GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 1);
+          },
+          [&] {},
+          [&](bool e) { // onEnd
+            GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+            GetArm().GetBottomIntakeMotor().EnableCurrentLimit(true);
+          },
+          [&] { // isFinished
+          return false;
+          }
+        ),
+        frc2::WaitCommand(0.8_s)
       ),
-      frc2::WaitCommand(0.8_s)
-    ),
 
-    frc2::ParallelDeadlineGroup(
-      TrajectoryCommand(traj),
-      PivotToPosAuto(92.0), 
-      WristToPosAuto(120)
-    ),
+      //frc2::ParallelDeadlineGroup(
+        TrajectoryCommand(traj),
+        // frc2::SequentialCommandGroup(
+        //   frc2::ParallelDeadlineGroup(
+        //     frc2::WaitCommand(1_s),
+        //     PivotToPosAuto(92.0), 
+        //     WristToPosAuto(120)
+        //   ),
+        //   frc2::ParallelDeadlineGroup(
+        //     frc2::WaitCommand(2_s),
+        //     frc2::InstantCommand([&]{GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -1);}),
+        //     PivotToPosAuto(94.0), 
+        //     WristToPosAuto(-2.0)
+        //   ),
+        //   frc2::ParallelDeadlineGroup(
+        //     frc2::WaitCommand(2_s),
+        //     frc2::InstantCommand([&]{GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);}),
+        //     PivotToPosAuto(92.0), 
+        //     WristToPosAuto(120)
+        //   )
+        // )
+      //),
+      AutoBalance()  
+    ));
+  }
 
 
-
-  //   // frc2::ParallelRaceGroup(
-  //   //   frc2::WaitCommand(1_s),
-  //   //   PivotToPos(98.0), 
-  //   //   WristToPos(WRIST_GROUND_ANGLE)
-  //   // ),
-
-  //   // frc2::FunctionalCommand(
-  //   //     [&] {
-  //   //       GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, -6);
-  //   //     },
-  //   //     [&] {},
-  //   //     [&](bool e) { // onEnd
-  //   //     },
-  //   //     [&] { // isFinished
-  //   //       return true;
-  //   //     }
-  //   // ),
-
-  //   // frc2::FunctionalCommand(
-  //   //     [&] {
-  //   //       GetArm().m_BottomIntake.EnableCurrentLimit(true);
-  //   //       GetArm().m_BottomIntake.Set(ControlMode::PercentOutput, 0);
-  //   //     },
-  //   //     [&] {},
-  //   //     [&](bool e) { // onEnd
-  //   //     },
-  //   //     [&] { // isFinished
-  //   //       return true;
-  //   //     }
-  //   // ),
-
-  //   //frc2::ParallelDeadlineGroup(
-  //   //TrajectoryCommand(PathPlanner::loadPath("Phase3", PathConstraints(4_mps, 1_mps_sq))),
-  //     // PivotToPos(98.0), 
-  //     // WristToPos(120)
-  //   //),
-  //   //frc2::WaitCommand(0.5_s),
-    AutoBalance()
-    
-  ));
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
   // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
 }

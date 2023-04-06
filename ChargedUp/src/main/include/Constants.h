@@ -176,6 +176,8 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define WRIST_DFLT_VEL 14000 //10000 working value
 #define WRIST_DFLT_ACC 28000 //20000 working value
 
+#define PIVOT_ACC_DIVISOR 3.5
+
 //button IDs
 //BUTTONBOARD 0
 #define CONE_MODE 15 //left

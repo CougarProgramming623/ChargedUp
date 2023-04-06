@@ -64,7 +64,7 @@ void DriveTrain::DriveInit(){
         Robot::GetRobot()->m_Intake.GetCurrentCommand()->Cancel();
       }
       DebugOutF("Joystick Outtake");
-      Robot::GetRobot()->GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 1);
+      Robot::GetRobot()->GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, .8);
     }
   ));
 
