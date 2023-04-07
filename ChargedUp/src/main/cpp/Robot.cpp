@@ -134,17 +134,37 @@ GetArm().m_PlacingMode.WhenPressed(
       })
   );
 
+
+  //Sets the wrist to a mid-setpoint before moving to final ground setpoint to hopefully stop overshooting
   m_GroundPickup.WhenPressed(
     new frc2::ParallelCommandGroup(
-      frc2::InstantCommand([&]{
-        Robot::GetRobot()->GetArm().m_PivotPos = 94.0;
-        Robot::GetRobot()->GetArm().m_WristPos = -2.0;
-        Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
+
+      frc2::InstantCommand([&] { //set final pivot setpoint and mid wrist setpoint
+          Robot::GetRobot()->GetArm().m_WristPos = 15.0; 
+          Robot::GetRobot()->GetArm().m_PivotPos = 94.0;
       }),
-      WristToPos(),
+
       PivotToPos(),
-      frc2::PrintCommand("Command")
+
+      frc2::SequentialCommandGroup( //moves the wrist to mid setpoint for a MAX of 1 second, then moves to final setpoint
+        frc2::ParallelRaceGroup(
+          WristToPos(),
+          frc2::WaitCommand(1.0_s)
+        ),
+        frc2::InstantCommand([&] { Robot::GetRobot()->GetArm().m_WristPos = -2.0; }),
+        WristToPos()
+      )
     )
+    // new frc2::ParallelCommandGroup(
+    //   frc2::InstantCommand([&]{
+    //     Robot::GetRobot()->GetArm().m_PivotPos = 94.0;
+    //     Robot::GetRobot()->GetArm().m_WristPos = -2.0;
+    //     Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
+    //   }),
+    //   WristToPos(),
+    //   PivotToPos(),
+    //   frc2::PrintCommand("Command")
+    // )
   );
 
   m_SingleSub.WhenPressed(
@@ -465,7 +485,7 @@ void Robot::AutonomousInit() {
   // DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
   // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
-  if(COB_GET_ENTRY("/COB/autos").GetString("") == "Auto1"){
+  //if(COB_GET_ENTRY("/COB/autos").GetString("") == "Auto1"){
     frc2::CommandScheduler::GetInstance().Schedule(
       new frc2::SequentialCommandGroup(
       frc2::ParallelRaceGroup(
@@ -514,84 +534,84 @@ void Robot::AutonomousInit() {
   ));
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
   // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
-  } else if (COB_GET_ENTRY("/COB/autos").GetString("") == "Auto2"){
-    frc2::CommandScheduler::GetInstance().Schedule(
-      new frc2::SequentialCommandGroup(
+  // } else if (COB_GET_ENTRY("/COB/autos").GetString("") == "Auto2"){
+  //   frc2::CommandScheduler::GetInstance().Schedule(
+  //     new frc2::SequentialCommandGroup(
 
-        frc2::ParallelRaceGroup(
-          frc2::WaitCommand(1.8_s),
-          PivotToPosAuto(-22.0), 
-          frc2::FunctionalCommand(
-            [&] {
-              GetArm().GetBottomIntakeMotor().EnableCurrentLimit(false);
-              GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -1);
-            },
-            [&] {},
-            [&](bool e) { // onEnd
-              GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
-            },
-            [&] { // isFinished
-            return false;
-            }
-          ),
-          WristToPosAuto(28.0)
-        ),
+  //       frc2::ParallelRaceGroup(
+  //         frc2::WaitCommand(1.8_s),
+  //         PivotToPosAuto(-22.0), 
+  //         frc2::FunctionalCommand(
+  //           [&] {
+  //             GetArm().GetBottomIntakeMotor().EnableCurrentLimit(false);
+  //             GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -1);
+  //           },
+  //           [&] {},
+  //           [&](bool e) { // onEnd
+  //             GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+  //           },
+  //           [&] { // isFinished
+  //           return false;
+  //           }
+  //         ),
+  //         WristToPosAuto(28.0)
+  //       ),
 
-        frc2::ParallelRaceGroup(
-          frc2::FunctionalCommand(
-            [&] {
-              GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 1);
-            },
-            [&] {},
-            [&](bool e) { // onEnd
-              GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
-              GetArm().GetBottomIntakeMotor().EnableCurrentLimit(true);
-            },
-            [&] { // isFinished
-            return false;
-            }
-          ),
-          frc2::WaitCommand(0.8_s)
-        ),
+  //       frc2::ParallelRaceGroup(
+  //         frc2::FunctionalCommand(
+  //           [&] {
+  //             GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 1);
+  //           },
+  //           [&] {},
+  //           [&](bool e) { // onEnd
+  //             GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+  //             GetArm().GetBottomIntakeMotor().EnableCurrentLimit(true);
+  //           },
+  //           [&] { // isFinished
+  //           return false;
+  //           }
+  //         ),
+  //         frc2::WaitCommand(0.8_s)
+  //       ),
 
-        frc2::ParallelDeadlineGroup(
-          TrajectoryCommand(traj),
-          frc2::SequentialCommandGroup(
-            frc2::ParallelRaceGroup(
-              frc2::WaitCommand(3.5_s), //FIX:: not sure abt time
-              PivotToPosAuto(92.0), 
-              WristToPosAuto(120)
-            ),
-            frc2::ParallelRaceGroup(
-              frc2::WaitCommand(1.5_s), //FIX: not sure abt time
-              PivotToPosAuto(94.0),
-              WristToPosAuto(-2.0),
-              frc2::FunctionalCommand(
-                [&] {
-                GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -1);
-                },
-                [&] {},
-                [&](bool e) { // onEnd
-                  GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
-                  GetArm().GetBottomIntakeMotor().EnableCurrentLimit(true);
-                },
-              [&] { // isFinished
-                return false;
-              }
-              )
-            ),
-            frc2::ParallelRaceGroup(
-              frc2::WaitCommand(1.0_s),
-              PivotToPosAuto(92.0), 
-              WristToPosAuto(127)
-            )
-          )
-        ),
-        AutoBalance()
-    ));
-  //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
-  // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
-  }
+  //       frc2::ParallelDeadlineGroup(
+  //         TrajectoryCommand(traj),
+  //         frc2::SequentialCommandGroup(
+  //           frc2::ParallelRaceGroup(
+  //             frc2::WaitCommand(3.5_s), //FIX:: not sure abt time
+  //             PivotToPosAuto(92.0), 
+  //             WristToPosAuto(120)
+  //           ),
+  //           frc2::ParallelRaceGroup(
+  //             frc2::WaitCommand(1.5_s), //FIX: not sure abt time
+  //             PivotToPosAuto(94.0),
+  //             WristToPosAuto(-2.0),
+  //             frc2::FunctionalCommand(
+  //               [&] {
+  //               GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, -1);
+  //               },
+  //               [&] {},
+  //               [&](bool e) { // onEnd
+  //                 GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+  //                 GetArm().GetBottomIntakeMotor().EnableCurrentLimit(true);
+  //               },
+  //             [&] { // isFinished
+  //               return false;
+  //             }
+  //             )
+  //           ),
+  //           frc2::ParallelRaceGroup(
+  //             frc2::WaitCommand(1.0_s),
+  //             PivotToPosAuto(92.0), 
+  //             WristToPosAuto(127)
+  //           )
+  //         )
+  //       ),
+  //       AutoBalance()
+  //   ));
+  // //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
+  // // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
+  // }
 }
 
 void Robot::AutonomousPeriodic() {
