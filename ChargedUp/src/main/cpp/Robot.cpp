@@ -516,7 +516,12 @@ void Robot::AutonomousInit() {
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
   // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
   } else if (COB_GET_ENTRY("/COB/autos").GetString("") == "Auto 2"){
-    traj = PathPlanner::loadPath("AutoBalancePick", PathConstraints(4_mps, 1.5_mps_sq));
+    if(COB_GET_ENTRY(COB_KEY_IS_RED).GetBoolean(false)){
+      traj = PathPlanner::loadPath("AutoBalancePickRed", PathConstraints(4_mps, 1.5_mps_sq));
+    } else {
+      traj = PathPlanner::loadPath("AutoBalancePickBlue", PathConstraints(4_mps, 1.5_mps_sq));
+    }
+
     frc2::CommandScheduler::GetInstance().Schedule(
       new frc2::SequentialCommandGroup(
         frc2::ParallelRaceGroup(
