@@ -444,7 +444,7 @@ void Robot::AutonomousInit() {
     // DebugOutF("Blue");
   //PathPlannerTrajectory traj = PathPlanner::loadPath(m_AutoPath, PathConstraints(4_mps, 1_mps_sq));
 
-  PathPlannerTrajectory traj = PathPlanner::loadPath("AutoBalanceExtra", PathConstraints(4_mps, 1.5_mps_sq));
+  PathPlannerTrajectory traj;
 
   // } else {
   // //   DebugOutF("Red");
@@ -461,11 +461,12 @@ void Robot::AutonomousInit() {
          (GetDriveTrain().m_FrontLeftModule.GetPosition(), GetDriveTrain().m_FrontRightModule.GetPosition(), GetDriveTrain().m_BackLeftModule.GetPosition(), GetDriveTrain().m_BackRightModule.GetPosition()), 
     startingPose);
   
-  
+  DebugOutF(COB_GET_ENTRY("/COB/autos").GetString(""));
   // DebugOutF("InitialRotation: " + std::to_string(traj.getInitialHolonomicPose().Rotation().Degrees().value()));
   // DebugOutF("InitialY: " + std::to_string(traj.asWPILibTrajectory().InitialPose().Y().value()));
   // DebugOutF("InitialX: " + std::to_string(traj.asWPILibTrajectory().InitialPose().X().value()));
-  if(COB_GET_ENTRY("/COB/autos").GetString("") == "Auto1"){
+  if(COB_GET_ENTRY("/COB/autos").GetString("") == "Auto 1"){
+    traj =  PathPlanner::loadPath("AutoBalanceExtra", PathConstraints(4_mps, 1.5_mps_sq));
     frc2::CommandScheduler::GetInstance().Schedule(
       new frc2::SequentialCommandGroup(
       frc2::ParallelRaceGroup(
@@ -514,10 +515,10 @@ void Robot::AutonomousInit() {
   ));
   //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
   // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
-  } else if (COB_GET_ENTRY("/COB/autos").GetString("") == "Auto2"){
+  } else if (COB_GET_ENTRY("/COB/autos").GetString("") == "Auto 2"){
+    traj = PathPlanner::loadPath("AutoBalancePick", PathConstraints(4_mps, 1.5_mps_sq));
     frc2::CommandScheduler::GetInstance().Schedule(
       new frc2::SequentialCommandGroup(
-
         frc2::ParallelRaceGroup(
           frc2::WaitCommand(1.8_s),
           PivotToPosAuto(-22.0), 
@@ -589,9 +590,8 @@ void Robot::AutonomousInit() {
         ),
         AutoBalance()
     ));
-  //DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
-  // (GetDriveTrain().m_EventMap.at(std::string("Mark 1")).get()->Schedule());
-  }
+  // DebugOutF(GetDriveTrain().m_EventMap.find("\"Mark 1\""));
+    }
 }
 
 void Robot::AutonomousPeriodic() {
