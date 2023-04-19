@@ -5,6 +5,7 @@
 #pragma once
 #include <math.h>
 
+//#define ROBOT_WHEELBASE
 // #define ROBOT_WHEELBASE
 #define O12
 
@@ -72,22 +73,22 @@
 
     #define FRONT_LEFT_MODULE_DRIVE_MOTOR 54
     #define FRONT_LEFT_MODULE_STEER_MOTOR 58
-    #define FRONT_LEFT_MODULE_STEER_OFFSET -207.8//JJ-180 //-198.2 //-207.8
+    #define FRONT_LEFT_MODULE_STEER_OFFSET -203.6 //-207.8//JJ-180 //-198.2 //-207.8
     #define FRONT_LEFT_MODULE_ENCODER_PORT 2
 
     #define FRONT_RIGHT_MODULE_DRIVE_MOTOR 38
     #define FRONT_RIGHT_MODULE_STEER_MOTOR 61
-    #define FRONT_RIGHT_MODULE_STEER_OFFSET -178.47//JJ-179 //-180.97 //-178.47
+    #define FRONT_RIGHT_MODULE_STEER_OFFSET -181.9 //-178.47//JJ-179 //-180.97 //-178.47
     #define FRONT_RIGHT_MODULE_ENCODER_PORT 1
 
     #define BACK_LEFT_MODULE_DRIVE_MOTOR 52
     #define BACK_LEFT_MODULE_STEER_MOTOR 59
-    #define BACK_LEFT_MODULE_STEER_OFFSET -161.51//JJ-181 //-160.67 //-178.25
+    #define BACK_LEFT_MODULE_STEER_OFFSET -164.0 //-161.51//-178.25// -180.43
     #define BACK_LEFT_MODULE_ENCODER_PORT 3
 
     #define BACK_RIGHT_MODULE_DRIVE_MOTOR 51
     #define BACK_RIGHT_MODULE_STEER_MOTOR 60
-    #define BACK_RIGHT_MODULE_STEER_OFFSET -296.93//JJ-359//-294.17 //-296.93
+    #define BACK_RIGHT_MODULE_STEER_OFFSET -297.6 //-296.93//JJ-359//-294.17 //-296.93
     #define BACK_RIGHT_MODULE_ENCODER_PORT 0
 
 
@@ -114,10 +115,11 @@
 
 #define COB_KEY_DISTANCE "/COB/distance"
 
-#define COB_KEY_BOT_POSE_FRONT "/limelight/botpose" //FIX
+#define COB_KEY_BOT_POSE_FRONT "/limelight-front/botpose" //FIX
 #define COB_KEY_BOT_POSE_BACK "/limelight-back/botpose"
 
-#define COB_KEY_BOT_POSE_BLUE "/limelight/botpose_wpiblue"
+#define COB_KEY_BOT_POSE_BLUE_FRONT "/limelight-front/botpose_wpiblue"
+#define COB_KEY_BOT_POSE_BLUE_BACK  "/limelight-back/botpose_wpiblue"
 
 #define COB_KEY_TV_FRONT "/limelight-front/tv"
 #define COB_KEY_TV_BACK "/limelight-back/tv"
@@ -127,6 +129,8 @@
 
 #define COB_KEY_TA_FRONT "/limelight-front/ta"
 #define COB_KEY_TA_BACK "/limelight-back/ta"
+
+#define COB_KEY_MATCHTIME "/COB/matchTime"
 
 constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without this line
 
@@ -144,25 +148,6 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define PIVOT_CAN_ID 0
 
 //setpoints
-//DEGREES
-// #define WRIST_GROUND_ANGLE 4
-// #define WRIST_TRANSIT_ANGLE 132.0
-// #define WRIST_PLACING_HIGH_CUBE_ANGLE 28.0
-// #define WRIST_PLACING_MID_CUBE_ANGLE 87.0
-// #define WRIST_PLACING_MID_CONE_ANGLE 28.0
-// #define WRIST_SHELF_PICKUP_ANGLE 50.0
-// //DEGREES
-// #define PIVOT_GROUND_ANGLE 92//-96+90
-// #define PIVOT_TRANSIT_ANGLE PIVOT_GROUND_ANGLE
-// #define PIVOT_PLACING_HIGH_CUBE_ANGLE -40//-40.0+90
-// #define PIVOT_PLACING_MID_CUBE_ANGLE -23//-23.0+90
-// #define PIVOT_PLACING_MID_CONE_ANGLE -22//-22.0+90
-// #define PIVOT_SHELF_PICKUP_ANGLE -8//-8.0+90
-
-#define PIVOT_CAN_MINIMUM 28.477
-#define PIVOT_CAN_PICKUP 29.619
-#define PIVOT_CAN_STOW PIVOT_CAN_PICKUP
-#define PIVOT_CAN_STARTING 67.148
 #define PIVOT_CAN_DIFFERENCE_BETWEEN_STARTING_AND_LEVEL -1 //check
 
 //Math constants
@@ -181,10 +166,17 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define WRIST_TOTAL_TICKS 265679.39932
 #define WRIST_TOTAL_DEGREES (WRIST_TOTAL_TICKS/WRIST_GEAR_RATIO/2048)*360
 #define STRINGPOT_TOTAL_RANGE 512.0
-#define STRINGPOT_TOP 1125.0
-#define STRINGPOT_BOTTOM 1637.0
-#define STRINGPOT_ZERO 1349.0
+#define STRINGPOT_TOP 978 //1125.0
+#define STRINGPOT_BOTTOM 1490 //1637.0
+#define STRINGPOT_ZERO 1210 //1349.0
 #define WRIST_DEGREES_PER_STRINGPOT_UNITS (WRIST_TOTAL_DEGREES/STRINGPOT_TOTAL_RANGE)
+
+#define PIVOT_DFLT_VEL 8000 //8400 working value
+#define PIVOT_DFLT_ACC 10000 //8000 working value
+#define WRIST_DFLT_VEL 14000 //10000 working value
+#define WRIST_DFLT_ACC 28000 //20000 working value
+
+#define PIVOT_ACC_DIVISOR 3.5
 
 //button IDs
 //BUTTONBOARD 0
@@ -221,6 +213,9 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define CENTER_GRID 6 
 #define RIGHT_GRID 11
 
+#define LED_YELLOW 19
+#define LED_PURPLE 18
+
 #endif
 
 #define TLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.61), frc::Rotation2d(units::degree_t(0)))
@@ -228,7 +223,7 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 #define TRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(.49), frc::Rotation2d(units::degree_t(0)))
 
 #define MLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.61), frc::Rotation2d(units::degree_t(180)))
-#define MCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.05), frc::Rotation2d(units::degree_t(180)))
+#define MCPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.072), frc::Rotation2d(units::degree_t(180)))
 #define MRPOSE frc::Pose2d(units::meter_t(2), units::meter_t(.49), frc::Rotation2d(units::degree_t(180)))
 
 #define BLPOSE frc::Pose2d(units::meter_t(2), units::meter_t(1.61), frc::Rotation2d(units::degree_t(180)))

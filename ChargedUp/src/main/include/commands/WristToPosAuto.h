@@ -6,9 +6,9 @@
 #include "Constants.h"
 
 
-class WristToPos : public frc2::CommandHelper<frc2::CommandBase, WristToPos> {
+class WristToPosAuto : public frc2::CommandHelper<frc2::CommandBase, WristToPosAuto> {
 	public:
-		explicit WristToPos();
+		explicit WristToPosAuto(double deg);
 		void Initialize() override;
 		void Execute() override;
   		void End(bool interrupted) override;

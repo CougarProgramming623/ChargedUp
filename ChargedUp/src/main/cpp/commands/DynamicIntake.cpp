@@ -5,7 +5,7 @@
 #define ARM Robot::GetRobot()->GetArm()
 
 DynamicIntake::DynamicIntake() {
-
+	AddRequirements(&Robot::GetRobot()->m_Intake);
 }
 
 void DynamicIntake::Initialize() {
@@ -36,8 +36,6 @@ void DynamicIntake::Execute() {
 	// ---------------------------------------------------------------------
 
 	double power = -.7; //default power for cone
-	if (Robot::GetRobot()->GetButtonBoard().GetRawButton(CUBE_MODE)) power *= -1; 
-
 	if(Robot::GetRobot()->GetButtonBoard().GetRawButton(INTAKE_BUTTON)){
 		ARM.GetBottomIntakeMotor().EnableCurrentLimit(true);
 		ARM.GetBottomIntakeMotor().Set(ControlMode::PercentOutput, power);
@@ -56,5 +54,6 @@ void DynamicIntake::End(bool interrupted){
 
 bool DynamicIntake::IsFinished() {
 	return !Robot::GetRobot()->GetButtonBoard().GetRawButton(INTAKE_BUTTON) &&
-		   !Robot::GetRobot()->GetButtonBoard().GetRawButton(OUTTAKE_BUTTON);
+		   !Robot::GetRobot()->GetButtonBoard().GetRawButton(OUTTAKE_BUTTON) &&
+		   !Robot::GetRobot()->GetJoyStick().GetRawButton(4);
 }

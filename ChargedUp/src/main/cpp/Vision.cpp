@@ -18,8 +18,8 @@ void Vision::PrintValues() {
   double y = (double)m_AbsolutePose.Y();
 
   if(x != 0 && y != 0){
-    // DebugOutF("tx: " + std::to_string(x));
-    // DebugOutF("ty: " + std::to_string(y));
+    DebugOutF("tx: " + std::to_string(x));
+    DebugOutF("ty: " + std::to_string(y));
   }
 }
 
@@ -51,13 +51,24 @@ Pose2d Vision::GetPoseBlue(){
   // m_AbsolutePose = GetFieldPose();
   // m_AbsolutePose = m_AbsolutePose.RelativeTo(kBlueOrigin);
 
-    if(COB_GET_ENTRY("/limelight/tv").GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE).GetDoubleArray(std::span<double>()).size() != 0){ //FIX change limelight/tv back to cob key also fix cobkey blue pose
-      m_TempPose = Pose2d(  units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE).GetDoubleArray(std::span<double>()).at(0)),
-                            units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE).GetDoubleArray(std::span<double>()).at(1)),
-                            Rotation2d(units::radian_t(Deg2Rad(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE).GetDoubleArray(std::span<double>()).at(5))))
+    if(COB_GET_ENTRY(COB_KEY_TV_FRONT).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE_FRONT).GetDoubleArray(std::span<double>()).size() != 0){ //FIX change limelight/tv back to cob key also fix cobkey blue pose
+      m_TempPose = Pose2d(  units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE_FRONT).GetDoubleArray(std::span<double>()).at(0)),
+                            units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE_FRONT).GetDoubleArray(std::span<double>()).at(1)),
+                            Rotation2d(units::radian_t(Deg2Rad(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE_FRONT).GetDoubleArray(std::span<double>()).at(5))))
                             );
+      m_Area = COB_GET_ENTRY(COB_KEY_TA_FRONT).GetDouble(0);
       m_AbsolutePose = m_TempPose;
-    }            
+      //DebugOutF("BluePose");
+    }      
+    if(COB_GET_ENTRY(COB_KEY_TV_BACK).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE_BACK).GetDoubleArray(std::span<double>()).size() != 0){
+      m_TempPose = Pose2d(  units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE_BACK).GetDoubleArray(std::span<double>()).at(0)),
+                            units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE_BACK).GetDoubleArray(std::span<double>()).at(1)),
+                            Rotation2d(units::radian_t(Deg2Rad(COB_GET_ENTRY(COB_KEY_BOT_POSE_BLUE_BACK).GetDoubleArray(std::span<double>()).at(5))))
+                            );
+      m_Area = COB_GET_ENTRY(COB_KEY_TA_FRONT).GetDouble(0);
+      m_AbsolutePose = m_TempPose;
+      //DebugOutF("BluePose");
+    }      
   return m_AbsolutePose;
 }
 
@@ -75,7 +86,7 @@ Pose2d Vision::GetFieldPose(){
                             Rotation2d(units::radian_t(Deg2Rad(COB_GET_ENTRY(COB_KEY_BOT_POSE_FRONT).GetDoubleArray(std::span<double>()).at(5))))
                             );
     m_Area = COB_GET_ENTRY(COB_KEY_TA_FRONT).GetDouble(0);
-    DebugOutF("Front");
+    //DebugOutF("Front");
   }
 
   if(COB_GET_ENTRY(COB_KEY_TV_BACK).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE_BACK).GetDoubleArray(std::span<double>()).size() != 0 && COB_GET_ENTRY(COB_KEY_TA_BACK).GetDouble(0) > m_Area){
@@ -83,7 +94,7 @@ Pose2d Vision::GetFieldPose(){
                               units::meter_t(COB_GET_ENTRY(COB_KEY_BOT_POSE_BACK).GetDoubleArray(std::span<double>()).at(1)),
                               Rotation2d(units::radian_t(Deg2Rad(COB_GET_ENTRY(COB_KEY_BOT_POSE_BACK).GetDoubleArray(std::span<double>()).at(5))))
                             );
-    DebugOutF("Back");
+    //DebugOutF("Back");
   }
 
   m_Area = 0;
@@ -91,31 +102,36 @@ Pose2d Vision::GetFieldPose(){
   return m_AbsolutePose; 
 }
 
+void Vision::PushID(){
+  COB_GET_ENTRY("/COB/apriltagID").SetDouble(COB_GET_ENTRY(FrontBack("tid")).GetInteger(-1));
+}
+
 //1 for front 0 for back
 std::string Vision::FrontBack(std::string key){
   
-  // if(COB_GET_ENTRY(COB_KEY_TV_FRONT).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE_FRONT).GetDoubleArray(std::span<double>()).size() != 0){
-  //   m_Area = COB_GET_ENTRY(COB_KEY_TA_FRONT).GetDouble(0);
-  // }
-  
-  // if(COB_GET_ENTRY(COB_KEY_TV_BACK).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE_BACK).GetDoubleArray(std::span<double>()).size() != 0 && COB_GET_ENTRY(COB_KEY_TA_BACK).GetDouble(0) > m_Area){
-  //   return ("/limelight-back/" + key);
-  // } else {
-  //   return ("/limelight-front/" + key);
-  // } O12
-
-
-
-
-  if(COB_GET_ENTRY("/limelight/tv").GetInteger(0) == 1 && COB_GET_ENTRY("/limelight/botpose").GetDoubleArray(std::span<double>()).size() != 0){
-    m_Area = COB_GET_ENTRY("/limelight/ta").GetDouble(0);
+  if(COB_GET_ENTRY(COB_KEY_TV_FRONT).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE_FRONT).GetDoubleArray(std::span<double>()).size() != 0){
+    m_Area = COB_GET_ENTRY(COB_KEY_TA_FRONT).GetDouble(0);
   }
   
-  if(COB_GET_ENTRY("/limelight/tv").GetInteger(0) == 1 && COB_GET_ENTRY("/limelight/botpose").GetDoubleArray(std::span<double>()).size() != 0 && COB_GET_ENTRY("/limelight/ta").GetDouble(0) > m_Area){
-    return ("/limelight/" + key);
+  if(COB_GET_ENTRY(COB_KEY_TV_BACK).GetInteger(0) == 1 && COB_GET_ENTRY(COB_KEY_BOT_POSE_BACK).GetDoubleArray(std::span<double>()).size() != 0 && COB_GET_ENTRY(COB_KEY_TA_BACK).GetDouble(0) > m_Area){
+    return ("/limelight-back/" + key);
   } else {
-    return ("/limelight/" + key);
-  } //Saber
+    return ("/limelight-front/" + key);
+  }//O12
+
+
+
+
+
+  // if(COB_GET_ENTRY("/limelight/tv").GetInteger(0) == 1 && COB_GET_ENTRY("/limelight/botpose").GetDoubleArray(std::span<double>()).size() != 0){
+  //   m_Area = COB_GET_ENTRY("/limelight/ta").GetDouble(0);
+  // }
+  
+  // if(COB_GET_ENTRY("/limelight/tv").GetInteger(0) == 1 && COB_GET_ENTRY("/limelight/botpose").GetDoubleArray(std::span<double>()).size() != 0 && COB_GET_ENTRY("/limelight/ta").GetDouble(0) > m_Area){
+  //   return ("/limelight/" + key);
+  // } else {
+  //   return ("/limelight/" + key);
+  // } //Saber
 
 
 }

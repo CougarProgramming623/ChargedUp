@@ -9,6 +9,7 @@
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/ParallelCommandGroup.h>
 #include "./commands/AutoLock.h"
+#include "./commands/DynamicIntake.h"
 
 //Constructor
 DriveTrain::DriveTrain()
@@ -33,6 +34,10 @@ DriveTrain::DriveTrain()
       m_HolonomicController(m_xController, m_yController, m_ThetaController),
       m_TestJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(1);}),
       m_JoystickButtonTwo([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(2);}),
+      m_NavXResetButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(3);}),
+      m_AutoBalanceButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(5);}),
+      m_JoystickOuttake([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(6);}),
+      m_ExtraJoystickButton([&] {return Robot::GetRobot()->GetJoyStick().GetRawButton(4);}),
       m_Timer(),
       m_EventMap()
 {}
@@ -41,10 +46,40 @@ void DriveTrain::DriveInit(){
   m_Rotation = frc::Rotation2d(units::radian_t(Robot::GetRobot()->GetNavX().GetAngle()));
   SetDefaultCommand(DriveWithJoystick());
  
-  m_TestJoystickButton.ToggleWhenPressed(new AutoBalance());
-  m_JoystickButtonTwo.ToggleWhenPressed(AutoLock());
+  //m_TestJoystickButton.WhenPressed(replace w vision command);
 
-  m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.5, 0.5, .561799});
+  m_JoystickButtonTwo.ToggleWhenPressed(new AutoLock());
+
+  //m_ExtraJoystickButton.WhileHeld(new DriveToPosCommand());
+
+  m_NavXResetButton.WhenPressed(
+    new frc2::InstantCommand([&]{
+      DebugOutF("NavX Zero");
+      Robot::GetRobot()->zeroGyroscope();
+  }));
+
+  m_JoystickOuttake.WhileHeld(
+    new frc2::InstantCommand([&]{
+      if(Robot::GetRobot()->m_Intake.GetCurrentCommand() != nullptr){
+        Robot::GetRobot()->m_Intake.GetCurrentCommand()->Cancel();
+      }
+      DebugOutF("Joystick Outtake");
+      Robot::GetRobot()->GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, .8);
+    }
+  ));
+
+  m_JoystickOuttake.WhenReleased(
+    new frc2::InstantCommand([&]{
+      Robot::GetRobot()->GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
+      frc2::CommandScheduler::GetInstance().Schedule(new DynamicIntake());
+    })
+  );
+
+
+  m_AutoBalanceButton.ToggleWhenPressed(new AutoBalance());
+
+
+  m_Odometry.SetVisionMeasurementStdDevs(wpi::array<double, 3U> {0.25, 0.25, .561799});
   m_FrontRightModule.m_DriveController.motor.SetInverted(false); //true for O12
   m_FrontRightModule.m_SteerController.motor.SetInverted(false); 
   m_BackRightModule.m_DriveController.motor.SetInverted(false);
@@ -95,7 +130,8 @@ void DriveTrain::Periodic(){
 
   m_ModulePositions = wpi::array<frc::SwerveModulePosition, 4>(m_FrontLeftModule.GetPosition(), m_FrontRightModule.GetPosition(), m_BackLeftModule.GetPosition(), m_BackRightModule.GetPosition());
 
-  frc::Pose2d visionRelative = Robot::GetRobot()->GetVision().GetPoseBlue().RelativeTo(m_Odometry.GetEstimatedPosition());
+
+  m_VisionRelative = Robot::GetRobot()->GetVision().GetPoseBlue().RelativeTo(m_Odometry.GetEstimatedPosition());
   // DebugOutF("OdoX: " + std::to_string(GetOdometry()->GetEstimatedPosition().X().value()));
   // DebugOutF("OdoY: " + std::to_string(GetOdometry()->GetEstimatedPosition().Y().value()));
   // DebugOutF("OdoZ: " + std::to_string(GetOdometry()->GetEstimatedPosition().Rotation().Degrees().value()));
@@ -103,22 +139,24 @@ void DriveTrain::Periodic(){
   // DebugOutF("visionX: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().X().value()));
   // DebugOutF("visionY: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().Y().value()));
   // DebugOutF("visionTheta: " + std::to_string(Robot::GetRobot()->GetVision().GetPoseBlue().Rotation().Degrees().value()));
-  //if(COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){ // FIX uncomment when we have both limelights back
-  if(COB_GET_ENTRY("/limelight/botpose").GetDoubleArray(std::span<double>()).size() != 0){ //Works with one limelight
-    if(
-      std::abs(visionRelative.X().value()) < 1 &&
-      std::abs(visionRelative.Y().value()) < 1 &&
-      std::abs(-fmod(360 - visionRelative.Rotation().Degrees().value(), 360)) < 30) {
-      // if(COB_GET_ENTRY(GET_VISION.FrontBack("tv")).GetInteger(0) == 1 && COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){
-      //     m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
-      //     - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("tl")).GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("cl")).GetDouble(0))/1000.0)
-      //     );
-      // }
-    }
+  if(COB_GET_ENTRY(GET_VISION.FrontBack("botpose")).GetDoubleArray(std::span<double>()).size() != 0){ // FIX uncomment when we have both limelights back
+  // if(COB_GET_ENTRY("/limelight/botpose").GetDoubleArray(std::span<double>()).size() != 0){ //Works with one limelight
+    if((m_DriveToPoseFlag != true || m_VisionCounter == 25) && !Robot::GetRobot()->m_AutoFlag)
+    {
+      if(
+        std::abs(m_VisionRelative.X().value()) < 1 &&
+        std::abs(m_VisionRelative.Y().value()) < 1 &&
+        std::abs(-fmod(360 - m_VisionRelative.Rotation().Degrees().value(), 360)) < 30) 
+        {
+          m_Odometry.AddVisionMeasurement(frc::Pose2d(Robot::GetRobot()->GetVision().GetPoseBlue().Translation(), m_Rotation), m_Timer.GetFPGATimestamp()
+          - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("tl")).GetDouble(0))/1000.0) - units::second_t((COB_GET_ENTRY(GET_VISION.FrontBack("cl")).GetDouble(0))/1000.0));
+          //DebugOutF("Vision Update");
+          m_VisionCounter = 0;
+        } 
+    } else { m_VisionCounter++; }
+    m_Odometry.Update(m_Rotation, m_ModulePositions);
   }
-  m_Odometry.Update(m_Rotation, m_ModulePositions);
 }
-
 //Converts chassis speed object and updates module states
 void DriveTrain::BaseDrive(frc::ChassisSpeeds chassisSpeeds){
   m_ChassisSpeeds = chassisSpeeds;

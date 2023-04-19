@@ -62,6 +62,8 @@ class DriveTrain : public frc2::SubsystemBase {
   frc::Translation2d m_FrontRightLocation;
   frc::Translation2d m_BackLeftLocation;
   frc::Translation2d m_BackRightLocation;
+  
+  bool m_DriveToPoseFlag = false;
 
   inline frc::SwerveDriveKinematics<4> GetKinematics() { return m_Kinematics; }
   inline frc::SwerveDrivePoseEstimator<4>* GetOdometry(){ return &m_Odometry; }
@@ -108,6 +110,12 @@ class DriveTrain : public frc2::SubsystemBase {
 
   frc::Pose2d m_TransformedPose;
   
+  int m_VisionCounter;
+  frc::Pose2d m_VisionRelative;
+
+    frc2::Button m_JoystickOuttake;
+
+
   private:
 
 
@@ -116,6 +124,9 @@ class DriveTrain : public frc2::SubsystemBase {
 
   frc2::Button m_TestJoystickButton;
   frc2::Button m_JoystickButtonTwo;
+  frc2::Button m_AutoBalanceButton;
+  frc2::Button m_NavXResetButton;
+  frc2::Button m_ExtraJoystickButton;
 
   bool m_IsBalancing;
 

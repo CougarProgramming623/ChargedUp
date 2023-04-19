@@ -8,10 +8,14 @@
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/CommandPtr.h>
+#include <frc/SerialPort.h>
+#include <frc2/command/button/Button.h>
+
 
 #include <frc2/command/Command.h>
 
 #include <pathplanner/lib/PathPlanner.h>
+#include "LED.h"
 #include "subsystems/DriveTrain.h"
 #include <AHRS.h>
 #include <frc/Joystick.h>
@@ -23,6 +27,8 @@
 #include "subsystems/MotionMagicTest.h"
 #include "LED.h"
 #include <frc/geometry/Pose2d.h>
+#include "./subsystems/Intake.h"
+
 
 class Robot : public frc::TimedRobot {
  public:
@@ -83,21 +89,39 @@ class Robot : public frc::TimedRobot {
 	frc2::Button m_RightGrid;
 
   frc2::Button m_BigRed;
+  frc2::Button m_GroundPickup;
+
+  frc2::Button m_SingleSub;
+  frc2::Button m_SingleSubCube;
+  frc2::Button m_DoubleSub;
 
   frc2::Button m_MidCone;
   frc2::Button m_MidCube;
   frc2::Button m_PlacingMode;
 
-   frc2::Button m_NavXReset;
+  frc2::Button m_NavXReset;
+  frc2::Button m_AutoBalance;
+  frc2::Button m_VisionPoseReset;
 
- private:
+  frc2::Button m_Print;
+  int m_COBTicks;
+
 
   int SelectedRow;
 	int SelectedColumn;
 
+  Intake m_Intake;
+
+  bool m_AutoFlag;
+  int m_ColOffset;
+
+ private:
+
+  frc2::ParallelCommandGroup* m_ArmCommand;
+
   static Robot* s_Instance;
 
-  AHRS m_NavX{frc::SPI::Port::kMXP};
+  AHRS m_NavX;
 
   frc::Joystick m_Joystick = frc::Joystick(1);
 
@@ -105,9 +129,15 @@ class Robot : public frc::TimedRobot {
   // doesn't have undefined behavior and potentially crash.
   frc2::Command* m_autonomousCommand = nullptr;
 
+
+  frc2::Button m_LEDYellow;
+  frc2::Button m_LEDPurple;
+  LED m_LED;
+
+  Arm m_Arm;
+
   frc::Timer m_AutoTimer;
   DriveTrain m_DriveTrain;
-  Arm m_Arm;
 
   Vision m_Vision;
 
@@ -115,10 +145,8 @@ class Robot : public frc::TimedRobot {
   frc::Joystick m_ButtonBoard = frc::Joystick(0);
   frc::Joystick m_ButtonBoardTwo = frc::Joystick(2);
 
-  int m_COBTicks;
   std::string m_AutoPath;
 
   MotionMagicTest m_MMT;
 
-  LED m_LED;
 };

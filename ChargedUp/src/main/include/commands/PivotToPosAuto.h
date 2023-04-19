@@ -6,9 +6,9 @@
 #include "Constants.h"
 
 
-class WristToPos : public frc2::CommandHelper<frc2::CommandBase, WristToPos> {
+class PivotToPosAuto : public frc2::CommandHelper<frc2::CommandBase, PivotToPosAuto> {
 	public:
-		explicit WristToPos();
+		explicit PivotToPosAuto(double deg);
 		void Initialize() override;
 		void Execute() override;
   		void End(bool interrupted) override;
