@@ -23,18 +23,14 @@
 #include "frc/smartdashboard/Smartdashboard.h"
 #include "COB.h"
 #include "Vision.h"
-#include "subsystems/Arm.h"
-#include "subsystems/MotionMagicTest.h"
 #include "LED.h"
 #include <frc/geometry/Pose2d.h>
-#include "./subsystems/Intake.h"
 
 
 class Robot : public frc::TimedRobot {
  public:
   Robot();
   static inline Robot* GetRobot() { return s_Instance; }
-  inline Arm& GetArm() { return m_Arm; }
   inline frc::Joystick& GetButtonBoard() { return m_ButtonBoard; }
   inline frc::Joystick& GetButtonBoardTwo() { return m_ButtonBoardTwo; }
   inline frc::Joystick& GetJoystick() { return m_Joystick; }
@@ -110,14 +106,10 @@ class Robot : public frc::TimedRobot {
   int SelectedRow;
 	int SelectedColumn;
 
-  Intake m_Intake;
-
   bool m_AutoFlag;
   int m_ColOffset;
 
  private:
-
-  frc2::ParallelCommandGroup* m_ArmCommand;
 
   static Robot* s_Instance;
 
@@ -134,8 +126,6 @@ class Robot : public frc::TimedRobot {
   frc2::Button m_LEDPurple;
   LED m_LED;
 
-  Arm m_Arm;
-
   frc::Timer m_AutoTimer;
   DriveTrain m_DriveTrain;
 
@@ -146,7 +136,5 @@ class Robot : public frc::TimedRobot {
   frc::Joystick m_ButtonBoardTwo = frc::Joystick(2);
 
   std::string m_AutoPath;
-
-  MotionMagicTest m_MMT;
 
 };

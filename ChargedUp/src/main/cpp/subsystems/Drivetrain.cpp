@@ -9,7 +9,6 @@
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/ParallelCommandGroup.h>
 #include "./commands/AutoLock.h"
-#include "./commands/DynamicIntake.h"
 
 //Constructor
 DriveTrain::DriveTrain()
@@ -58,22 +57,13 @@ void DriveTrain::DriveInit(){
       Robot::GetRobot()->zeroGyroscope();
   }));
 
-  m_JoystickOuttake.WhileHeld(
-    new frc2::InstantCommand([&]{
-      if(Robot::GetRobot()->m_Intake.GetCurrentCommand() != nullptr){
-        Robot::GetRobot()->m_Intake.GetCurrentCommand()->Cancel();
-      }
-      DebugOutF("Joystick Outtake");
-      Robot::GetRobot()->GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, .8);
-    }
-  ));
+  // m_JoystickOuttake.WhileHeld( //redefine in .h
+    
+  // );
 
-  m_JoystickOuttake.WhenReleased(
-    new frc2::InstantCommand([&]{
-      Robot::GetRobot()->GetArm().GetBottomIntakeMotor().Set(ControlMode::PercentOutput, 0);
-      frc2::CommandScheduler::GetInstance().Schedule(new DynamicIntake());
-    })
-  );
+  // m_JoystickOuttake.WhenReleased( //redefine in .h
+  
+  // );
 
 
   m_AutoBalanceButton.ToggleWhenPressed(new AutoBalance());
