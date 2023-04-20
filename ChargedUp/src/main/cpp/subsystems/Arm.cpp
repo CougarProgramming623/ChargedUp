@@ -15,3 +15,11 @@
 #include <frc2/command/SequentialCommandGroup.h>
 
 using ctre::phoenix::motorcontrol::ControlMode;
+
+Arm::Arm(){
+
+}
+
+void Arm::ArmInit(){
+
+}
