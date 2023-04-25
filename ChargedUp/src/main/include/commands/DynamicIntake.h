@@ -7,19 +7,21 @@
 #include <ctre/phoenix/motorcontrol/can/TalonFX.h>
 #include <frc/AnalogInput.h>
 
-
+using ctre::phoenix::motorcontrol::can::BaseTalon;
 using ctre::phoenix::motorcontrol::can::TalonFX;
 using ctre::phoenix::motorcontrol::ControlMode;
 
-class PivotToPos {
+class DynamicIntake {
     public:
-        PivotToPos();
+        DynamicIntake();
 
-        double GetPivot();
+        BaseTalon m_IntakeTop;
+        BaseTalon m_IntakeBottom;
 
-        double m_PivotAngle;
+        int m_PeakCurrentLimit = -1; //FIX
+        int m_PeakCurrentDuration = -1; //FIX
+        int m_ContinousCurrentLimit = -1; //FIX
 
-
-        TalonFX m_Pivot;
 
 };
+
