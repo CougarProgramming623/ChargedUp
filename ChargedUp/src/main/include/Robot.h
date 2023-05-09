@@ -53,6 +53,7 @@ class Robot : public frc::TimedRobot {
   inline double getPitch() {return m_NavX.GetPitch();}
 
   inline DriveTrain& GetDriveTrain() { return m_DriveTrain; }
+  inline Arm& GetArm() { return m_Arm; }
   inline frc::Joystick& GetJoyStick() { return m_Joystick; }
 
   double GetAngle() {return fmod(360 - GetNavX().GetYaw(), 360); }
@@ -130,6 +131,8 @@ class Robot : public frc::TimedRobot {
   DriveTrain m_DriveTrain;
 
   Vision m_Vision;
+
+  Arm m_Arm;
 
   COB m_COB;
   frc::Joystick m_ButtonBoard = frc::Joystick(0);

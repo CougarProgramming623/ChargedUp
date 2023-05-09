@@ -8,4 +8,9 @@ class Arm : public frc2::SubsystemBase {
 
     Arm();
     void ArmInit();
+
+    int m_TicksToDeg(int ticks) 
+    int m_DegToTicks(int deg)
+
+    int m_OffsetTicks; //FIX
 };

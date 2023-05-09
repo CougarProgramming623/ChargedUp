@@ -23,3 +23,6 @@ Arm::Arm(){
 void Arm::ArmInit(){
 
 }
+
+int m_TicksToDeg(int ticks) {return (ticks / (2048 * 160)) * 360};
+int m_DegToTicks(int deg) {return (deg / 360) * 2048 * 160};

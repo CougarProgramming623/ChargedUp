@@ -24,8 +24,9 @@ using namespace pathplanner;
 Robot* Robot::s_Instance = nullptr;
 
 Robot::Robot() :
-m_NavX(frc::SerialPort::Port(2), AHRS::SerialDataType(0), uint8_t(66)),
+m_NavX(frc::SerialPort::Port(2), AHRS::SerialDataType0), uint8_t(66)),
 m_LED()
+m_Arm()
 {
   s_Instance = this;
 }
@@ -38,6 +39,7 @@ void Robot::RobotInit() {
   m_DriveTrain.DriveInit();
   m_Vision.VisionInit(); //Make one
   m_LED.Init();
+  m_Arm.Init();
 
   
   AutoButtons();

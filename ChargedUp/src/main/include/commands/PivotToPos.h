@@ -18,7 +18,7 @@ class PivotToPos {
         double GetPivot();
 
         double m_PivotAngle;
-
+        int m_CurrentDeg;
 
         TalonFX m_Pivot;
 
