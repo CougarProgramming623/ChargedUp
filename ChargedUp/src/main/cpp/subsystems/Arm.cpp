@@ -13,7 +13,8 @@
 #include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/ParallelDeadlineGroup.h>
 #include <frc2/command/SequentialCommandGroup.h>
-
+#include <ctre/phoenix/motorcontrol/can/BaseMotorController.h>
+using ctre::phoenix::motorcontrol::can::TalonFX;
 using ctre::phoenix::motorcontrol::ControlMode;
 
 Arm::Arm(){
@@ -21,8 +22,14 @@ Arm::Arm(){
 }
 
 void Arm::ArmInit(){
-
+    
+    m_Pivot.SetSelectedSensorPosition(m_Pivot.GetSelectedSensorPosition() - Robot::GetRobot()->GetArm().m_OffsetTicks);
+    m_Pivot.ConfigMotionCruiseVelocity(25000, 0);
+    m_Pivot.ConfigMotionAcceleration(6000, 0);
+    m_Pivot.Config_kF(0, 0.04716, 0);
+    m_Pivot.Config_kP(0, 0.25, 0);
+    m_Pivot.Config_kD(0, 0.05, 0);
 }
 
-int m_TicksToDeg(int ticks) {return (ticks / (2048 * 160)) * 360};
-int m_DegToTicks(int deg) {return (deg / 360) * 2048 * 160};
+int m_TicksToDeg(int ticks) {return (ticks / (2048 * 160)) * 360;}
+int m_DegToTicks(int deg) {return (deg / 360) * 2048 * 160;}

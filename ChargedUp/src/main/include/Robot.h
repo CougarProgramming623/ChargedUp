@@ -22,6 +22,7 @@
 #include <frc2/command/button/Button.h>
 #include "frc/smartdashboard/Smartdashboard.h"
 #include "COB.h"
+#include "subsystems/Arm.h"
 #include "Vision.h"
 #include "LED.h"
 #include <frc/geometry/Pose2d.h>
@@ -129,10 +130,9 @@ class Robot : public frc::TimedRobot {
 
   frc::Timer m_AutoTimer;
   DriveTrain m_DriveTrain;
-
-  Vision m_Vision;
-
   Arm m_Arm;
+
+  Vision m_Vision;  
 
   COB m_COB;
   frc::Joystick m_ButtonBoard = frc::Joystick(0);

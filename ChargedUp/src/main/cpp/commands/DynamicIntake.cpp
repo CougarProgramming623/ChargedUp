@@ -2,11 +2,13 @@
 #include <ctre/phoenix/motorcontrol/can/BaseMotorController.h>
 #include "commands/PivotToPos.h"
 #include "Constants.h"
+#include "commands/DynamicIntake.h"
+using ctre::phoenix::motorcontrol::can::BaseTalon;
 
 DynamicIntake::DynamicIntake()
 :
-m_Intake(INTAKE_MOTOR)
-m_Outtake()
+m_Intake(INTAKE_MOTOR),
+m_Outtake(/*needs id*/)
 //stuff
 {}
 

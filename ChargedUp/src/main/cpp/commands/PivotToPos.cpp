@@ -2,7 +2,6 @@
 #include "Constants.h"
 
 PivotToPos::PivotToPos()
-:
 m_Pivot(PIVOT_MOTOR)
 //stuff
 {
@@ -17,7 +16,7 @@ void PivotToPos::Initialize() {
 }
 
 void PivotToPos::Execute() {
-    m_CurrentDeg = Robot::GetRobot().GetArm().TicksToDeg(m_Pivot.GetSelectedSensorPosition() - Robot::GetRobot().GetArm().m_OffsetTicks);
+    //m_Pivot.Set(ControlMode::MotionMagic, Robot::GetRobot().GetArm().m_OffsetTicks)
     // motion magic - going from m_CurrentDeg to m_PivotAngle
 }
 

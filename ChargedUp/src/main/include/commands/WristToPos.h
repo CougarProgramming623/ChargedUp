@@ -15,6 +15,4 @@ class WristToPos {
 
         double m_WristAngle;
 
-        TalonFX m_Wrist;
-
 };

@@ -2,7 +2,6 @@
 #include "Constants.h"
 
 WristToPos::WristToPos()
-:
 m_Wrist(WRIST_MOTOR)
 //stuff
 {}
