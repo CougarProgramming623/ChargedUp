@@ -6,22 +6,16 @@
 using ctre::phoenix::motorcontrol::can::BaseTalon;
 
 DynamicIntake::DynamicIntake()
-:
-m_Intake(INTAKE_MOTOR),
-m_Outtake(/*needs id*/)
-//stuff
+// m_Intake(INTAKE_MOTOR),
+// m_Outtake(/*needs id*/)
 {}
 
 void DynamicIntake::Intake(){
 
-
-    if (m_IntakeTop.GetOutputCurrent() > 1000){ //FIX
-        
-    } 
 }
 
-void DynamicIntake::OutTake(){
-    m_Outtake = 
+void DynamicIntake::Outtake(){
+
 }
 
 

@@ -3,7 +3,7 @@
 #include "Util.h"
 
 #include <ctre/phoenix/motorcontrol/NeutralMode.h>
-#include "frc/motorcontrol/PWMMotorController.h
+#include <frc/motorcontrol/PWMMotorController.h>
 #include <ctre/phoenix/motorcontrol/can/TalonFX.h>
 #include <frc/AnalogInput.h>
 
@@ -15,8 +15,8 @@ class DynamicIntake {
     public:
         DynamicIntake();
 
-        BaseTalon m_IntakeTop;
-        BaseTalon m_IntakeBottom;
+        void Intake();
+        void Outtake();
 
         int m_PeakCurrentLimit = -1; //FIX
         int m_PeakCurrentDuration = -1; //FIX

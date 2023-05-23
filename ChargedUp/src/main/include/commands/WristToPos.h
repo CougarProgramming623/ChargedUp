@@ -9,7 +9,7 @@ using ctre::phoenix::motorcontrol::ControlMode;
 
 class WristToPos {
     public:
-        WristToPos();
+        WristToPos(double angle);
 
         double GetWrist();
 

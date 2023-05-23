@@ -1,6 +1,9 @@
 #pragma once
 
 #include <ctre/phoenix/motorcontrol/can/TalonFX.h>
+using ctre::phoenix::motorcontrol::can::TalonFX;
+using ctre::phoenix::motorcontrol::can::BaseTalon;
+
 //include stuff
 
 class Arm : public frc2::SubsystemBase {
@@ -16,4 +19,6 @@ class Arm : public frc2::SubsystemBase {
 
     TalonFX m_Wrist;
     TalonFX m_Pivot;
+    // BaseTalon m_IntakeTop;
+    // BaseTalon m_IntakeBottom;
 };

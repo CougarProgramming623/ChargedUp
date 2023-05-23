@@ -14,12 +14,15 @@
 #include <frc2/command/ParallelDeadlineGroup.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <ctre/phoenix/motorcontrol/can/BaseMotorController.h>
-using ctre::phoenix::motorcontrol::can::TalonFX;
 using ctre::phoenix::motorcontrol::ControlMode;
 
-Arm::Arm(){
-
-}
+Arm::Arm()
+    :   m_Wrist(WRIST_MOTOR),
+        m_Pivot(PIVOT_MOTOR)
+        // m_IntakeTop(INTAKE_TOP_MOTOR, ),
+        // m_IntakeBottom(INTAKE_BOTTOM_MOTOR, )
+    //stuff
+{}
 
 void Arm::ArmInit(){
     

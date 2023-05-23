@@ -14,6 +14,8 @@ using ctre::phoenix::motorcontrol::ControlMode;
 class PivotToPos {
     public:
         PivotToPos(int angle);
+        void Initialize();
+        void Execute();
 
 
         double GetPivot();

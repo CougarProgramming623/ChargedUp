@@ -141,7 +141,9 @@ constexpr int kDriverControllerPort = 0; //uhhhh idk it just wont build without 
 //motor IDs
 #define PIVOT_MOTOR -1
 #define WRIST_MOTOR -1
-#define INTAKE_MOTOR -1
+#define INTAKE_TOP_MOTOR -1
+#define INTAKE_BOTTOM_MOTOR -1
+
 
 //button IDs
 //BUTTONBOARD 0
