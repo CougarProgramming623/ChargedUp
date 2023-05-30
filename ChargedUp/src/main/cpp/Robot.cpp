@@ -74,7 +74,7 @@ void Robot::AutoButtons(){
   m_DoubleSub = frc2::Button(BUTTON_L_TWO(13));
   m_SingleSubCube = frc2::Button(BUTTON_L(7));
 
-m_LeftGrid    = frc2::Button(BUTTON_L_TWO(LEFT_GRID));q@2Q1
+  m_LeftGrid    = frc2::Button(BUTTON_L_TWO(LEFT_GRID));
   m_CenterGrid  = frc2::Button(BUTTON_L_TWO(CENTER_GRID));
   m_RightGrid   = frc2::Button(BUTTON_L_TWO(RIGHT_GRID));
 

@@ -17,6 +17,3 @@ void DynamicIntake::Intake(){
 void DynamicIntake::Outtake(){
 
 }
-
-
-double PivotToPos::GetPivot() {return m_PivotAngle;}
