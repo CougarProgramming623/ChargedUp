@@ -94,15 +94,14 @@ void Robot::AutoButtons(){
   m_VisionPoseReset = frc2::Button([&] { return Robot::GetRobot()->GetButtonBoard().GetRawButton(6); }); //PUT Define
  
   
-  m_Print.WhileHeld(
-    new frc2::InstantCommand([&]{
-      DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue()))));
-      DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
-      DebugOutF("StringPotRaw: " + std::to_string(GetArm().GetStringPot().GetValue()));
-    })
-  );
+  // m_Print.WhileHeld(
+  //   new frc2::InstantCommand([&]{
+  //     DebugOutF("StringDeg: " + std::to_string(GetArm().WristTicksToDegrees(GetArm().WristStringPotUnitsToTicks(GetArm().GetStringPot().GetValue()))));
+  //     DebugOutF("PivotDeg: " + std::to_string(GetArm().PivotTicksToDegrees(GetArm().GetPivotMotor().GetSelectedSensorPosition())));
+  //     DebugOutF("StringPotRaw: " + std::to_string(GetArm().GetStringPot().GetValue()));
+  //   })
+  // );
 
-  
   
   m_NavXReset.WhenPressed(
     new frc2::InstantCommand([&]{
@@ -138,7 +137,7 @@ GetArm().m_PlacingMode.WhenPressed(
     new frc2::ParallelCommandGroup(
       frc2::InstantCommand([&]{
         Robot::GetRobot()->GetArm().m_PivotPos = 94.0;
-        Robot::GetRobot()->GetArm().m_WristPos = -2.0;
+        Robot::GetRobot()->GetArm().m_WristPos = 10.0;
         Robot::GetRobot()->GetArm().SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
       }),
       WristToPos(),

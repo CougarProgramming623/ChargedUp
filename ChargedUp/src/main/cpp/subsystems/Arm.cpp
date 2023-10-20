@@ -62,7 +62,7 @@ void Arm::Init()
 	m_Wrist.Config_kP(0, 0.0175); //0.009
 	m_Wrist.Config_kI(0, 0.000002);
 	m_Wrist.Config_kD(0, 0.6);
-	m_Wrist.Config_kF(0, 0.06089285714, 0);
+	m_Wrist.Config_kF(0, 0.02, 0); //0.06089285714
 	
 	SetMotionMagicValues(PIVOT_DFLT_VEL, PIVOT_DFLT_ACC, WRIST_DFLT_VEL, WRIST_DFLT_ACC);
 
