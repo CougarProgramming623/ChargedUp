@@ -371,10 +371,18 @@ void Robot::RobotPeriodic() {
   }
 
   if(Robot::GetButtonBoard().GetRawButton(4)){
-    DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
-    DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
-    DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
-    DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
+    // DebugOutF("BL: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackLeftModule.GetSteerAngle())));
+    // DebugOutF("BR: " + std::to_string(Rad2Deg(GetDriveTrain().m_BackRightModule.GetSteerAngle())));
+    // DebugOutF("FL: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontLeftModule.GetSteerAngle())));
+    // DebugOutF("FR: " + std::to_string(Rad2Deg(GetDriveTrain().m_FrontRightModule.GetSteerAngle())));
+    DebugOutF("BL Encoder Voltage: " + std::to_string(GetDriveTrain().m_BackLeftModule.GetSteerController().GetEncoder().GetVoltage()));
+    DebugOutF("BL Steer Analog Sensor: " + std::to_string(GetDriveTrain().m_BackLeftModule.GetEncoderValue()));
+    DebugOutF("BR Encoder Voltage: " + std::to_string(GetDriveTrain().m_BackRightModule.GetSteerController().GetEncoder().GetVoltage()));
+    DebugOutF("BR Steer Analog Sensor: " + std::to_string(GetDriveTrain().m_BackRightModule.GetEncoderValue()));
+    DebugOutF("FL Encoder Voltage: " + std::to_string(GetDriveTrain().m_FrontLeftModule.GetSteerController().GetEncoder().GetVoltage()));
+    DebugOutF("FL Steer Analog Sensor: " + std::to_string(GetDriveTrain().m_FrontLeftModule.GetEncoderValue()));
+    DebugOutF("FR Encoder Voltage: " + std::to_string(GetDriveTrain().m_FrontRightModule.GetSteerController().GetEncoder().GetVoltage()));
+    DebugOutF("FR Steer Analog Sensor: " + std::to_string(GetDriveTrain().m_FrontRightModule.GetEncoderValue()));
   }
 
   //LED

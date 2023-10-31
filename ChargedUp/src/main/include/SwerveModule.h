@@ -10,8 +10,9 @@ class SwerveModule {
         SwerveModule(int driveID, int steerID, int encoderPort, double angleOffset);
 
         double GetDriveVelocity();
-
         double GetSteerAngle();
+        int GetEncoderValue();
+        inline SteerController& GetSteerController() { return m_SteerController; }
 
         frc::SwerveModulePosition GetPosition();
 

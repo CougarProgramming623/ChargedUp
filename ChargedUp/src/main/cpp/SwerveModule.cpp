@@ -20,6 +20,11 @@ double SwerveModule::GetSteerAngle(){
     return m_SteerController.GetStateAngle();
 }
 
+//Get the analog value from the encoder
+int SwerveModule::GetEncoderValue(){
+    return m_SteerController.GetEncoder().GetValue();
+}
+
 //Set break mode of the drive motor
 void SwerveModule::BreakMode(bool on){
     m_DriveController.BreakMode(on);

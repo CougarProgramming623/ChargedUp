@@ -16,6 +16,8 @@ class SteerController {
 
         double GetReferenceAngle();
         double GetStateAngle();
+        inline frc::AnalogInput& GetEncoder() { return encoder; }
+
 
         void SetReferenceAngle(double referenceAngleRadians);
 
